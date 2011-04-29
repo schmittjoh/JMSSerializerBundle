@@ -65,6 +65,8 @@ class SerializerFactory
         foreach ($this->encoders as $format => $encoder) {
             $serializer->setEncoder($format, $encoder);
         }
+
+        return $serializer;
     }
 
     public function getSerializer($version = null)
