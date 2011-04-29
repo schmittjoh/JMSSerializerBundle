@@ -39,22 +39,22 @@ class JMSSerializerExtension extends Extension
         // set encoders
         $encoders = array();
         if ($config['encoders']['xml']) {
-            $encoders['xml'] = new Reference('jms_serializer_extra.xml_encoder');
+            $encoders['xml'] = new Reference('jms_serializer.xml_encoder');
         }
         if ($config['encoders']['json']) {
-            $encoders['json'] = new Reference('jms_serializer_extra.json_encoder');
+            $encoders['json'] = new Reference('jms_serializer.json_encoder');
         }
         if (!$encoders) {
             throw new \RuntimeException('No encoders have been configured.');
         }
         $container
-            ->getDefinition('jms_serializer_extra.serializer_factory')
+            ->getDefinition('jms_serializer.serializer_factory')
             ->addArgument($encoders)
         ;
 
         // naming strategy
         $container
-            ->getDefinition('jms_serializer_extra.camel_case_naming_strategy')
+            ->getDefinition('jms_serializer.camel_case_naming_strategy')
             ->addArgument($config['naming_strategy']['separator'])
             ->addArgument($config['naming_strategy']['lower_case'])
         ;
@@ -64,7 +64,7 @@ class JMSSerializerExtension extends Extension
     {
         $tb = new TreeBuilder();
 
-        $tb->root('jms_serializer_extra', 'array')
+        $tb->root('jms_serializer', 'array')
                 ->fixXmlConfig('encoder')
                 ->children()
                    ->arrayNode('naming_strategy')
