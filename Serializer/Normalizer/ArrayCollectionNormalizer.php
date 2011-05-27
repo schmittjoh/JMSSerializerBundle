@@ -21,7 +21,8 @@ namespace JMS\SerializerBundle\Serializer\Normalizer;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\SerializerBundle\Serializer\Normalizer\SerializerAwareNormalizer;
+
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * This normalizer is specifically designed for Doctrine's ArrayCollection.

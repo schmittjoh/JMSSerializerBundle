@@ -28,9 +28,9 @@ use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\InstanceCreatorInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\AbstractNormalizer;
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\SerializerAwareNormalizer;
+
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Generic normalizer based on class properties.
