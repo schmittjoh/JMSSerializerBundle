@@ -20,7 +20,8 @@ namespace JMS\SerializerBundle\Serializer\Normalizer;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Exception\UnsupportedException;
-use JMS\SerializerBundle\Serializer\Normalizer\SerializerAwareNormalizer;
+
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Normalizer for native PHP types.
