@@ -23,6 +23,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -113,7 +114,9 @@ class Serializer implements SerializerInterface
      */
     public final function serialize($data, $format)
     {
-        $data = $this->normalize($data, $format);
+        if (!$this->getEncoder($format) instanceof NormalizationAwareInterface) {
+            $data = $this->normalize($data, $format);
+        }
 
         return $this->encode($data, $format);
     }
