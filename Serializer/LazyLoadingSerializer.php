@@ -29,7 +29,7 @@ class LazyLoadingSerializer extends Serializer
 {
     private $container;
 
-    protected function getEncoder($format)
+    public function getEncoder($format)
     {
         $encoder = parent::getEncoder($format);
 

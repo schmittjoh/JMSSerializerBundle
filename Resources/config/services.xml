@@ -137,6 +137,8 @@
                  class="%jms_serializer.serializer.class%" 
                  abstract="true">
             <property name="container" type="service" id="service_container" />
+            <argument />
+            <argument />
             <argument type="service" id="jms_serializer.native_php_type_normalizer" strict="false" />
         </service>
         <service id="serializer" parent="jms_serializer.serializer">

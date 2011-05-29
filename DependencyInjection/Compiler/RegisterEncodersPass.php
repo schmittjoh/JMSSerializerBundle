@@ -38,7 +38,7 @@ class RegisterEncodersPass implements CompilerPassInterface
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.serializer')) as $id) {
             $container
                 ->getDefinition($id)
-                ->addArgument($encoders)
+                ->replaceArgument(1, $encoders)
             ;
         }
     }

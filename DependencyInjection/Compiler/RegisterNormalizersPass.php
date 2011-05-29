@@ -43,7 +43,7 @@ class RegisterNormalizersPass implements CompilerPassInterface
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.serializer')) as $id) {
             $container
                 ->getDefinition($id)
-                ->addArgument($normalizers)
+                ->replaceArgument(0, $normalizers)
             ;
         }
     }
