@@ -18,8 +18,6 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
-
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;

@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SerializerFactory

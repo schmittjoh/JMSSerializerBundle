@@ -18,9 +18,8 @@
 
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Exception\UnsupportedException;
-
+use Symfony\Component\Serializer\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\UnsupportedException;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
