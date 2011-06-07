@@ -59,16 +59,18 @@ class Serializer extends BaseSerializer
      */
     public final function normalize($data, $format = null)
     {
-        if ($this->nativePhpTypeNormalizer->supportsNormalization($data, $format)) {
-            return $this->nativePhpTypeNormalizer->normalize($data, $format);
-        }
-
-        if ($this->normalizers) {
+        if ($this->normalizers && is_object($data)) {
             foreach ($this->normalizers as $normalizer) {
+                // needs to run first so that users can override the behavior for built-in
+                // interface like \Traversable, see #10
                 if ($normalizer->supportsNormalization($data, $format)) {
                     return $normalizer->normalize($data, $format);
                 }
             }
+        }
+
+        if ($this->nativePhpTypeNormalizer->supportsNormalization($data, $format)) {
+            return $this->nativePhpTypeNormalizer->normalize($data, $format);
         }
 
         return $this->defaultObjectNormalizer->normalize($data, $format);
@@ -93,4 +95,50 @@ class Serializer extends BaseSerializer
 
         return $this->defaultObjectNormalizer->denormalize($data, $type, $format);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final function serialize($data, $format)
+    {
+        $data = $this->normalize($data, $format);
+
+        return $this->encode($data, $format);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final function deserialize($data, $type, $format)
+    {
+        $data = $this->decode($data, $format);
+
+        return $this->denormalize($data, $type, $format);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final function encode($data, $format)
+    {
+        return $this->getEncoder($format)->encode($data, $format);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final function decode($data, $format)
+    {
+        return $this->getEncoder($format)->decode($data, $format);
+    }
+
+    protected function getEncoder($format)
+    {
+        if (!isset($this->encoderMap[$format])) {
+            throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
+        }
+
+        return $this->encoderMap[$format];
+    }
+>>>>>>> master
 }
