@@ -140,5 +140,4 @@ class Serializer extends BaseSerializer
 
         return $this->encoderMap[$format];
     }
->>>>>>> master
 }
