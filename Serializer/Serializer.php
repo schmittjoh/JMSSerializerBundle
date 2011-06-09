@@ -57,7 +57,7 @@ class Serializer extends BaseSerializer
     /**
      * {@inheritDoc}
      */
-    public final function normalize($data, $format = null)
+    public function normalize($data, $format = null)
     {
         if ($this->normalizers && is_object($data)) {
             foreach ($this->normalizers as $normalizer) {
@@ -79,7 +79,7 @@ class Serializer extends BaseSerializer
     /**
      * {@inheritDoc}
      */
-    public final function denormalize($data, $type, $format = null)
+    public function denormalize($data, $type, $format = null)
     {
         if ($this->nativePhpTypeNormalizer->supportsDenormalization($data, $type, $format)) {
             return $this->nativePhpTypeNormalizer->denormalize($data, $type, $format);
@@ -94,50 +94,5 @@ class Serializer extends BaseSerializer
         }
 
         return $this->defaultObjectNormalizer->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function serialize($data, $format)
-    {
-        $data = $this->normalize($data, $format);
-
-        return $this->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function deserialize($data, $type, $format)
-    {
-        $data = $this->decode($data, $format);
-
-        return $this->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function encode($data, $format)
-    {
-        return $this->getEncoder($format)->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function decode($data, $format)
-    {
-        return $this->getEncoder($format)->decode($data, $format);
-    }
-
-    protected function getEncoder($format)
-    {
-        if (!isset($this->encoderMap[$format])) {
-            throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
-        }
-
-        return $this->encoderMap[$format];
     }
 }
