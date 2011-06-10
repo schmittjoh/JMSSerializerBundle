@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Annotation;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
 
 class SerializedName
 {

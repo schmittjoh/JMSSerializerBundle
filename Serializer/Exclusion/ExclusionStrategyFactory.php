@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer\Exclusion;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
 
 /**
  * ExclusionStrategyFactory implementation.

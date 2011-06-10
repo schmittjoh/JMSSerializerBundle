@@ -3,7 +3,7 @@
 namespace JMS\SerializerBundle\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;

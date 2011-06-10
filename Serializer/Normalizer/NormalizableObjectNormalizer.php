@@ -3,7 +3,9 @@
 namespace JMS\SerializerBundle\Serializer\Normalizer;
 
 use JMS\SerializerBundle\Serializer\InstanceCreatorInterface;
-use JMS\SerializerBundle\Exception\UnsupportedException;
+use Symfony\Component\Serializer\Exception\UnsupportedException;
+
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 class NormalizableObjectNormalizer extends SerializerAwareNormalizer
 {

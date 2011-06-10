@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -38,7 +38,7 @@ class RegisterEncodersPass implements CompilerPassInterface
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.serializer')) as $id) {
             $container
                 ->getDefinition($id)
-                ->addArgument($encoders)
+                ->replaceArgument(1, $encoders)
             ;
         }
     }

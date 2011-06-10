@@ -18,7 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
 
 /**
  * Serializer that supports lazy-loading encoders.
@@ -29,7 +29,7 @@ class LazyLoadingSerializer extends Serializer
 {
     private $container;
 
-    protected function getEncoder($format)
+    public function getEncoder($format)
     {
         $encoder = parent::getEncoder($format);
 

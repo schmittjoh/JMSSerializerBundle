@@ -21,16 +21,16 @@ namespace JMS\SerializerBundle\Serializer\Normalizer;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Annotation\Type;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
-use JMS\SerializerBundle\Exception\InvalidArgumentException;
-use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Exception\UnsupportedException;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\UnsupportedException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyFactoryInterface;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Serializer\InstanceCreatorInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\AbstractNormalizer;
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\SerializerAwareNormalizer;
+
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Generic normalizer based on class properties.

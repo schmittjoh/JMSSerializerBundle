@@ -18,31 +18,31 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizableInterface;
-
-use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Serializer\SerializerAwareInterface;
-use JMS\SerializerBundle\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Serializer as BaseSerializer;
 
 /**
  * Serializer implementation.
  *
- * This serializer distinuishes three different types of normalizers, one
+ * This serializer distinguishes three different types of normalizers, one
  * normalizer for native php types, one default normalizer for objects, and an
  * arbitrary amount of specialized normalizers for specific object classes.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Serializer implements SerializerInterface
+class Serializer extends BaseSerializer
 {
     private $nativePhpTypeNormalizer;
-    private $customObjectNormalizers;
     private $defaultObjectNormalizer;
-    private $encoderMap;
 
-    public function __construct(NormalizerInterface $nativePhpNormalizer, NormalizerInterface $defaultObjectNormalizer, array $customObjectNormalizers = array(), array $encoderMap = array())
+    public function __construct(array $normalizers = array(), array $encoders = array(), NormalizerInterface $nativePhpNormalizer = null, NormalizerInterface $defaultObjectNormalizer = null)
     {
+        parent::__construct($normalizers, $encoders);
+
         if ($nativePhpNormalizer instanceof SerializerAwareInterface) {
             $nativePhpNormalizer->setSerializer($this);
         }
@@ -52,31 +52,17 @@ class Serializer implements SerializerInterface
             $defaultObjectNormalizer->setSerializer($this);
         }
         $this->defaultObjectNormalizer = $defaultObjectNormalizer;
-
-        foreach ($customObjectNormalizers as $normalizer) {
-            if ($normalizer instanceof SerializerAwareInterface) {
-                $normalizer->setSerializer($this);
-            }
-        }
-        $this->customObjectNormalizers = $customObjectNormalizers;
-
-        foreach ($encoderMap as $encoder) {
-            if ($encoder instanceof SerializerAwareInterface) {
-                $encoder->setSerializer($this);
-            }
-        }
-        $this->encoderMap = $encoderMap;
     }
 
     /**
      * {@inheritDoc}
      */
-    public final function normalize($data, $format = null)
+    public function normalize($data, $format = null)
     {
-        // needs to run first so that users can override the behavior for built-in
-        // interface like \Traversable, see #10
-        if ($this->customObjectNormalizers && is_object($data)) {
-            foreach ($this->customObjectNormalizers as $normalizer) {
+        if ($this->normalizers && is_object($data)) {
+            foreach ($this->normalizers as $normalizer) {
+                // needs to run first so that users can override the behavior for built-in
+                // interface like \Traversable, see #10
                 if ($normalizer->supportsNormalization($data, $format)) {
                     return $normalizer->normalize($data, $format);
                 }
@@ -93,14 +79,14 @@ class Serializer implements SerializerInterface
     /**
      * {@inheritDoc}
      */
-    public final function denormalize($data, $type, $format = null)
+    public function denormalize($data, $type, $format = null)
     {
         if ($this->nativePhpTypeNormalizer->supportsDenormalization($data, $type, $format)) {
             return $this->nativePhpTypeNormalizer->denormalize($data, $type, $format);
         }
 
-        if ($this->customObjectNormalizers) {
-            foreach ($this->customObjectNormalizers as $normalizer) {
+        if ($this->normalizers) {
+            foreach ($this->normalizers as $normalizer) {
                 if ($normalizer->supportsDenormalization($data, $type, $format)) {
                     return $normalizer->denormalize($data, $type, $format);
                 }
@@ -108,50 +94,5 @@ class Serializer implements SerializerInterface
         }
 
         return $this->defaultObjectNormalizer->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function serialize($data, $format)
-    {
-        $data = $this->normalize($data, $format);
-
-        return $this->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function deserialize($data, $type, $format)
-    {
-        $data = $this->decode($data, $format);
-
-        return $this->denormalize($data, $type, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function encode($data, $format)
-    {
-        return $this->getEncoder($format)->encode($data, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final function decode($data, $format)
-    {
-        return $this->getEncoder($format)->decode($data, $format);
-    }
-
-    protected function getEncoder($format)
-    {
-        if (!isset($this->encoderMap[$format])) {
-            throw new RuntimeException(sprintf('No encoder found for format "%s".', $format));
-        }
-
-        return $this->encoderMap[$format];
     }
 }
