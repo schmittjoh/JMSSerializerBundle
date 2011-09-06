@@ -2,6 +2,17 @@ For documentation, see:
 
     Resources/doc
     
+Please note that to use the current version of JMSSerializerBundle you need to have the HEAD version of the metadata bundle. Change 
+
+     [metadata]
+       git=http://github.com/schmittjoh/metadata.git
+       version=1.0.0
+
+to
+    [metadata]
+       git=http://github.com/schmittjoh/metadata.git
+
+
 
 For license, see:
 
