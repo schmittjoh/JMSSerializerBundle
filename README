@@ -12,6 +12,7 @@ to
     [metadata]
        git=http://github.com/schmittjoh/metadata.git
 
+And also remove the metadata entry in deps.lock.
 
 
 For license, see:
