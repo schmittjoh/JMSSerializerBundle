@@ -90,10 +90,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, null, $this);
 
-            if (null === $v) {
-                continue;
-            }
-
             $rs[$k] = $v;
         }
 
