@@ -334,6 +334,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('constraint_violation_list'), $this->serialize($violations));
     }
 
+    public function testObjectNullValue()
+    {
+        $data = array('foo' => 1, 'bar' => null);
+        $this->assertEquals($this->getContent('object_null_value'), $this->serialize($data));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 

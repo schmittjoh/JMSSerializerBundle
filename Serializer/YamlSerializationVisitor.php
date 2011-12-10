@@ -75,10 +75,6 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         $isList = array_keys($data) === range(0, count($data) - 1);
 
         foreach ($data as $k => $v) {
-            if (null === $v) {
-                continue;
-            }
-
             if ($isList) {
                 $this->writer->writeln('-');
             } else {

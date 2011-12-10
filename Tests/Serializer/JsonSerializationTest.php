@@ -54,6 +54,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
             $outputs['constraint_violation_list'] = '[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]';
             $outputs['article'] = '{"custom":"serialized"}';
+            $outputs['object_null_value'] = '{"foo":1,"bar":null}';
         }
 
         if (!isset($outputs[$key])) {
