@@ -19,14 +19,53 @@
 namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 
 use Metadata\Driver\FileLocator;
+use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\Driver\YamlDriver;
 
 class YamlDriverTest extends BaseDriverTest
 {
+    public function testBlogPostExcludeAllStrategy()
+    {
+        $m = $this->getDriver('exclude_all')->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
+
+        $this->assertArrayHasKey('title', $m->propertyMetadata);
+
+        $excluded = array('createdAt', 'published', 'comments', 'author');
+        foreach ($excluded as $key) {
+            $this->assertArrayNotHasKey($key, $m->propertyMetadata);
+        }
+    }
+
+    public function testBlogPostExcludeNoneStrategy()
+    {
+        $m = $this->getDriver('exclude_none')->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
+
+        $this->assertArrayNotHasKey('title', $m->propertyMetadata);
+
+        $excluded = array('createdAt', 'published', 'comments', 'author');
+        foreach ($excluded as $key) {
+            $this->assertArrayHasKey($key, $m->propertyMetadata);
+        }
+    }
+
+    public function testBlogPostCaseInsensitive()
+    {
+        $m = $this->getDriver('case')->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\BlogPost'));
+
+        $p = new PropertyMetadata($m->name, 'title');
+        $p->type = 'string';
+        $this->assertEquals($p, $m->propertyMetadata['title']);
+    }
+
     protected function getDriver()
     {
+        $append = '';
+        if (func_num_args() == 1) {
+            $append = '/'.func_get_arg(0);
+        }
+
         return new YamlDriver(new FileLocator(array(
-            'JMS\SerializerBundle\Tests\Fixtures' => __DIR__.'/yml',
+            'JMS\SerializerBundle\Tests\Fixtures' => __DIR__.'/yml'.$append,
         )));
     }
 }
