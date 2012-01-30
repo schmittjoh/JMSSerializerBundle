@@ -28,7 +28,9 @@ class DoctrineProxyHandler implements SerializationHandlerInterface
 {
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (($data instanceof Proxy || $data instanceof ORMProxy || $data instanceof ODMProxy) && (!$data->__isInitialized__ || get_class($data) === $type)) {
+        if (($data instanceof Proxy || $data instanceof ORMProxy || $data instanceof ODMProxy)
+            && (!$data->__isInitialized__ || get_class($data) === $type)
+        ) {
             $handled = true;
 
             if (!$data->__isInitialized__) {
