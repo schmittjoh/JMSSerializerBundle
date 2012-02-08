@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Serializer\Handler;
 
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
+use Doctrine\ODM\MongoDB\Proxy\Proxy as ODMProxy;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 
@@ -27,7 +28,9 @@ class DoctrineProxyHandler implements SerializationHandlerInterface
 {
     public function serialize(VisitorInterface $visitor, $data, $type, &$handled)
     {
-        if (($data instanceof Proxy || $data instanceof ORMProxy) && (!$data->__isInitialized__ || get_class($data) === $type)) {
+        if (($data instanceof Proxy || $data instanceof ORMProxy || $data instanceof ODMProxy)
+            && (!$data->__isInitialized__ || get_class($data) === $type)
+        ) {
             $handled = true;
 
             if (!$data->__isInitialized__) {
