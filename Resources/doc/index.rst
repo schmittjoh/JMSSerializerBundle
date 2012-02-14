@@ -622,3 +622,11 @@ YAML Reference
 
 
 
+========
+FAQ
+========
+
+What does JMS stand for?
+------------------------
+Those are the initials of the original author: Johannes M. Schmitt. JMS has
+naught to do with Java Message Service or any other three-letter acronym.
