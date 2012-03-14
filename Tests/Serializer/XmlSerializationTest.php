@@ -63,6 +63,22 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         return 'xml';
     }
+
+    public function testAssociatedArray()
+    {
+        $data = array(
+            'foo' => 'bar',
+            'bar' => array(
+                'faz' => 'foo',
+                'far' => 1,
+                'boo' => array(
+                    'baz' => 'far',
+                ),
+                'raf',
+            )
+        );
+        $this->assertEquals($this->getContent('associated_array'), $this->serialize($data));
+    }
 }
 
 class ExternalEntityTest

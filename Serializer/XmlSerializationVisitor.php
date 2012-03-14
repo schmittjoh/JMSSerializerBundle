@@ -111,10 +111,21 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
 
         $entryName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlEntryName) ? $this->currentMetadata->xmlEntryName : 'entry';
+        $entryNameOrig = $entryName;
         $keyAttributeName = (null !== $this->currentMetadata && null !== $this->currentMetadata->xmlKeyAttribute) ? $this->currentMetadata->xmlKeyAttribute : null;
 
         foreach ($data as $k => $v) {
+            if ($entryName==='entry' && is_string($k)) {
+                $entryName = $k;
+            }
+
             $entryNode = $this->document->createElement($entryName);
+
+            // We reset the entryName
+            if ($entryName !== $entryNameOrig) {
+                $entryName = $entryNameOrig;
+            }
+
             $this->currentNode->appendChild($entryNode);
             $this->setCurrentNode($entryNode);
 
