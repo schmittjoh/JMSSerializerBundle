@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <foo><![CDATA[bar]]></foo>
+  <bar>
+    <faz><![CDATA[foo]]></faz>
+    <far>1</far>
+    <boo>
+      <baz><![CDATA[far]]></baz>
+    </boo>
+    <entry><![CDATA[raf]]></entry>
+  </bar>
+</result>
