@@ -29,12 +29,12 @@ interface VisitorInterface
     function visitDouble($data, $type);
     function visitInteger($data, $type);
     function visitUsingCustomHandler($data, $type, &$visited);
-    function visitArray($data, $type);
-    function visitTraversable($data, $type);
+    function visitArray($data, $type, $depth );
+    function visitTraversable($data, $type, $depth);
     function startVisitingObject(ClassMetadata $metadata, $data, $type);
-    function visitProperty(PropertyMetadata $metadata, $data);
+    function visitProperty(PropertyMetadata $metadata, $data, $depth);
     function endVisitingObject(ClassMetadata $metadata, $data, $type);
-    function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object);
+    function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth);
     function setNavigator(GraphNavigator $navigator);
     function getNavigator();
     function getResult();

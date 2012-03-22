@@ -32,17 +32,26 @@ final class GraphNavigator
     private $exclusionStrategy;
     private $metadataFactory;
     private $visiting;
+    private $depth;
 
-    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null, $depth = null)
     {
         $this->direction = $direction;
         $this->metadataFactory = $metadataFactory;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
+        $this->depth = $depth;
     }
 
-    public function accept($data, $type, VisitorInterface $visitor)
+    public function accept($data, $type, VisitorInterface $visitor, $depth)
     {
+        $depth++;
+        if ($this->depth !== null){
+            if ($depth > $this->depth + 1) {
+                return null;
+            }
+        }
+            
         // determine type if not given
         if (null === $type) {
             if (null === $data) {
@@ -64,7 +73,7 @@ final class GraphNavigator
         } else if ('double' === $type) {
             return $visitor->visitDouble($data, $type);
         } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
-            return $visitor->visitArray($data, $type);
+            return $visitor->visitArray($data, $type, $depth);
         } else {
             if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
                 if ($this->visiting->contains($data)) {
@@ -84,6 +93,7 @@ final class GraphNavigator
                 return $rs;
             }
 
+        
             $metadata = $this->metadataFactory->getMetadataForClass($type);
             if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
                 if (self::DIRECTION_SERIALIZATION === $this->direction) {
@@ -102,7 +112,8 @@ final class GraphNavigator
 
             // check if traversable
             if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
-                $rs = $visitor->visitTraversable($data, $type);
+                $rs = $visitor->visitTraversable($data, $type, $depth);
+        
                 $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
 
                 return $rs;
@@ -119,8 +130,8 @@ final class GraphNavigator
                 }
 
                 // try custom handler
-                if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data)) {
-                    $visitor->visitProperty($propertyMetadata, $data);
+                if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data, $depth )) {
+                    $visitor->visitProperty($propertyMetadata, $data, $depth);
                 }
             }
 

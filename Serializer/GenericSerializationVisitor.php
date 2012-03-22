@@ -78,7 +78,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $data;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, $type, $depth)
     {
         if (null === $this->root) {
             $this->root = array();
@@ -87,8 +87,10 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
             $rs = array();
         }
 
+            
         foreach ($data as $k => $v) {
-            $v = $this->navigator->accept($v, null, $this);
+            $v = $this->navigator->accept($v, null, $this, $depth);
+            
 
             if (null === $v) {
                 continue;
@@ -100,9 +102,9 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $rs;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable($data, $type, $depth)
     {
-        return $this->visitArray($data, $type);
+        return $this->visitArray($data, $type, $depth);
     }
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)
@@ -127,12 +129,13 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $rs;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, $depth)
     {
+
+
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
                 : $data->{$metadata->getter}());
-
-        $v = $this->navigator->accept($v, null, $this);
+        $v = $this->navigator->accept($v, null, $this, $depth);
         if (null === $v) {
             return;
         }
@@ -146,7 +149,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         }
     }
 
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
+    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth)
     {
         // TODO
         return false;
