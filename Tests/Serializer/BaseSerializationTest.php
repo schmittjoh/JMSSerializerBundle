@@ -181,6 +181,29 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
     }
+    
+    public function testDepth()
+    {
+        $serializer =  $this->getSerializer();
+ 
+                
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+        $post->addComment( new Comment($author, 'foo'));
+        $post->addComment( new Comment($author, 'foo bar'));
+
+        $serializer->setDepth(1);
+        $this->assertEquals($this->getContent('blog_post_depth_one'), $serializer->serialize($post, $this->getFormat()),"one");
+
+        $serializer->setDepth(2);
+        $this->assertEquals($this->getContent('blog_post_depth_two'), $serializer->serialize($post, $this->getFormat()),"two");
+        
+        $serializer->setDepth(3);
+        $this->assertEquals($this->getContent('blog_post_depth_null'), $serializer->serialize($post, $this->getFormat()),"three");
+
+        $serializer->setDepth(null);
+        $this->assertEquals($this->getContent('blog_post_depth_null'), $serializer->serialize($post, $this->getFormat()));
+
+    }
 
     public function testBlogPost()
     {
@@ -519,7 +542,7 @@ class AuthorListDeserializationHandler implements DeserializationHandlerInterfac
         }
 
         $visited = true;
-        $elements = $visitor->getNavigator()->accept($data, 'array<integer, JMS\SerializerBundle\Tests\Fixtures\Author>', $visitor);
+        $elements = $visitor->getNavigator()->accept($data, 'array<integer, JMS\SerializerBundle\Tests\Fixtures\Author>', $visitor, 0);
         $list = new AuthorList();
         foreach ($elements as $author) {
             $list->add($author);

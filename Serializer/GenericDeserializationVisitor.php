@@ -104,7 +104,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         return $data;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, $type, $depth)
     {
         if (!is_array($data)) {
             throw new RuntimeException(sprintf('Expected array, but got %s: %s', gettype($data), json_encode($data)));
@@ -129,7 +129,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
             }
 
             foreach ($data as $v) {
-                $result[] = $this->navigator->accept($v, $listType, $this);
+                $result[] = $this->navigator->accept($v, $listType, $this, $depth);
             }
 
             return $result;
@@ -145,13 +145,13 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         }
 
         foreach ($data as $k => $v) {
-            $result[$this->navigator->accept($k, $keyType, $this)] = $this->navigator->accept($v, $entryType, $this);
+            $result[$this->navigator->accept($k, $keyType, $this, $depth)] = $this->navigator->accept($v, $entryType, $this, $depth);
         }
 
         return $result;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable($data, $type, $depth)
     {
         throw new RuntimeException('Traversable is not supported for deserialization.');
     }
@@ -165,7 +165,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         }
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, $depth)
     {
         $name = $this->namingStrategy->translateName($metadata);
 
@@ -177,7 +177,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
             throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
         }
 
-        $v = $this->navigator->accept($data[$name], $metadata->type, $this);
+        $v = $this->navigator->accept($data[$name], $metadata->type, $this, $depth);
         if (null === $v) {
             return;
         }
@@ -199,7 +199,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         return $obj;
     }
 
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
+    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth)
     {
         // TODO
         return false;

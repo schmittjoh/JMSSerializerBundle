@@ -45,13 +45,7 @@ final class GraphNavigator
 
     public function accept($data, $type, VisitorInterface $visitor, $depth)
     {
-        $depth++;
-        if ($this->depth !== null){
-            if ($depth > $this->depth + 1) {
-                return null;
-            }
-        }
-            
+
         // determine type if not given
         if (null === $type) {
             if (null === $data) {
@@ -72,73 +66,81 @@ final class GraphNavigator
             return $visitor->visitBoolean($data, $type);
         } else if ('double' === $type) {
             return $visitor->visitDouble($data, $type);
-        } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
-            return $visitor->visitArray($data, $type, $depth);
         } else {
-            if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
-                if ($this->visiting->contains($data)) {
+            
+            $depth++;
+            if ($this->depth !== null){
+                if ($depth > $this->depth + 1) {
                     return null;
                 }
-                $this->visiting->attach($data);
             }
-
-            // try custom handler
-            $handled = false;
-            $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
-            if ($handled) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                    $this->visiting->detach($data);
+            if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
+                return $visitor->visitArray($data, $type, $depth);
+            } else {
+                if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
+                    if ($this->visiting->contains($data)) {
+                        return null;
+                    }
+                    $this->visiting->attach($data);
                 }
-
-                return $rs;
-            }
-
-        
-            $metadata = $this->metadataFactory->getMetadataForClass($type);
-            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                    $this->visiting->detach($data);
-                }
-
-                return null;
-            }
-
-            // pre-serialization callbacks
-            if (self::DIRECTION_SERIALIZATION === $this->direction) {
-                foreach ($metadata->preSerializeMethods as $method) {
-                    $method->invoke($data);
-                }
-            }
-
-            // check if traversable
-            if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
-                $rs = $visitor->visitTraversable($data, $type, $depth);
-        
-                $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
-
-                return $rs;
-            }
-
-            $visitor->startVisitingObject($metadata, $data, $type);
-            foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
-                    continue;
-                }
-
-                if (self::DIRECTION_DESERIALIZATION === $this->direction && $propertyMetadata->readOnly) {
-                    continue;
-                }
-
+                
                 // try custom handler
-                if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data, $depth )) {
-                    $visitor->visitProperty($propertyMetadata, $data, $depth);
+                $handled = false;
+                $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
+                if ($handled) {
+                    if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                        $this->visiting->detach($data);
+                    }
+                    
+                    return $rs;
                 }
+                $metadata = $this->metadataFactory->getMetadataForClass($type);
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata)) {
+                    if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                        $this->visiting->detach($data);
+                    }
+                    
+                    return null;
+                }
+                
+                // pre-serialization callbacks
+                if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                    foreach ($metadata->preSerializeMethods as $method) {
+                        $method->invoke($data);
+                    }
+                }
+                
+                // check if traversable
+                if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
+                    $rs = $visitor->visitTraversable($data, $type, $depth);
+                    
+                    $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
+                    
+                    return $rs;
+                }
+                
+                $visitor->startVisitingObject($metadata, $data, $type);
+                foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
+                        continue;
+                    }
+                    
+                    if (self::DIRECTION_DESERIALIZATION === $this->direction && $propertyMetadata->readOnly) {
+                        continue;
+                    }
+                    
+                    // try custom handler
+                    if (!$visitor->visitPropertyUsingCustomHandler($propertyMetadata, $data, $depth )) {
+                        $visitor->visitProperty($propertyMetadata, $data, $depth);
+                    }
+                }
+                
+                $rs = $visitor->endVisitingObject($metadata, $data, $type);
+                $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
+                
+                return $rs;
+                
             }
-
-            $rs = $visitor->endVisitingObject($metadata, $data, $type);
-            $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
-
-            return $rs;
         }
     }
 
