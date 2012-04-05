@@ -105,6 +105,6 @@ class RssSerializationVisitor extends GenericSerializationVisitor
 
     protected function escape($text)
     {
-        return htmlspecialchars($text, ENT_COMPAT, 'UTF-8');
+        return '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $text).']]>';
     }
 }
