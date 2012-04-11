@@ -104,7 +104,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, $type, $depth)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
@@ -122,7 +122,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
                 $entryNode->setAttribute($keyAttributeName, (string) $k);
             }
 
-            if (null !== $node = $this->navigator->accept($v, null, $this)) {
+            if (null !== $node = $this->navigator->accept($v, null, $this, $depth)) {
                 $this->currentNode->appendChild($node);
             }
 
@@ -130,9 +130,9 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable($data, $type, $depth)
     {
-        return $this->visitArray($data, $type);
+        return $this->visitArray($data, $type, $depth);
     }
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)
@@ -145,7 +145,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         $this->hasValue = false;
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $object)
+    public function visitProperty(PropertyMetadata $metadata, $object, $depth)
     {
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($object)
             : $object->{$metadata->getter}());
@@ -155,7 +155,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
 
         if ($metadata->xmlAttribute) {
-            $node = $this->navigator->accept($v, null, $this);
+            $node = $this->navigator->accept($v, null, $this, $depth);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for XML attribute. Expected character data, but got %s.', json_encode($v)));
             }
@@ -173,7 +173,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         if ($metadata->xmlValue) {
             $this->hasValue = true;
 
-            $node = $this->navigator->accept($v, null, $this);
+            $node = $this->navigator->accept($v, null, $this, $depth);
             if (!$node instanceof \DOMCharacterData) {
                 throw new RuntimeException(sprintf('Unsupported value for property %s::$%s. Expected character data, but got %s.', $metadata->reflection->class, $metadata->reflection->name, is_object($node) ? get_class($node) : gettype($node)));
             }
@@ -190,7 +190,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
         $this->setCurrentMetadata($metadata);
 
-        if (null !== $node = $this->navigator->accept($v, null, $this)) {
+        if (null !== $node = $this->navigator->accept($v, null, $this, $depth)) {
             $this->currentNode->appendChild($node);
         }
 
@@ -209,7 +209,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
     {
     }
 
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
+    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth)
     {
         // TODO
         return false;

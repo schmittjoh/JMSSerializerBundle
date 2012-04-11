@@ -125,7 +125,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $data;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, $type, $depth)
     {
         $entryName = null !== $this->currentMetadata && $this->currentMetadata->xmlEntryName ? $this->currentMetadata->xmlEntryName : 'entry';
 
@@ -150,7 +150,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
             }
 
             foreach ($data->$entryName as $v) {
-                $result[] = $this->navigator->accept($v, $listType, $this);
+                $result[] = $this->navigator->accept($v, $listType, $this, $depth);
             }
 
             return $result;
@@ -172,14 +172,14 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
                 throw new RuntimeException(sprintf('The key attribute "%s" must be set for each entry of the map.', $this->currentMetadata->xmlKeyAttribute));
             }
 
-            $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this);
-            $result[$k] = $this->navigator->accept($v, $entryType, $this);
+            $k = $this->navigator->accept($v[$this->currentMetadata->xmlKeyAttribute], $keyType, $this, $depth);
+            $result[$k] = $this->navigator->accept($v, $entryType, $this, $depth);
         }
 
         return $result;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable($data, $type, $depth)
     {
         throw new RuntimeException('Traversable is not supported for Deserialization.');
     }
@@ -193,7 +193,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         }
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, $depth)
     {
         $name = $this->namingStrategy->translateName($metadata);
 
@@ -203,7 +203,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
 
         if ($metadata->xmlAttribute) {
             if (isset($data[$name])) {
-                $v = $this->navigator->accept($data[$name], $metadata->type, $this);
+                $v = $this->navigator->accept($data[$name], $metadata->type, $this, $depth);
                 $metadata->reflection->setValue($this->currentObject, $v);
             }
 
@@ -211,7 +211,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         }
 
         if ($metadata->xmlValue) {
-            $v = $this->navigator->accept($data, $metadata->type, $this);
+            $v = $this->navigator->accept($data, $metadata->type, $this, $depth);
             $metadata->reflection->setValue($this->currentObject, $v);
 
             return;
@@ -224,7 +224,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
             }
 
             $this->setCurrentMetadata($metadata);
-            $v = $this->navigator->accept($enclosingElem, $metadata->type, $this);
+            $v = $this->navigator->accept($enclosingElem, $metadata->type, $this, $depth);
             $this->revertCurrentMetadata();
             $metadata->reflection->setValue($this->currentObject, $v);
 
@@ -235,7 +235,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
             return;
         }
 
-        $v = $this->navigator->accept($data->$name, $metadata->type, $this);
+        $v = $this->navigator->accept($data->$name, $metadata->type, $this, $depth);
 
         if (null === $metadata->setter) {
             $metadata->reflection->setValue($this->currentObject, $v);
@@ -254,7 +254,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         return $rs;
     }
 
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
+    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth)
     {
         // TODO
         return false;

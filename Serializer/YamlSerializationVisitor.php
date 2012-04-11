@@ -70,7 +70,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         return $v;
     }
 
-    public function visitArray($data, $type)
+    public function visitArray($data, $type, $depth)
     {
         $isList = array_keys($data) === range(0, count($data) - 1);
 
@@ -87,7 +87,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
             $this->writer->indent();
 
-            if (null !== $v = $this->navigator->accept($v, null, $this)) {
+            if (null !== $v = $this->navigator->accept($v, null, $this, $depth)) {
                 $this->writer
                     ->rtrim(false)
                     ->writeln(' '.$v)
@@ -131,21 +131,21 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         return $v;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable($data, $type, $depth)
     {
         $arr = array();
         foreach ($data as $k => $v) {
             $arr[$k] = $v;
         }
 
-        return $this->visitArray($arr, $type);
+        return $this->visitArray($arr, $type, $depth);
     }
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)
     {
     }
 
-    public function visitProperty(PropertyMetadata $metadata, $data)
+    public function visitProperty(PropertyMetadata $metadata, $data, $depth)
     {
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
             : $data->{$metadata->getter}());
@@ -166,7 +166,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
         $count = $this->writer->changeCount;
 
-        if (null !== $v = $this->navigator->accept($v, null, $this)) {
+        if (null !== $v = $this->navigator->accept($v, null, $this, $depth)) {
             $this->writer
                 ->rtrim(false)
                 ->writeln(' '.$v)
@@ -185,7 +185,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
     {
     }
 
-    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
+    public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object, $depth)
     {
     }
 
