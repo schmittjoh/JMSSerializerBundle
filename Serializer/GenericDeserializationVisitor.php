@@ -201,7 +201,26 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)
     {
-        // TODO
+        $name = $this->namingStrategy->translateName($metadata);
+        $visited = false;
+
+        if (!isset($object[$name])) {
+            return false;
+        }
+
+        if (!$metadata->type) {
+            throw new RuntimeException(sprintf('You must define a type for %s::$%s.', $metadata->reflection->getDeclaringClass()->getName(), $metadata->name));
+        }
+
+        foreach ($this->customHandlers as $handler) {
+            $v = $handler->deserialize($this, $object[$name], $metadata->type, $visited);
+
+            if ($visited) {
+                $metadata->reflection->setValue($this->currentObject, $v);
+                return true;
+            }
+        }
+
         return false;
     }
 
