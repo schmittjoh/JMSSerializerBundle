@@ -210,6 +210,11 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         return $this->result;
     }
 
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
+
     public function setCurrentObject($object)
     {
         $this->objectStack->push($this->currentObject);

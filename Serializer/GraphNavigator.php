@@ -142,6 +142,16 @@ final class GraphNavigator
         $this->visiting->detach($object);
     }
 
+    public function getMetadataFactory()
+    {
+        return $this->metadataFactory;
+    }
+
+    public function getExclusionStrategy()
+    {
+        return $this->exclusionStrategy;
+    }
+
     private function afterVisitingObject(ClassMetadata $metadata, $object)
     {
         if (self::DIRECTION_SERIALIZATION === $this->direction) {
