@@ -58,19 +58,14 @@ class DoctrineProxyDeserializationHandler implements DeserializationHandlerInter
      */
     public function deserialize(VisitorInterface $visitor, $data, $type, &$visited)
     {
-        // Avoid usage of this handler under custom visitors
-        if ($visitor instanceof GenericDeserializationVisitor || $visitor instanceof XmlDeserializationVisitor) {
-            return;
-        }
-
-        // Is it a valid proxy?
+        // Check for only class existence. Ignore invalid ones
         if (!class_exists($type)) {
             return;
         }
 
+        // Check for valid Entity
         $objectManager = $this->managerRegistry->getEntityManagerForClass($type);
 
-        // Is it a valid enity?
         if (!$objectManager) {
             return;
         }
