@@ -19,10 +19,8 @@
 namespace JMS\SerializerBundle\Serializer\Handler;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
-
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Persistence\Mapping\MappingException;
-
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
