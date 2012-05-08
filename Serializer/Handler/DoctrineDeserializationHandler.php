@@ -27,7 +27,7 @@ use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 
-class DoctrineProxyDeserializationHandler implements DeserializationHandlerInterface
+class DoctrineDeserializationHandler implements DeserializationHandlerInterface
 {
     /**
      * @var \Symfony\Bridge\Doctrine\RegistryInterface

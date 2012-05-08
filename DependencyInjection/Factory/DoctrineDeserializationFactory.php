@@ -7,11 +7,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
-class DoctrineProxyDeserializationFactory implements HandlerFactoryInterface
+class DoctrineDeserializationFactory implements HandlerFactoryInterface
 {
     public function getConfigKey()
     {
-        return 'doctrine_proxy_deserialization';
+        return 'doctrine_deserialization';
     }
 
     public function getType(array $config)

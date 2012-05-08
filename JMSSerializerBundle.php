@@ -24,7 +24,7 @@ use JMS\SerializerBundle\DependencyInjection\Factory\ConstraintViolationFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\ArrayCollectionFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\ObjectBasedFactory;
 use JMS\SerializerBundle\DependencyInjection\Factory\DoctrineProxyFactory;
-use JMS\SerializerBundle\DependencyInjection\Factory\DoctrineProxyDeserializationFactory;
+use JMS\SerializerBundle\DependencyInjection\Factory\DoctrineDeserializationFactory;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use Symfony\Component\HttpKernel\KernelInterface;
 use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
@@ -49,7 +49,7 @@ class JMSSerializerBundle extends Bundle
     {
         $ext->addHandlerFactory(new ObjectBasedFactory());
         $ext->addHandlerFactory(new DoctrineProxyFactory());
-        $ext->addHandlerFactory(new DoctrineProxyDeserializationFactory());
+        $ext->addHandlerFactory(new DoctrineDeserializationFactory());
         $ext->addHandlerFactory(new ArrayCollectionFactory());
         $ext->addHandlerFactory(new ConstraintViolationFactory());
         $ext->addHandlerFactory(new DateTimeFactory());

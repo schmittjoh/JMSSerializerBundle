@@ -19,9 +19,7 @@
 namespace JMS\SerializerBundle\Serializer\Handler;
 
 use Doctrine\Common\Persistence\Proxy;
-
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
-
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 
