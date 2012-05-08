@@ -65,6 +65,8 @@ final class GraphNavigator
             return $visitor->visitDouble($data, $type);
         } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
             return $visitor->visitArray($data, $type);
+        } else if (is_resource($data)) {
+            return stream_get_contents($data);
         } else {
             if (self::DIRECTION_SERIALIZATION === $this->direction && null !== $data) {
                 if ($this->visiting->contains($data)) {
