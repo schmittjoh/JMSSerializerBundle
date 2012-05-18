@@ -1,5 +1,5 @@
 {
-    "name": "jms/serializer-bundle",
+    "name": "instaclick/serializer-bundle",
     "type": "symfony-bundle",
     "description": "Allows you to easily serialize, and deserialize object graphs of any complexity",
     "keywords": ["serialization", "deserialization", "json", "jaxb", "xml"],
