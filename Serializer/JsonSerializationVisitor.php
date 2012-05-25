@@ -36,4 +36,5 @@ class JsonSerializationVisitor extends GenericSerializationVisitor
     {
         $this->options = (integer) $options;
     }
+
 }

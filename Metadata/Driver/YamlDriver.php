@@ -190,6 +190,10 @@ class YamlDriver extends AbstractFileDriver
             }
         }
 
+        if (isset($config['links'])) {
+            //TODO implement xml driver
+        }
+
         return $metadata;
     }
 

@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Symfony\Component\Routing\RouterInterface;
 use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
@@ -31,12 +32,17 @@ class Serializer implements SerializerInterface
     private $serializationVisitors;
     private $deserializationVisitors;
     private $exclusionStrategy;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
-    public function __construct(MetadataFactoryInterface $factory, array $serializationVisitors = array(), array $deserializationVisitors = array())
+    public function __construct(MetadataFactoryInterface $factory, RouterInterface $router, array $serializationVisitors = array(), array $deserializationVisitors = array())
     {
         $this->factory = $factory;
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
+        $this->router = $router;
     }
 
     public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
@@ -54,7 +60,7 @@ class Serializer implements SerializerInterface
 
         $this->exclusionStrategy = new VersionExclusionStrategy($version);
     }
-    
+
     public function setGroups($groups)
     {
         if (!$groups) {
@@ -69,7 +75,7 @@ class Serializer implements SerializerInterface
     public function serialize($data, $format)
     {
         $visitor = $this->getSerializationVisitor($format);
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $this->exclusionStrategy));
+        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->factory, $this->router, $this->exclusionStrategy));
         $navigator->accept($visitor->prepare($data), null, $visitor);
 
         return $visitor->getResult();
@@ -78,7 +84,7 @@ class Serializer implements SerializerInterface
     public function deserialize($data, $type, $format)
     {
         $visitor = $this->getDeserializationVisitor($format);
-        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $this->exclusionStrategy));
+        $visitor->setNavigator($navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->factory, $this->router, $this->exclusionStrategy));
         $navigator->accept($visitor->prepare($data), $type, $visitor);
 
         return $visitor->getResult();

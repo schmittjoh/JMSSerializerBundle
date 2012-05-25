@@ -300,4 +300,28 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             preg_match('#^[\pL_][\pL0-9._-]*$#ui', $name);
     }
 
+    public function visitLink($data, $type)
+    {
+        if (null === $this->document) {
+            $this->document = $this->createDocument(null, null, true);
+        }
+
+        foreach ($data as $collectionName => $linkNodes) {
+            if (null !== $rootNode = $this->document->createElement($collectionName)) {
+                $this->currentNode->appendChild($rootNode);
+            }
+
+            foreach ($linkNodes as $nodeName => $links) {
+                $n = $this->document->createElement($nodeName);
+                $rootNode->appendChild($n);
+
+                foreach($links as $link) {
+                    foreach($link as $attribute => $value) {
+                        $n->setAttribute($attribute, $value);
+                    }
+                }
+            }
+        }
+    }
+
 }

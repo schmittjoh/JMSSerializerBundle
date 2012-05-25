@@ -109,6 +109,7 @@
         <!-- Serializer -->
         <service id="jms_serializer.serializer" class="%jms_serializer.serializer.class%" public="false">
             <argument type="service" id="jms_serializer.metadata_factory" />
+            <argument type="service" id="router" />
             <argument type="collection" /><!-- Serialization Visitors -->
             <argument type="collection" /><!-- Deserialization Visitors -->
             <call method="setContainer">

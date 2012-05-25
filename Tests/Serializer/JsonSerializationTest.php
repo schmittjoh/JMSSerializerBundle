@@ -68,6 +68,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['link'] = '{"links":[{"href":"\/p1\/prop1\/p2\/method1\/p3\/static1\/","rel":"http:\/\/kartoncek.si\/link1"}],"__links":[{"href":"http:\/\/example.com\/p1\/prop1\/p2\/method1\/p3\/42\/"}],"serialized":"Miha"}';
         }
 
         if (!isset($outputs[$key])) {

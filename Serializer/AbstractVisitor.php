@@ -40,4 +40,9 @@ abstract class AbstractVisitor implements VisitorInterface
     {
         return $data;
     }
+
+    public function visitLink($data, $type)
+    {
+        throw new \RuntimeException('Visitor doesn\'t support visiting link data.');
+    }
 }

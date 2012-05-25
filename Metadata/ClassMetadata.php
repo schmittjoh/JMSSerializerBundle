@@ -38,6 +38,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $preSerializeMethods = array();
     public $postSerializeMethods = array();
     public $postDeserializeMethods = array();
+    public $links = array();
     public $xmlRootName;
     public $accessorOrder;
     public $customOrder;
@@ -86,6 +87,11 @@ class ClassMetadata extends MergeableClassMetadata
         $this->postDeserializeMethods[] = $method;
     }
 
+    public function addLink(LinkMetaData $link)
+    {
+        $this->links[] = $link;
+    }
+
     public function merge(MergeableInterface $object)
     {
         if (!$object instanceof ClassMetadata) {
@@ -96,6 +102,7 @@ class ClassMetadata extends MergeableClassMetadata
         $this->preSerializeMethods = array_merge($this->preSerializeMethods, $object->preSerializeMethods);
         $this->postSerializeMethods = array_merge($this->postSerializeMethods, $object->postSerializeMethods);
         $this->postDeserializeMethods = array_merge($this->postDeserializeMethods, $object->postDeserializeMethods);
+        $this->links = array_merge($this->links, $object->links);
         $this->xmlRootName = $object->xmlRootName;
 
         if ($object->accessorOrder) {
@@ -114,6 +121,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
+            $this->links,
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
@@ -127,6 +135,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->preSerializeMethods,
             $this->postSerializeMethods,
             $this->postDeserializeMethods,
+            $this->links,
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,

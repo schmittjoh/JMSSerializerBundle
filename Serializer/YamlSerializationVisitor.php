@@ -209,4 +209,13 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
     {
         return $this->writer->getContent();
     }
+
+    public function visitLink($data, $type)
+    {
+        foreach ($data as $collectionName => $linkNodes) {
+            foreach ($linkNodes as $nodeName => $links) {
+                $this->visitArray(array($collectionName => $links), $type);
+            }
+        }
+    }
 }

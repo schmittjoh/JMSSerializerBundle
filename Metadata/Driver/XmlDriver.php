@@ -23,6 +23,7 @@ use JMS\SerializerBundle\Exception\XmlErrorException;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkMetadata;
 use Metadata\MethodMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
@@ -215,6 +216,10 @@ class XmlDriver extends AbstractFileDriver
                 default:
                     throw new RuntimeException(sprintf('The type "%s" is not supported.', $method->attributes()->name));
             }
+        }
+
+        foreach ($elem->xpath('./link') as $link) {
+            //TODO implement xml driver
         }
 
         return $metadata;
