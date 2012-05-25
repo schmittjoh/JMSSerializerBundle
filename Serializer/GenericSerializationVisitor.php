@@ -161,4 +161,14 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
     {
         $this->root = $data;
     }
+
+    public function visitLink($data, $type)
+    {
+        foreach ($data as $collectionName => $linkNodes) {
+            foreach ($linkNodes as $nodeName => $links) {
+                $newData = $this->visitArray(array($collectionName => $links), $type);
+                $this->data = array_merge($this->data, $newData);
+            }
+        }
+    }
 }

@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Symfony\Component\Routing\RouterInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
@@ -32,13 +33,18 @@ final class GraphNavigator
     private $exclusionStrategy;
     private $metadataFactory;
     private $visiting;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
-    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, RouterInterface $router, ExclusionStrategyInterface $exclusionStrategy = null)
     {
         $this->direction = $direction;
         $this->metadataFactory = $metadataFactory;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
+        $this->router = $router;
     }
 
     public function accept($data, $type, VisitorInterface $visitor)
@@ -121,6 +127,7 @@ final class GraphNavigator
             }
 
             $visitor->startVisitingObject($metadata, $data, $type);
+            $this->doVisitLinks($metadata, $visitor);
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
                 if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                     continue;
@@ -168,6 +175,42 @@ final class GraphNavigator
 
         foreach ($metadata->postDeserializeMethods as $method) {
             $method->invoke($object);
+        }
+    }
+
+    private function doVisitLinks(ClassMetadata $metadata, VisitorInterface $visitor)
+    {
+        if (count($metadata->links)) {
+            $links = array();
+            /** @var $linkData \JMS\SerializerBundle\Metadata\LinkMetadata */
+            foreach ($metadata->links as $linkData) {
+                $parameters = array();
+                foreach ($linkData->getRouteParameters() as $name => $param) {
+                    switch ($param['type']) {
+                    case 'property':
+                        //TODO get data from property on the object we are serializing
+                        $parameters[$name] = $param['value'];
+                        break;
+                    case 'method':
+                        //TODO call method on the object we are serializing
+                        $parameters[$name] = $param['value'];
+                        break;
+                    case 'static':
+                        $parameters[$name] = $param['value'];
+                        break;
+                    }
+                }
+
+                $data = array(
+                    'href'  => $this->router->generate($linkData->getRouteName(), $parameters, $linkData->generateAbsolute()),
+                );
+                if (null !== $linkData->getLinkRel()) {
+                    $data['rel'] = $linkData->getLinkRel();
+                }
+                $links[$linkData->getCollectionNodeName()][$linkData->getNodeName()][] = $data;
+            }
+
+            $visitor->visitLink($links, null);
         }
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <links>
+    <link href="/p1/prop1/p2/method1/p3/static1/" rel="http://kartoncek.si/link1"/>
+  </links>
+  <__links>
+    <_link href="http://example.com/p1/prop1/p2/method1/p3/42/"/>
+  </__links>
+  <serialized><![CDATA[Miha]]></serialized>
+</result>

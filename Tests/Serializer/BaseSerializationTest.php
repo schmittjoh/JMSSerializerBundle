@@ -61,6 +61,7 @@ use JMS\SerializerBundle\Tests\Fixtures\Order;
 use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
+use JMS\SerializerBundle\Tests\Fixtures\Link;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -70,6 +71,8 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    protected $router;
+
     public function testString()
     {
         $this->assertEquals($this->getContent('string'), $this->serialize('foo'));
@@ -208,6 +211,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertNull($this->getField($deserialized, 'id'));
             $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }
+    }
+
+    public function testLink()
+    {
+        $link = new Link(123, 'link rulez', 'Miha');
+        $this->assertEquals($this->getContent('link'), $this->serialize($link));
     }
 
     public function testPrice()
@@ -495,7 +504,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
         );
 
-        return new Serializer($factory, $serializationVisitors, $deserializationVisitors);
+        return new Serializer($factory, $this->router, $serializationVisitors, $deserializationVisitors);
     }
 
     protected function getSerializationHandlers()
@@ -548,6 +557,31 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $ref = new \ReflectionProperty($obj, $name);
         $ref->setAccessible(true);
         $ref->setValue($obj, $value);
+    }
+
+    public function setUp()
+    {
+        $doRoute = function ($name, $parameters, $absolute) {
+
+            $route = '/';
+            foreach ($parameters as $name => $value) {
+                $route .= sprintf('%s/%s/', $name, $value);
+            }
+
+            if ($absolute) {
+                return 'http://example.com'.$route;
+            }
+
+            return $route;
+        };
+
+        $this->router = $this->getMockBuilder('Symfony\Component\Routing\RouterInterface')
+            ->getMock();
+
+        $this->router
+            ->expects($this->any())
+            ->method('generate')
+            ->will($this->returnCallback($doRoute));
     }
 }
 

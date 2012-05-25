@@ -46,9 +46,11 @@ use JMS\SerializerBundle\Annotation\Since;
 use JMS\SerializerBundle\Annotation\ExclusionPolicy;
 use JMS\SerializerBundle\Annotation\Inline;
 use JMS\SerializerBundle\Annotation\ReadOnly;
+use JMS\SerializerBundle\Annotation\Link;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkMetadata;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -82,6 +84,15 @@ class AnnotationDriver implements DriverInterface
                 $classAccessType = $annot->type;
             } else if ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
+            } else if ($annot instanceof Link) {
+                $classMetadata->addLink(new LinkMetadata(
+                    $annot->getRouteName(),
+                    $annot->generateAbsolute(),
+                    $annot->getRouteParameters(),
+                    $annot->getLinkRel(),
+                    $annot->getCollectionNodeName(),
+                    $annot->getNodeName()
+                ));
             }
         }
 

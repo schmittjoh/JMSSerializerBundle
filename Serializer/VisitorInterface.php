@@ -38,4 +38,5 @@ interface VisitorInterface
     function setNavigator(GraphNavigator $navigator);
     function getNavigator();
     function getResult();
+    function visitLink($data, $type);
 }
