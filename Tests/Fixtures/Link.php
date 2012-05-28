@@ -37,6 +37,7 @@ use JMS\SerializerBundle\Annotation\Exclude;
  *      collectionNodeName="__links",
  *      nodeName="_link",
  *      route="r2",
+ *      rel="http://rels.kartoncek.si/rel2",
  *      parameters={
  *          {"name"="p1", "type"="property", "value"="prop1"},
  *          {"name"="p2", "type"="method", "value"="method1"},

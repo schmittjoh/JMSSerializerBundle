@@ -23,6 +23,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+use JMS\SerializerBundle\Exception\RuntimeException;
 
 final class GraphNavigator
 {
@@ -127,7 +128,7 @@ final class GraphNavigator
             }
 
             $visitor->startVisitingObject($metadata, $data, $type);
-            $this->doVisitLinks($metadata, $visitor);
+            $this->doVisitLinks($metadata, $data, $visitor);
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
                 if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                     continue;
@@ -178,7 +179,7 @@ final class GraphNavigator
         }
     }
 
-    private function doVisitLinks(ClassMetadata $metadata, VisitorInterface $visitor)
+    private function doVisitLinks(ClassMetadata $metadata, $data, VisitorInterface $visitor)
     {
         if (count($metadata->links)) {
             $links = array();
@@ -188,12 +189,27 @@ final class GraphNavigator
                 foreach ($linkData->getRouteParameters() as $name => $param) {
                     switch ($param['type']) {
                     case 'property':
-                        //TODO get data from property on the object we are serializing
-                        $parameters[$name] = $param['value'];
+                        if (is_object($data)) {
+                            if (property_exists($data, $param['value'])) {
+                                $parameters[$name] = $data->{$param['value']};
+                            } else {
+                                throw new RuntimeException(sprintf('%s on %s is not a property.', $param['value'], get_class($data)));
+                            }
+                        } elseif (is_array($data)) {
+                            if (isset($data[$param['value']])) {
+                                $parameters[$name] = $data[$param['value']];
+                            } else {
+                                throw new RuntimeException(sprintf('%s is not an array key.', $param['value']));
+                            }
+                        }
                         break;
                     case 'method':
-                        //TODO call method on the object we are serializing
-                        $parameters[$name] = $param['value'];
+                        if (!is_object($data)) {
+                            throw new RuntimeException(sprintf('Cannot call a method on nonobject.'));
+                        } elseif  (!is_callable(array($data, $param['value']))) {
+                            throw new RuntimeException(sprintf('%s on %s is not a callable.', $param['value'], get_class($data)));
+                        }
+                        $parameters[$name] = call_user_func(array($data, $param['value']));
                         break;
                     case 'static':
                         $parameters[$name] = $param['value'];
@@ -201,13 +217,13 @@ final class GraphNavigator
                     }
                 }
 
-                $data = array(
+                $link = array(
                     'href'  => $this->router->generate($linkData->getRouteName(), $parameters, $linkData->generateAbsolute()),
                 );
                 if (null !== $linkData->getLinkRel()) {
-                    $data['rel'] = $linkData->getLinkRel();
+                    $link['rel'] = $linkData->getLinkRel();
                 }
-                $links[$linkData->getCollectionNodeName()][$linkData->getNodeName()][] = $data;
+                $links[$linkData->getCollectionNodeName()][$linkData->getNodeName()][] = $link;
             }
 
             $visitor->visitLink($links, null);
