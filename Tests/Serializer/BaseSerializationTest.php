@@ -62,6 +62,7 @@ use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Fixtures\Link;
+use JMS\SerializerBundle\Serializer\HalJsonSerializationVisitor;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -496,6 +497,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
         $serializationVisitors = array(
             'json' => new JsonSerializationVisitor($namingStrategy, $customSerializationHandlers),
+            'haljson' => new HalJsonSerializationVisitor($namingStrategy, $customSerializationHandlers),
             'xml'  => new XmlSerializationVisitor($namingStrategy, $customSerializationHandlers),
             'yml'  => new YamlSerializationVisitor($namingStrategy, $customSerializationHandlers),
         );
