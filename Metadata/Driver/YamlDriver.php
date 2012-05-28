@@ -24,6 +24,7 @@ use Metadata\MethodMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
+use JMS\SerializerBundle\Metadata\LinkMetadata;
 use Symfony\Component\Yaml\Yaml;
 use Metadata\Driver\AbstractFileDriver;
 
@@ -193,8 +194,51 @@ class YamlDriver extends AbstractFileDriver
             }
         }
 
+
         if (isset($config['links'])) {
-            //TODO implement xml driver
+            $cConfig = $config['links'];
+
+            foreach ($cConfig as $link) {
+                if (!isset($link['route'])) {
+                    throw new RuntimeException('The "route" attribute must be set.');
+                }
+
+                $parameters = null;
+                if (isset($link['parameters'])) {
+                    $i = 0;
+                    $parameters = array();
+                    foreach ($link['parameters'] as $value) {
+                        $i++;
+                        if (!isset($value['name'])) {
+                            throw new RuntimeException(sprintf('The "parameters[%s].name" attribute must be set.', $i));
+                        }
+                        if (!isset($value['type'])) {
+                            $value['type'] = LinkMetadata::$DEFAULT_TYPE;
+                        }
+                        if (!isset($value['value'])) {
+                            throw new RuntimeException(sprintf('The "parameters[%s].value" attribute must be set.', $i));
+                        }
+
+                        if (!in_array($value['type'], LinkMetadata::$TYPES)) {
+                            throw new RuntimeException(sprintf('The %s in "parameters[%s].type" is of wrong type. Valid types are %s.', $value['type'], $i, implode(',', LinkMetadata::$TYPES)));
+                        }
+
+                        $parameters[$value['name']] = array(
+                            'type' => $value['type'],
+                            'value' => $value['value']
+                        );
+                    }
+                }
+
+                $metadata->addLink(new LinkMetadata(
+                    $link['route'],
+                    isset($link['absolute']) ? (Boolean) $link['absolute'] : true,
+                    $parameters,
+                    isset($link['rel']) ? $link['rel'] : null,
+                    isset($link['collectionNodeName']) ? $link['collectionNodeName'] : null,
+                    isset($link['nodeName']) ? $link['nodeName'] : null
+                ));
+            }
         }
 
         return $metadata;
@@ -210,7 +254,7 @@ class YamlDriver extends AbstractFileDriver
         if (is_string($config)) {
             $config = array($config);
         } else if (!is_array($config)) {
-            throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($cConfig['pre_serialize'])));
+            throw new RuntimeException(sprintf('callback methods expects a string, or an array of strings that represent method names, but got %s.', json_encode($config['pre_serialize'])));
         }
 
         $methods = array();

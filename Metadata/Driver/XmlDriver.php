@@ -221,7 +221,44 @@ class XmlDriver extends AbstractFileDriver
         }
 
         foreach ($elem->xpath('./link') as $link) {
-            //TODO implement xml driver
+            if (!isset($link->attributes()->route)) {
+                throw new RuntimeException('The "route" attribute must be set.');
+            }
+
+            $i = 0;
+            $parameters = array();
+            foreach ($link->xpath('./parameter') as $value) {
+                $i++;
+                if (!isset($value->attributes()->name)) {
+                    throw new RuntimeException(sprintf('The "parameters[%s].name" attribute must be set.', $i));
+                }
+                if (!isset($value->attributes()->type)) {
+                    $type = LinkMetadata::$DEFAULT_TYPE;
+                } else {
+                    $type = (string) $value->attributes()->type;
+                }
+                if (!isset($value->attributes()->value)) {
+                    throw new RuntimeException(sprintf('The "parameters[%s].value" attribute must be set.', $i));
+                }
+
+                if (!in_array($type, LinkMetadata::$TYPES)) {
+                    throw new RuntimeException(sprintf('The %s in "parameters[%s].type" is of wrong type. Valid types are %s.', $type, $i, implode(',', LinkMetadata::$TYPES)));
+                }
+
+                $parameters[(string)$value->attributes()->name] = array(
+                    'type' => $type,
+                    'value' => (string)$value->attributes()->value,
+                );
+            }
+
+            $metadata->addLink(new LinkMetadata(
+                (string)$link->attributes()->route,
+                isset($link->attributes()->absolute) ? 'true' === (string) $link->attributes()->absolute : true,
+                count($parameters) > 0 ? $parameters : null,
+                isset($link->attributes()->rel) ? (string) $link->attributes()->rel : null,
+                isset($link->attributes()->collectionNodeName) ? (string) $link->attributes()->collectionNodeName : null,
+                isset($link->attributes()->nodeName) ? (string) $link->attributes()->nodeName : null
+            ));
         }
 
         return $metadata;
