@@ -27,7 +27,7 @@ $l = new LinkMetadata(
          'p2' => array('type' => 'method', 'value' => 'method1'),
          'p3' => array('type' => 'static', 'value' => '42')
     ),
-    null,
+    'http://rels.kartoncek.si/rel2',
     '__links',
     '_link'
 );
