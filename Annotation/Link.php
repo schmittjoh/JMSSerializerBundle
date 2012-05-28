@@ -83,7 +83,7 @@ final class Link
                 }
 
                 if (!in_array($value['type'], LinkMetadata::$TYPES)) {
-                    throw new InvalidArgumentException(sprintf('The %s in "parameters[%s].type" is of wrong type. Valid types are %s.', $value['type'], $i, implode(',', self::$TYPES)));
+                    throw new InvalidArgumentException(sprintf('The %s in "parameters[%s].type" is of wrong type. Valid types are %s.', $value['type'], $i, implode(',', LinkMetadata::$TYPES)));
                 }
 
                 $this->parameters[$value['name']] = array(

@@ -1,0 +1,18 @@
+JMS\SerializerBundle\Tests\Fixtures\Link:
+    links:
+        -
+            absolute: false
+            route:    r1
+            rel:      "http://rels.kartoncek.si/rel1"
+            parameters:
+                - {name: "p1", type: "property", value: "prop1"}
+                - {name: "p2", type: "method", value: "method1"}
+                - {name: "p3", type: "static", value: "static1"}
+        -
+            collectionNodeName: __links
+            nodeName:           _link
+            route:              r2
+            parameters:
+                - {name: "p1", type: "property", value: "prop1"}
+                - {name: "p2", type: "method", value: "method1"}
+                - {name: "p3", type: "static", value: "42"}

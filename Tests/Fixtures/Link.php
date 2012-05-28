@@ -25,7 +25,7 @@ use JMS\SerializerBundle\Annotation\Exclude;
  * @ALink(
  *      absolute=false,
  *      route="r1",
- *      rel="http://kartoncek.si/link1",
+ *      rel="http://rels.kartoncek.si/rel1",
  *      parameters={
  *          {"name"="p1", "type"="property", "value"="prop1"},
  *          {"name"="p2", "type"="method", "value"="method1"},
