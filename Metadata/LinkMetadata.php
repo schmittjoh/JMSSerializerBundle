@@ -41,7 +41,7 @@ class LinkMetadata implements \Serializable
     /** @var string */
     private $nodeName;
 
-    public function __construct($route, $absolute, $parameters, $rel, $collectionNodeName, $nodeName)
+    public function __construct($route, $absolute, array $parameters, $rel, $collectionNodeName, $nodeName)
     {
         $this->route = $route;
         $this->absolute = $absolute;

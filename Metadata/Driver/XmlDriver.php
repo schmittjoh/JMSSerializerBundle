@@ -252,7 +252,7 @@ class XmlDriver extends AbstractFileDriver
             $metadata->addLink(new LinkMetadata(
                 (string)$link->attributes()->route,
                 isset($link->attributes()->absolute) ? 'true' === (string) $link->attributes()->absolute : true,
-                count($parameters) > 0 ? $parameters : null,
+                count($parameters) > 0 ? $parameters : array(),
                 isset($link->attributes()->rel) ? (string) $link->attributes()->rel : null,
                 isset($link->attributes()->collectionNodeName) ? (string) $link->attributes()->collectionNodeName : null,
                 isset($link->attributes()->nodeName) ? (string) $link->attributes()->nodeName : null
