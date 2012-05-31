@@ -56,7 +56,7 @@ class LinkMetadata implements \Serializable
      */
     public function serialize()
     {
-        serialize(array(
+        return serialize(array(
             $this->route,
             $this->absolute,
             $this->parameters,

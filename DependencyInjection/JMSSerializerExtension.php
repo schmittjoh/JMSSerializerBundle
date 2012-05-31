@@ -87,7 +87,7 @@ class JMSSerializerExtension extends Extension
             }
         }
 
-        foreach (array('json', 'xml', 'yaml') as $format) {
+        foreach (array('json', 'xml', 'yaml', 'haljson') as $format) {
             $container
                 ->getDefinition('jms_serializer.'.$format.'_serialization_visitor')
                 ->replaceArgument(1, $serializationHandlers)
