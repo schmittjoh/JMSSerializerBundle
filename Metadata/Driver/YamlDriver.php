@@ -202,6 +202,9 @@ class YamlDriver extends AbstractFileDriver
                 if (!isset($link['route'])) {
                     throw new RuntimeException('The "route" attribute must be set.');
                 }
+                if (!isset($link['rel'])) {
+                    throw new RuntimeException('The "rel" attribute must be set.');
+                }
 
                 $parameters = array();
                 if (isset($link['parameters'])) {

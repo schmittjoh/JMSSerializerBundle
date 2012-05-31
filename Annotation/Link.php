@@ -50,14 +50,15 @@ final class Link
         }
         $this->route = $values['route'];
 
+        if (!isset($values['rel'])) {
+            throw new InvalidArgumentException('The "rel" attribute must be set.');
+        }
+        $this->rel = $values['rel'];
+
         if (isset($values['absolute'])) {
             $this->absolute = $values['absolute'];
         } else {
             $this->absolute = true;
-        }
-
-        if (isset($values['rel'])) {
-            $this->rel = $values['rel'];
         }
 
         if (isset($values['collectionNodeName'])) {

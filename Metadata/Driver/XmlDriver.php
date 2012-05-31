@@ -224,10 +224,14 @@ class XmlDriver extends AbstractFileDriver
             if (!isset($link->attributes()->route)) {
                 throw new RuntimeException('The "route" attribute must be set.');
             }
+            if (!isset($link->attributes()->rel)) {
+                throw new RuntimeException('The "rel" attribute must be set.');
+            }
 
             $i = 0;
             $parameters = array();
             foreach ($link->xpath('./parameter') as $value) {
+
                 $i++;
                 if (!isset($value->attributes()->name)) {
                     throw new RuntimeException(sprintf('The "parameters[%s].name" attribute must be set.', $i));
