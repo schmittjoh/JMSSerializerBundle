@@ -24,6 +24,7 @@ use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Form\Util\PropertyPath;
 
 final class GraphNavigator
 {
@@ -190,11 +191,8 @@ final class GraphNavigator
                     switch ($param['type']) {
                     case 'property':
                         if (is_object($data)) {
-                            if (property_exists($data, $param['value'])) {
-                                $parameters[$name] = $data->{$param['value']};
-                            } else {
-                                throw new RuntimeException(sprintf('%s on %s is not a property.', $param['value'], get_class($data)));
-                            }
+                            $pp = new PropertyPath($param['value']);
+                            $parameters[$name] = $pp->getValue($data);
                         } elseif (is_array($data)) {
                             if (isset($data[$param['value']])) {
                                 $parameters[$name] = $data[$param['value']];
