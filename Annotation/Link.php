@@ -67,6 +67,7 @@ final class Link
         if (isset($values['nodeName'])) {
             $this->nodeName = $values['nodeName'];
         }
+        $this->parameters = array();
 
         if (isset($values['parameters'])) {
             $i = 0;
