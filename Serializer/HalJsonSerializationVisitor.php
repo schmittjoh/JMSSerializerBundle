@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 
 class HalJsonSerializationVisitor extends JsonSerializationVisitor
@@ -25,7 +26,7 @@ class HalJsonSerializationVisitor extends JsonSerializationVisitor
 
     public function visitLink($data, $type)
     {
-        $final = array('__links' => array());
+        $final = array('_links' => array());
 
         foreach ($data as $linkNodes) {
             foreach ($linkNodes as $links) {
@@ -33,7 +34,7 @@ class HalJsonSerializationVisitor extends JsonSerializationVisitor
                     $rel = $link['rel'];
                     unset($link['rel']);
                     $newData = parent::visitArray($link, $type);
-                    $final['__links'][$rel] = $newData;
+                    $final['_links'][$rel] = $newData;
                 }
             }
         }

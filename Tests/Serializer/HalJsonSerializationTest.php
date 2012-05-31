@@ -64,7 +64,7 @@ class HalJsonSerializationTest extends BaseSerializationTest
             $outputs['groups_all'] = '{"foo":"foo","foobar":"foobar","bar":"bar","none":"none"}';
             $outputs['groups_foo'] = '{"foo":"foo","foobar":"foobar"}';
             $outputs['groups_foobar'] = '{"foo":"foo","foobar":"foobar","bar":"bar"}';
-            $outputs['link'] = '{"__links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/"}},"serialized":"Miha"}';
+            $outputs['link'] = '{"_links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/"}},"serialized":"Miha"}';
         }
 
         if (!isset($outputs[$key])) {
