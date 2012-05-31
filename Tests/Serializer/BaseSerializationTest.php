@@ -58,6 +58,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
@@ -69,6 +70,7 @@ use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\Serializer;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -439,6 +441,23 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
     }
 
+    public function testVirtualProperty() {
+        $this->assertEquals($this->getContent('virtual_properties'), $this->serialize(new ObjectWithVirtualProperties()));
+    }
+
+    public function testVirtualVersions() {
+        $serializer = $this->getSerializer();
+        
+        $serializer->setVersion(2);
+        $this->assertEquals($this->getContent('virtual_properties_low'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        
+        $serializer->setVersion(7);
+        $this->assertEquals($this->getContent('virtual_properties_all'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+
+        $serializer->setVersion(9);
+        $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+    }
+    
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
