@@ -296,4 +296,9 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     {
         return $this->result;
     }
+
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
 }
