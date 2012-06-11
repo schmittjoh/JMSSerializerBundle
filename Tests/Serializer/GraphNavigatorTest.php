@@ -12,6 +12,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
     private $metadataFactory;
     private $navigator;
     private $visitor;
+    private $router;
 
     /**
      * @expectedException \RuntimeException
@@ -59,10 +60,32 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $doRoute = function ($name, $parameters, $absolute) {
+
+            $route = '/';
+            foreach ($parameters as $name => $value) {
+                $route .= sprintf('%s/%s/', $name, $value);
+            }
+
+            if ($absolute) {
+                return 'http://example.com'.$route;
+            }
+
+            return $route;
+        };
+
+        $this->router = $this->getMockBuilder('Symfony\Component\Routing\RouterInterface')
+            ->getMock();
+
+        $this->router
+            ->expects($this->any())
+            ->method('generate')
+            ->will($this->returnCallback($doRoute));
+
         $this->visitor = $this->getMock('JMS\SerializerBundle\Serializer\VisitorInterface');
 
         $this->metadataFactory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $this->router);
     }
 }
 
