@@ -180,7 +180,7 @@ final class GraphNavigator
         }
     }
 
-    private function doVisitLinks(ClassMetadata $metadata, $data, VisitorInterface $visitor)
+    public function doVisitLinks(ClassMetadata $metadata, $data, VisitorInterface $visitor)
     {
         if (count($metadata->links)) {
             $links = array();
