@@ -122,7 +122,7 @@ final class GraphNavigator
 
             // check if traversable
             if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
-                $rs = $visitor->visitTraversable($data, $type);
+                $rs = $visitor->visitTraversable($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
 
                 return $rs;
