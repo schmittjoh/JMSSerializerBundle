@@ -24,6 +24,8 @@ use JMS\SerializerBundle\Metadata\PropertyMetadata;
 class HalJsonSerializationVisitor extends JsonSerializationVisitor
 {
 
+    protected $defaultRootName = 'items';
+
     public function visitLink($data, $type)
     {
         $final = array('_links' => array());
@@ -63,4 +65,14 @@ class HalJsonSerializationVisitor extends JsonSerializationVisitor
             }
         }
     }
+
+    public function visitTraversable(ClassMetadata $metadata, $data, $type)
+    {
+        $rs = parent::visitTraversable($metadata, $data, $type);
+        $node = $metadata->xmlRootName ?: $this->defaultRootName;
+        $this->root = array('_embedded' => array($node => $this->root));
+
+        return array('_embedded' => array($node => $rs));
+    }
+
 }

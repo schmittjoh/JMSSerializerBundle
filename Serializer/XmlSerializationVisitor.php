@@ -132,7 +132,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable(ClassMetadata $metadata, $data, $type)
     {
         return $this->visitArray($data, $type);
     }
