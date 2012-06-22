@@ -105,7 +105,9 @@ class FormErrorHandler implements SerializationHandlerInterface
                     $visitor->document = $visitor->createDocument(null, null, true);
                 }
 
-                return $visitor->document->createCDATASection($message);
+                $needsCDATA =preg_match('/[<>&]/', $message);
+
+                return $needsCDATA ? $visitor->document->createCDATASection($message) : $visitor->document->createTextNode($message);
             }
 
             return $message;

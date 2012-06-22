@@ -2,28 +2,28 @@
 <log>
   <author_list>
     <entry _key="0">
-      <full_name><![CDATA[Johannes Schmitt]]></full_name>
+      <full_name>Johannes Schmitt</full_name>
     </entry>
     <entry _key="1">
-      <full_name><![CDATA[John Doe]]></full_name>
+      <full_name>John Doe</full_name>
     </entry>
   </author_list>
   <comment>
     <author>
-      <full_name><![CDATA[Foo Bar]]></full_name>
+      <full_name>Foo Bar</full_name>
     </author>
-    <text><![CDATA[foo]]></text>
+    <text>foo</text>
   </comment>
   <comment>
     <author>
-      <full_name><![CDATA[Foo Bar]]></full_name>
+      <full_name>Foo Bar</full_name>
     </author>
-    <text><![CDATA[bar]]></text>
+    <text>bar</text>
   </comment>
   <comment>
     <author>
-      <full_name><![CDATA[Foo Bar]]></full_name>
+      <full_name>Foo Bar</full_name>
     </author>
-    <text><![CDATA[baz]]></text>
+    <text>baz</text>
   </comment>
 </log>

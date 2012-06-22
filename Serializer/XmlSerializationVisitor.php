@@ -72,20 +72,16 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
     public function visitString($data, $type)
     {
-        if (preg_match('/[<>&]/', $data)) {
-            $child = $this->document->createCDATASection($data);
-        } else {
-            $child = $this->document->createTextNode($data);
-        }
+        $needsCDATA = preg_match('/[<>&]/', $data);
 
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);
-            $this->currentNode->appendChild($child);
+            $this->currentNode->appendChild($needsCDATA ? $this->document->createCDATASection($data) : $this->document->createTextNode($data));
 
             return;
         }
 
-        return $child;
+        return $needsCDATA ? $this->document->createCDATASection($data) : $this->document->createTextNode($data);
     }
 
     public function visitBoolean($data, $type)

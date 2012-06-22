@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <foo>foo</foo>
-  <moo>bar</moo>
+  <foo><![CDATA[Foo<Bar>]]></foo>
+  <moo><![CDATA[Foo & Bar]]></moo>
   <camel_case>boo</camel_case>
 </result>
