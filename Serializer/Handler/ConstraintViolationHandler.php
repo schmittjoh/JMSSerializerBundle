@@ -58,7 +58,8 @@ class ConstraintViolationHandler implements SerializationHandlerInterface
                 $violationNode->setAttribute('property_path', $data->getPropertyPath());
                 $violationNode->appendChild($messageNode = $visitor->document->createElement('message'));
 
-                $messageNode->appendChild($visitor->document->createCDATASection($data->getMessage()));
+                $child = preg_match('/[<>&]/', $data->getMessage()) ? $visitor->document->createCDATASection($data->getMessage()) : $visitor->document->createTextNode($data->getMessage());
+                $messageNode->appendChild($child);
 
                 return;
             } else if ($visitor instanceof GenericSerializationVisitor) {

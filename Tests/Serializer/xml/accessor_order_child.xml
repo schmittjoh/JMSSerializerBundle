@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <c><![CDATA[c]]></c>
-  <d><![CDATA[d]]></d>
-  <a><![CDATA[a]]></a>
-  <b><![CDATA[b]]></b>
+  <c>c</c>
+  <d>d</d>
+  <a>a</a>
+  <b>b</b>
 </result>

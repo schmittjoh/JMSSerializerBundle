@@ -25,6 +25,7 @@ use JMS\SerializerBundle\Annotation\XmlValue;
 use JMS\SerializerBundle\Tests\Fixtures\PersonCollection;
 use JMS\SerializerBundle\Tests\Fixtures\PersonLocation;
 use JMS\SerializerBundle\Tests\Fixtures\Person;
+use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualXmlProperties;
 
 class XmlSerializationTest extends BaseSerializationTest
@@ -36,6 +37,13 @@ class XmlSerializationTest extends BaseSerializationTest
     {
         $obj = new InvalidUsageOfXmlValue();
         $this->serialize($obj);
+    }
+
+    public function testStringContainsXMLControlCharacters()
+    {
+        $obj = new SimpleObject('Foo<Bar>', 'Foo & Bar');
+
+        $this->assertEquals($this->getContent('control_characters'), $this->serialize($obj));
     }
 
     public function testPropertyIsObjectWithAttributeAndValue()
