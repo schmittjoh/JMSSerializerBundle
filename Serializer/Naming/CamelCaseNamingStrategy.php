@@ -50,9 +50,8 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
             return strtolower($name);
         }
 
-        if ( $this->lowerCamelCase )
-        {
-            return lcfirst( $name );
+        if ($this->lowerCamelCase) {
+            return lcfirst($name);
         }
         
         return ucfirst($name);
