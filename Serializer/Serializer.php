@@ -26,6 +26,7 @@ use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
+use JMS\SerializerBundle\Serializer\Exclusion\ChainExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
@@ -52,6 +53,7 @@ class Serializer implements SerializerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
         $this->serializeNull = false;
+        $this->exclusionStrategy = $this->createDefaultExclusionStrategy();
     }
 
     /**
@@ -67,18 +69,34 @@ class Serializer implements SerializerInterface
         $this->exclusionStrategy = $exclusionStrategy;
     }
 
+    public function addExclusionStrategy(ExclusionStrategyInterface $strategy)
+    {
+        if ($this->exclusionStrategy instanceof ChainExclusionStrategy) {
+            $this->exclusionStrategy->addExclusionStrategy($strategy);
+        } elseif ($this->exclusionStrategy) {
+            $this->exclusionStrategy = new ChainExclusionStrategy(array($this->exclusionStrategy, $strategy));
+        } else {
+            $this->exclusionStrategy = $strategy;
+        }
+    }
+
     /**
      * @param integer $version
      */
     public function setVersion($version)
     {
         if (null === $version) {
-            $this->exclusionStrategy = null;
+            if ($this->exclusionStrategy instanceof ChainExclusionStrategy) {
+                $this->exclusionStrategy->removeExclusionStrategy('JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy');
+            } else {
+                $this->exclusionStrategy = null;
+            }
 
             return;
         }
 
-        $this->exclusionStrategy = new VersionExclusionStrategy($version);
+        $strategy = new VersionExclusionStrategy($version);
+        $this->addExclusionStrategy($strategy);
     }
 
     /**
@@ -86,13 +104,8 @@ class Serializer implements SerializerInterface
      */
     public function setGroups($groups)
     {
-        if ( ! $groups) {
-            $this->exclusionStrategy = null;
-
-            return;
-        }
-
-        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
+        $strategy = new GroupsExclusionStrategy((array) $groups);
+        $this->addExclusionStrategy($strategy);
     }
 
     public function serialize($data, $format)
@@ -141,5 +154,11 @@ class Serializer implements SerializerInterface
         }
 
         return $this->serializationVisitors[$format];
+    }
+
+    protected function createDefaultExclusionStrategy()
+    {
+        // enable filtering of the Default group by default
+        return new GroupsExclusionStrategy(array());
     }
 }

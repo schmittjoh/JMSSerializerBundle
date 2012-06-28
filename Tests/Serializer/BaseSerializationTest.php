@@ -49,6 +49,7 @@ use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderChild;
 use JMS\SerializerBundle\Tests\Fixtures\AccessorOrderParent;
 use JMS\SerializerBundle\Tests\Fixtures\Author;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
+use JMS\SerializerBundle\Tests\Fixtures\ChainObject;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
@@ -231,10 +232,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
         $post->addComment($comment = new Comment($author, 'foo'));
 
-        $this->assertEquals($this->getContent('blog_post'), $this->serialize($post));
+        $serializer = $this->serializer;
+        $serializer->setGroups(array('Default', 'post', 'comments'));
+        $this->assertEquals($this->getContent('blog_post'), $serializer->serialize($post, $this->getFormat()));
 
         if ($this->hasDeserializer()) {
-            $deserialized = $this->deserialize($this->getContent('blog_post'), get_class($post));
+            $deserialized = $serializer->deserialize($this->getContent('blog_post'), get_class($post), $this->getFormat());
             $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
             $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
             $this->assertAttributeSame(false, 'published', $deserialized);
@@ -479,16 +482,42 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('groups_foo'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
         $this->serializer->setGroups(array("foo", "bar"));
-        $this->assertEquals($this->getContent('groups_foobar'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals($this->getContent('groups_foo_bar'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
         $this->serializer->setGroups(null);
-        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
         $this->serializer->setGroups(array());
-        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
 
         $this->serializer->setGroups(array('Default'));
         $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+    }
+
+    public function testChainExclusion()
+    {
+        $serializer =  $this->serializer;
+
+        $chainObject = new ChainObject();
+
+        $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
+
+        $serializer->setGroups(array());
+        $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
+
+        $serializer->setGroups(array('Default'));
+        $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
+
+        $serializer->setGroups(array('Default'));
+        $serializer->setVersion(1);
+        $this->assertEquals($this->getContent('chain_default_v1'), $serializer->serialize($chainObject, $this->getFormat()));
+
+        $serializer->setGroups(array('bar'));
+        $this->assertEquals($this->getContent('chain_bar_v1'), $serializer->serialize($chainObject, $this->getFormat()));
+
+        $serializer->setGroups(array('Default'));
+        $serializer->setVersion(null);
+        $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
     }
 
     public function testVirtualProperty()
