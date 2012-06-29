@@ -27,6 +27,8 @@ use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\SerializerBundle\Metadata\Driver\AnnotationDriver;
+use JMS\SerializerBundle\Serializer\SerializerBuilder;
+use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
@@ -232,8 +234,8 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
         $post->addComment($comment = new Comment($author, 'foo'));
 
-        $serializer = $this->serializer;
-        $serializer->setGroups(array('Default', 'post', 'comments'));
+        $builder = $this->getSerializerBuilder();
+        $serializer = $builder->setGroups(array('Default', 'post', 'comments'))->getSerializer();
         $this->assertEquals($this->getContent('blog_post'), $serializer->serialize($post, $this->getFormat()));
 
         if ($this->hasDeserializer()) {
@@ -474,49 +476,57 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testGroups()
     {
+        $builder =  $this->getSerializerBuilder();
+        $serializer = $builder->getSerializer();
+
         $groupsObject = new GroupsObject();
 
-        $this->assertEquals($this->getContent('groups_all'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $this->assertEquals($this->getContent('groups_all'), $serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(array("foo"));
-        $this->assertEquals($this->getContent('groups_foo'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $serializer = $builder->setGroups(array("foo"))->getSerializer();
+        $this->assertEquals($this->getContent('groups_foo'), $serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(array("foo", "bar"));
-        $this->assertEquals($this->getContent('groups_foo_bar'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $serializer = $builder->setGroups(array("foo", "bar"))->getSerializer();
+        $this->assertEquals($this->getContent('groups_foo_bar'), $serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(null);
-        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $serializer = $builder->setGroups(null)->getSerializer();
+        $this->assertEquals($this->getContent('groups_default'), $serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(array());
-        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $serializer = $builder->setGroups(array())->getSerializer();
+        $this->assertEquals($this->getContent('groups_default'), $serializer->serialize($groupsObject, $this->getFormat()));
 
-        $this->serializer->setGroups(array('Default'));
-        $this->assertEquals($this->getContent('groups_default'), $this->serializer->serialize($groupsObject, $this->getFormat()));
+        $serializer = $builder->setGroups(array('Default'))->getSerializer();
+        $this->assertEquals($this->getContent('groups_default'), $serializer->serialize($groupsObject, $this->getFormat()));
     }
 
     public function testChainExclusion()
     {
-        $serializer =  $this->serializer;
+        $builder =  $this->getSerializerBuilder();
+        $serializer = $builder->getSerializer();
 
         $chainObject = new ChainObject();
 
         $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
 
-        $serializer->setGroups(array());
+        $serializer = $builder->setGroups(array())->getSerializer();
         $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
 
-        $serializer->setGroups(array('Default'));
+        $serializer = $builder->setGroups(array('Default'))->getSerializer();
         $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
 
-        $serializer->setGroups(array('Default'));
-        $serializer->setVersion(1);
+        $serializer = $builder
+            ->setGroups(array('Default'))
+            ->setVersion(1)
+            ->getSerializer();
         $this->assertEquals($this->getContent('chain_default_v1'), $serializer->serialize($chainObject, $this->getFormat()));
 
-        $serializer->setGroups(array('bar'));
+        $serializer = $builder->setGroups(array('bar'))->getSerializer();
         $this->assertEquals($this->getContent('chain_bar_v1'), $serializer->serialize($chainObject, $this->getFormat()));
 
-        $serializer->setGroups(array('Default'));
-        $serializer->setVersion(null);
+        $serializer = $builder
+            ->setGroups(array('Default'))
+            ->setVersion(null)
+            ->getSerializer();
         $this->assertEquals($this->getContent('chain_default'), $serializer->serialize($chainObject, $this->getFormat()));
     }
 
@@ -527,14 +537,20 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testVirtualVersions()
     {
-        $this->serializer->setVersion(2);
-        $this->assertEquals($this->getContent('virtual_properties_low'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $builder = $this->getSerializerBuilder();
+        $serializer = $builder->getSerializer();
 
-        $this->serializer->setVersion(7);
-        $this->assertEquals($this->getContent('virtual_properties_all'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $serializer = $builder
+            ->setGroups('versions')
+            ->setVersion(2)
+            ->getSerializer();
+        $this->assertEquals($this->getContent('virtual_properties_low'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
 
-        $this->serializer->setVersion(9);
-        $this->assertEquals($this->getContent('virtual_properties_high'), $this->serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+        $serializer = $builder->setVersion(7)->getSerializer();
+        $this->assertEquals($this->getContent('virtual_properties_all'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
+
+        $serializer = $builder->setVersion(9)->getSerializer();
+        $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
     public function testCustomHandler()
@@ -619,6 +635,12 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->dispatcher = new EventDispatcher();
         $this->dispatcher->addSubscriber(new DoctrineProxySubscriber());
 
+        $translatorMock = $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface');
+        $translatorMock
+            ->expects($this->any())
+            ->method('trans')
+            ->will($this->returnArgument(0));
+
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = array(
@@ -632,6 +654,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
+    }
+
+    protected function getSerializerBuilder()
+    {
+        $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
+        $objectConstructor = new UnserializeObjectConstructor();
+
+        return new SerializerBuilder($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors, null, new GroupsExclusionStrategy(array()));
     }
 
     private function getField($obj, $name)

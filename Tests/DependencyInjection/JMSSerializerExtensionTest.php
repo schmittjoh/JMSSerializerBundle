@@ -64,17 +64,18 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject  = new VersionedObject('foo', 'bar');
-        $serializer = $container->get('serializer');
+        $builder = $container->get('serializer_builder');
+        $serializer = $builder->getSerializer();
 
         // test that all components have been wired correctly
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
         $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'json'), get_class($simpleObject), 'json'));
         $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'xml'), get_class($simpleObject), 'xml'));
 
-        $serializer->setVersion('0.0.1');
+        $serializer = $builder->setVersion('0.0.1')->getSerializer();
         $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json'));
 
-        $serializer->setVersion('1.1.1');
+        $serializer = $builder->setVersion('1.1.1')->getSerializer();
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
     }
 

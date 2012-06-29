@@ -19,12 +19,13 @@
 namespace JMS\SerializerBundle\Serializer;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
-class LazyLoadingSerializer extends Serializer
+class LazyLoadingSerializer extends Serializer implements ContainerAwareInterface
 {
     private $container;
 
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
     }
