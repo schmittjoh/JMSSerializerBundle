@@ -67,8 +67,7 @@ class XmlDriver extends AbstractFileDriver
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
             }
 
-            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string) $method->attributes()->method );
-
+            $virtualPropertyMetadata = new VirtualPropertyMetadata($name, (string) $method->attributes()->method);
             $propertiesMetadata[] = $virtualPropertyMetadata;
             $propertiesNodes[] = $method;
         }
@@ -99,6 +98,11 @@ class XmlDriver extends AbstractFileDriver
 
                     if (null !== $expose = $pElem->attributes()->expose) {
                         $isExpose = 'true' === strtolower($expose);
+                    }
+
+                    // always expose virtual properties
+                    if ($pElem->attributes()->{'method'}) {
+                        $isExpose = true;
                     }
 
                     if (null !== $version = $pElem->attributes()->{'since-version'}) {

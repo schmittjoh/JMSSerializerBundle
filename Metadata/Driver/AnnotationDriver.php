@@ -135,7 +135,7 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->untilVersion = $annot->version;
                     } else if ($annot instanceof SerializedName) {
                         $propertyMetadata->serializedName = $annot->name;
-                    } else if ($annot instanceof Expose) {
+                    } else if ($annot instanceof Expose || $annot instanceof VirtualProperty) {
                         $isExpose = true;
                     } else if ($annot instanceof Exclude) {
                         $isExclude = true;

@@ -55,16 +55,13 @@ class YamlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $config['xml_root_name'];
         }
 
-        if (array_key_exists('virtual_properties', $config) ) {
-
-            foreach ( $config['virtual_properties'] as $methodName => $propertySettings ) {
-
-                if ( !$class->hasMethod( $methodName ) ) {
+        if (isset($config['virtual_properties']) ) {
+            foreach ($config['virtual_properties'] as $methodName => $propertySettings) {
+                if (!$class->hasMethod($methodName)) {
                     throw new RuntimeException('The method '.$methodName.' not found in class ' . $class->name);
                 }
 
-                $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, $methodName );
-
+                $virtualPropertyMetadata = new VirtualPropertyMetadata($name, $methodName);
                 $propertiesMetadata[$methodName] = $virtualPropertyMetadata;
                 $config['properties'][$methodName] = $propertySettings;
             }
@@ -91,6 +88,11 @@ class YamlDriver extends AbstractFileDriver
 
                     if (isset($pConfig['expose'])) {
                         $isExpose = (Boolean) $pConfig['expose'];
+                    }
+
+                    // always expose virtual properties
+                    if (isset($config['virtual_properties'], $config['virtual_properties'][$pName])) {
+                        $isExpose = true;
                     }
 
                     if (isset($pConfig['since_version'])) {
