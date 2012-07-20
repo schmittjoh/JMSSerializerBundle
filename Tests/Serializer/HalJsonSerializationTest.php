@@ -53,11 +53,11 @@ class HalJsonSerializationTest extends BaseSerializationTest
             $outputs['form_errors'] = '["This is the form error","Another error"]';
             $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
-            $outputs['constraint_violation_list'] = '[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]';
+            $outputs['constraint_violation_list'] = '{"_embedded":{"items":[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]}}';
             $outputs['article'] = '{"custom":"serialized"}';
             $outputs['orm_proxy'] = '{"foo":"foo","moo":"bar","camel_case":"proxy-boo"}';
             $outputs['custom_accessor'] = '{"_embedded":{"comments":{"Foo":{"_embedded":{"comments":[{"author":{"full_name":"Foo"},"text":"foo"},{"author":{"full_name":"Foo"},"text":"bar"}]},"count":2}}}}';
-            $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes"}';
+            $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes","read_only_property":42}';
             $outputs['accessor_order_child'] = '{"c":"c","d":"d","a":"a","b":"b"}';
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
             $outputs['inline'] = '{"c":"c","a":"a","b":"b","d":"d"}';
@@ -69,6 +69,7 @@ class HalJsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
             $outputs['link'] = '{"_links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/"}},"serialized":"Miha"}';
+            $outputs['traversable'] = '{"_embedded":{"items":[{"full_name":"Johannes"},{"full_name":"Miha"}]}}';
         }
 
         if (!isset($outputs[$key])) {

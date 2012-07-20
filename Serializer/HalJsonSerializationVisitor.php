@@ -70,9 +70,14 @@ class HalJsonSerializationVisitor extends JsonSerializationVisitor
     {
         $rs = parent::visitTraversable($metadata, $data, $type);
         $node = $metadata->xmlRootName ?: $this->defaultRootName;
-        $this->root = array('_embedded' => array($node => $this->root));
 
-        return array('_embedded' => array($node => $rs));
+        //traversable as a property of an object?
+        if ($this->root instanceof \stdClass) {
+            return $rs;
+        } else {
+            $this->root = array('_embedded' => array($node => $this->root));
+            return array('_embedded' => array($node => $rs));
+        }
     }
 
 }

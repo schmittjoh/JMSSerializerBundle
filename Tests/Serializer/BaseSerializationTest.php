@@ -482,6 +482,18 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
+    public function testTraversable()
+    {
+        $authors = new AuthorList();
+
+        $authors->add(new Author('Johannes'));
+        $authors->add(new Author('Miha'));
+
+        $serializer = $this->getSerializer();
+
+        $this->assertEquals($this->getContent('traversable'), $serializer->serialize($authors, $this->getFormat()));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
