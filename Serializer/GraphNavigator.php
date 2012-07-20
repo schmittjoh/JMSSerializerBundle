@@ -18,10 +18,13 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Symfony\Component\Routing\RouterInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
+use JMS\SerializerBundle\Exception\RuntimeException;
+use Symfony\Component\Form\Util\PropertyPath;
 
 final class GraphNavigator
 {
@@ -32,13 +35,18 @@ final class GraphNavigator
     private $exclusionStrategy;
     private $metadataFactory;
     private $visiting;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
-    public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
+    public function __construct($direction, MetadataFactoryInterface $metadataFactory, RouterInterface $router, ExclusionStrategyInterface $exclusionStrategy = null)
     {
         $this->direction = $direction;
         $this->metadataFactory = $metadataFactory;
         $this->exclusionStrategy = $exclusionStrategy;
         $this->visiting = new \SplObjectStorage();
+        $this->router = $router;
     }
 
     public function accept($data, $type, VisitorInterface $visitor)
@@ -114,13 +122,14 @@ final class GraphNavigator
 
             // check if traversable
             if (self::DIRECTION_SERIALIZATION === $this->direction && $data instanceof \Traversable) {
-                $rs = $visitor->visitTraversable($data, $type);
+                $rs = $visitor->visitTraversable($metadata, $data, $type);
                 $this->afterVisitingObject($metadata, $data, self::DIRECTION_SERIALIZATION === $this->direction);
 
                 return $rs;
             }
 
             $visitor->startVisitingObject($metadata, $data, $type);
+            $this->doVisitLinks($metadata, $data, $visitor);
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
                 if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
                     continue;
@@ -168,6 +177,54 @@ final class GraphNavigator
 
         foreach ($metadata->postDeserializeMethods as $method) {
             $method->invoke($object);
+        }
+    }
+
+    public function doVisitLinks(ClassMetadata $metadata, $data, VisitorInterface $visitor)
+    {
+        if (count($metadata->links)) {
+            $links = array();
+            /** @var $linkData \JMS\SerializerBundle\Metadata\LinkMetadata */
+            foreach ($metadata->links as $linkData) {
+                $parameters = array();
+                foreach ($linkData->getRouteParameters() as $name => $param) {
+                    switch ($param['type']) {
+                    case 'property':
+                        if (is_object($data)) {
+                            $pp = new PropertyPath($param['value']);
+                            $parameters[$name] = $pp->getValue($data);
+                        } elseif (is_array($data)) {
+                            if (isset($data[$param['value']])) {
+                                $parameters[$name] = $data[$param['value']];
+                            } else {
+                                throw new RuntimeException(sprintf('%s is not an array key.', $param['value']));
+                            }
+                        }
+                        break;
+                    case 'method':
+                        if (!is_object($data)) {
+                            throw new RuntimeException(sprintf('Cannot call a method on nonobject.'));
+                        } elseif  (!is_callable(array($data, $param['value']))) {
+                            throw new RuntimeException(sprintf('%s on %s is not a callable.', $param['value'], get_class($data)));
+                        }
+                        $parameters[$name] = call_user_func(array($data, $param['value']));
+                        break;
+                    case 'static':
+                        $parameters[$name] = $param['value'];
+                        break;
+                    }
+                }
+
+                $link = array(
+                    'href'  => $this->router->generate($linkData->getRouteName(), $parameters, $linkData->generateAbsolute()),
+                );
+                if (null !== $linkData->getLinkRel()) {
+                    $link['rel'] = $linkData->getLinkRel();
+                }
+                $links[$linkData->getCollectionNodeName()][$linkData->getNodeName()][] = $link;
+            }
+
+            $visitor->visitLink($links, null);
         }
     }
 }

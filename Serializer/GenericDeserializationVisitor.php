@@ -151,7 +151,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         return $result;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable(ClassMetadata $metadata, $data, $type)
     {
         throw new RuntimeException('Traversable is not supported for deserialization.');
     }

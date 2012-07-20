@@ -131,7 +131,7 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
         return $v;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable(ClassMetadata $metadata, $data, $type)
     {
         $arr = array();
         foreach ($data as $k => $v) {
@@ -208,5 +208,14 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
     public function getResult()
     {
         return $this->writer->getContent();
+    }
+
+    public function visitLink($data, $type)
+    {
+        foreach ($data as $collectionName => $linkNodes) {
+            foreach ($linkNodes as $nodeName => $links) {
+                $this->visitArray(array($collectionName => $links), $type);
+            }
+        }
     }
 }

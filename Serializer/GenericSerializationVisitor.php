@@ -25,10 +25,10 @@ use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 {
-    private $navigator;
-    private $root;
-    private $dataStack;
-    private $data;
+    protected $navigator;
+    protected $root;
+    protected $dataStack;
+    protected $data;
 
     public function setNavigator(GraphNavigator $navigator)
     {
@@ -100,7 +100,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $rs;
     }
 
-    public function visitTraversable($data, $type)
+    public function visitTraversable(ClassMetadata $metadata, $data, $type)
     {
         return $this->visitArray($data, $type);
     }
@@ -160,5 +160,15 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
     public function setRoot($data)
     {
         $this->root = $data;
+    }
+
+    public function visitLink($data, $type)
+    {
+        foreach ($data as $collectionName => $linkNodes) {
+            foreach ($linkNodes as $nodeName => $links) {
+                $newData = $this->visitArray(array($collectionName => $links), $type);
+                $this->data = array_merge($this->data, $newData);
+            }
+        }
     }
 }

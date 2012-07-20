@@ -21,7 +21,7 @@ namespace JMS\SerializerBundle\Tests\Serializer;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 
-class JsonSerializationTest extends BaseSerializationTest
+class HalJsonSerializationTest extends BaseSerializationTest
 {
     protected function getContent($key)
     {
@@ -43,20 +43,20 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['array_floats'] = '[1.34,3,6.42]';
             $outputs['array_objects'] = '[{"foo":"foo","moo":"bar","camel_case":"boo"},{"foo":"baz","moo":"boo","camel_case":"boo"}]';
             $outputs['array_mixed'] = '["foo",1,true,{"foo":"foo","moo":"bar","camel_case":"boo"},[1,3,true]]';
-            $outputs['blog_post'] = '{"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}],"author":{"full_name":"Foo Bar"}}';
+            $outputs['blog_post'] = '{"title":"This is a nice title.","created_at":"2011-07-30T00:00:00+0000","is_published":false,"_embedded":{"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"}]},"author":{"full_name":"Foo Bar"}}';
             $outputs['price'] = '{"price":3}';
             $outputs['currency_aware_price'] = '{"currency":"EUR","amount":2.34}';
             $outputs['order'] = '{"cost":{"price":12.34}}';
             $outputs['order_with_currency_aware_price'] = '{"cost":{"currency":"EUR","amount":1.23}}';
-            $outputs['log'] = '{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}';
+            $outputs['log'] = '{"_embedded":{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}}';
             $outputs['lifecycle_callbacks'] = '{"name":"Foo Bar"}';
             $outputs['form_errors'] = '["This is the form error","Another error"]';
             $outputs['nested_form_errors'] = '{"errors":["This is the form error"],"children":{"bar":{"errors":["Error of the child form"]}}}';
             $outputs['constraint_violation'] = '{"property_path":"foo","message":"Message of violation"}';
-            $outputs['constraint_violation_list'] = '[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]';
+            $outputs['constraint_violation_list'] = '{"_embedded":{"items":[{"property_path":"foo","message":"Message of violation"},{"property_path":"bar","message":"Message of another violation"}]}}';
             $outputs['article'] = '{"custom":"serialized"}';
             $outputs['orm_proxy'] = '{"foo":"foo","moo":"bar","camel_case":"proxy-boo"}';
-            $outputs['custom_accessor'] = '{"comments":{"Foo":{"comments":[{"author":{"full_name":"Foo"},"text":"foo"},{"author":{"full_name":"Foo"},"text":"bar"}],"count":2}}}';
+            $outputs['custom_accessor'] = '{"_embedded":{"comments":{"Foo":{"_embedded":{"comments":[{"author":{"full_name":"Foo"},"text":"foo"},{"author":{"full_name":"Foo"},"text":"bar"}]},"count":2}}}}';
             $outputs['mixed_access_types'] = '{"id":1,"name":"Johannes","read_only_property":42}';
             $outputs['accessor_order_child'] = '{"c":"c","d":"d","a":"a","b":"b"}';
             $outputs['accessor_order_parent'] = '{"a":"a","b":"b"}';
@@ -68,8 +68,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
-            $outputs['link'] = '{"links":[{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/","rel":"http:\/\/rels.kartoncek.si\/rel1"}],"__links":[{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/","rel":"http:\/\/rels.kartoncek.si\/rel2"}],"serialized":"Miha"}';
-            $outputs['traversable'] = '[{"full_name":"Johannes"},{"full_name":"Miha"}]';
+            $outputs['link'] = '{"_links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/"}},"serialized":"Miha"}';
+            $outputs['traversable'] = '{"_embedded":{"items":[{"full_name":"Johannes"},{"full_name":"Miha"}]}}';
         }
 
         if (!isset($outputs[$key])) {
@@ -81,6 +81,11 @@ class JsonSerializationTest extends BaseSerializationTest
 
     protected function getFormat()
     {
-        return 'json';
+        return 'haljson';
+    }
+
+    protected function hasDeserializer()
+    {
+        return false;
     }
 }

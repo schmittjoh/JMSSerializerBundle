@@ -21,6 +21,7 @@ namespace JMS\SerializerBundle\Tests\Metadata\Driver;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkMetadata;
 
 abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -61,6 +62,39 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->groups = array("post");
         $this->assertEquals($p, $m->propertyMetadata['author']);
 
+        $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Link'));
+        $this->assertNotNull($m);
+
+        $this->assertEquals(2, count($m->links));
+
+        $l = new LinkMetadata(
+            'r1',
+            false,
+            array(
+                 'p1' => array('type' => 'property', 'value' => 'prop1'),
+                 'p2' => array('type' => 'method', 'value' => 'method1'),
+                 'p3' => array('type' => 'static', 'value' => 'static1')
+            ),
+            'http://rels.kartoncek.si/rel1',
+            null,
+            null
+        );
+        $this->assertEquals($l, $m->links[0]);
+
+        $l = new LinkMetadata(
+            'r2',
+            true,
+            array(
+                 'p1' => array('type' => 'property', 'value' => 'prop1'),
+                 'p2' => array('type' => 'method', 'value' => 'method1'),
+                 'p3' => array('type' => 'static', 'value' => '42')
+            ),
+            'http://rels.kartoncek.si/rel2',
+            '__links',
+            '_link'
+        );
+        $this->assertEquals($l, $m->links[1]);
+
         $m = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\SerializerBundle\Tests\Fixtures\Price'));
         $this->assertNotNull($m);
 
@@ -68,6 +102,7 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
         $p->type = 'double';
         $p->xmlValue = true;
         $this->assertEquals($p, $m->propertyMetadata['price']);
+
     }
 
     public function testVirtualProperty()
