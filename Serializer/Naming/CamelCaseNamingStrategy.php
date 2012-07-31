@@ -29,11 +29,13 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
 {
     private $separator;
     private $lowerCase;
+    private $ucfirst;
 
-    public function __construct($separator = '_', $lowerCase = true)
+    public function __construct($separator = '_', $lowerCase = true, $ucfirst = true)
     {
         $this->separator = $separator;
         $this->lowerCase = $lowerCase;
+        $this->ucfirst   = $ucfirst;
     }
 
     /**
@@ -49,6 +51,10 @@ class CamelCaseNamingStrategy implements PropertyNamingStrategyInterface
             return strtolower($name);
         }
 
-        return ucfirst($name);
+        if ($this->ucfirst) {
+            return ucfirst($name);
+        }
+
+        return $name;
     }
 }

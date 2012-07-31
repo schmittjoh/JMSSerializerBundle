@@ -60,6 +60,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('separator')->defaultValue('_')->end()
                     ->booleanNode('lower_case')->defaultTrue()->end()
                     ->booleanNode('enable_cache')->defaultTrue()->end()
+                    ->booleanNode('ucfirst')->defaultTrue()->end()
                 ->end()
             ->end()
         ;
