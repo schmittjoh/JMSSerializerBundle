@@ -68,6 +68,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['map_fields'] = '{"Comment":{"full_name":"Foo Bar"}}';
         }
 
         if (!isset($outputs[$key])) {

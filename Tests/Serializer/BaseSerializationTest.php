@@ -46,6 +46,7 @@ use JMS\SerializerBundle\Tests\Fixtures\AuthorList;
 use JMS\SerializerBundle\Tests\Fixtures\AuthorReadOnly;
 use JMS\SerializerBundle\Tests\Fixtures\BlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\CircularReferenceParent;
+use JMS\SerializerBundle\Tests\Fixtures\ChildObjectWithMapFields;
 use JMS\SerializerBundle\Tests\Fixtures\Comment;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwareOrder;
 use JMS\SerializerBundle\Tests\Fixtures\CurrencyAwarePrice;
@@ -208,6 +209,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             $this->assertNull($this->getField($deserialized, 'id'));
             $this->assertEquals('Ruud Kamphuis', $this->getField($deserialized, 'name'));
         }
+    }
+
+    public function testMapFields()
+    {
+        $author = new Author('Foo Bar');
+        $comment = new Comment($author, 'Foo');
+        $childObject = new ChildObjectWithMapFields($comment);
+        $data = $this->serialize($childObject);
+        $this->assertEquals($this->getContent('map_fields'), $data);
     }
 
     public function testPrice()

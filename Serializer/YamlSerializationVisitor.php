@@ -154,6 +154,20 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
             return;
         }
 
+        if (is_object($v)) {
+            if (!empty($metadata->mapFields)) {
+                $o = array();
+                foreach ($metadata->mapFields as $field) {
+                    $method = 'get'.preg_replace_callback('/(^|_|\.)+(.)/', function ($match) { return ('.' === $match[1] ? '_' : '').strtoupper($match[2]); }, $field);
+
+                    if (method_exists($v, $method)) {
+                        $o[$field] = $v->$method();
+                    }
+                }
+                $v = (sizeof($o) === 1) ? array_shift(array_values($o)) : $o;
+            }
+        }
+
         $name = $this->namingStrategy->translateName($metadata);
 
         if (!$metadata->inline) {
