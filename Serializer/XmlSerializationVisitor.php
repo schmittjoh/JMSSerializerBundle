@@ -166,7 +166,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
                         $o[$field] = $v->$method();
                     }
                 }
-                $v = (sizeof($o) === 1) ? array_shift(array_values($o)) : $o;
+                $v = (sizeof($o) === 1) ? $o[key($o)] : $o;
             }
         }
 
