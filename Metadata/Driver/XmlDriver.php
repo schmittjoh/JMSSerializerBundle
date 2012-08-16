@@ -62,12 +62,16 @@ class XmlDriver extends AbstractFileDriver
             $metadata->xmlRootName = (string) $xmlRootName;
         }
 
-        foreach ($elem->xpath('./virtual-property') as $method) {
+        $virtualProperties = $elem->xpath('./virtual-property');
+        foreach ($virtualProperties as $method) {
             if (!isset($method->attributes()->method)) {
                 throw new RuntimeException('The method attribute must be set for all virtual-property elements.');
             }
 
-            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string) $method->attributes()->method );
+            $methodName   = (string) $method->attributes()->method;
+            $propertyName = $method->attributes()->name ?: $methodName;
+
+            $virtualPropertyMetadata = new VirtualPropertyMetadata( $name, (string) $propertyName, $methodName );
 
             $propertiesMetadata[] = $virtualPropertyMetadata;
             $propertiesNodes[] = $method;
