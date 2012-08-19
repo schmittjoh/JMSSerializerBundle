@@ -156,11 +156,6 @@ class YamlDriver extends AbstractFileDriver
                         $pMetadata->xmlKeyValuePairs = (Boolean) $pConfig['xml_key_value_pairs'];
                     }
 
-                    $pMetadata->setAccessor(
-                        isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
-                        isset($pConfig['accessor']) ? $pConfig['accessor'] : null
-                    );
-
                     if (isset($pConfig['inline'])) {
                         $pMetadata->inline = (Boolean) $pConfig['inline'];
                     }
@@ -168,6 +163,12 @@ class YamlDriver extends AbstractFileDriver
                     if (isset($pConfig['read_only'])) {
                         $pMetadata->readOnly = (Boolean) $pConfig['read_only'];
                     }
+
+                    $pMetadata->setAccessor(
+                        isset($pConfig['access_type']) ? $pConfig['access_type'] : $classAccessType,
+                        isset($pConfig['accessor_getter']) ? $pConfig['accessor_getter'] : null,
+                        isset($pConfig['accessor_setter']) ? $pConfig['accessor_setter'] : null
+                    );
                 }
                 if ((ExclusionPolicy::NONE === $exclusionPolicy && !$isExclude)
                 || (ExclusionPolicy::ALL === $exclusionPolicy && $isExpose)) {
