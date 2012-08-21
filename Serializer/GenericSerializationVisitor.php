@@ -132,8 +132,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
                 : $data->{$metadata->getter}());
 
-        if (is_object($v)) {
-            if (!empty($metadata->mapFields)) {
+        if (is_object($v) && !empty($metadata->mapFields)) {
                 $o = array();
                 foreach ($metadata->mapFields as $field) {
                     $method = 'get'.preg_replace_callback('/(^|_|\.)+(.)/', function ($match) { return ('.' === $match[1] ? '_' : '').strtoupper($match[2]); }, $field);
@@ -142,8 +141,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
                         $o[$field] = $v->$method();
                     }
                 }
-                $v = (sizeof($o) === 1) ? $o[key($o)] : $o;
-            }
+                $v = (count($o) === 1) ? $o[key($o)] : $o;
         }
 
         $v = $this->navigator->accept($v, null, $this);
