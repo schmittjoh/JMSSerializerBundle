@@ -156,6 +156,18 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             return;
         }
 
+        if (is_object($v) && !empty($metadata->mapFields)) {
+            $o = array();
+            foreach ($metadata->mapFields as $field) {
+                $method = 'get'.preg_replace_callback('/(^|_|\.)+(.)/', function ($match) { return ('.' === $match[1] ? '_' : '').strtoupper($match[2]); }, $field);
+
+                if (method_exists($v, $method)) {
+                    $o[$field] = $v->$method();
+                }
+            }
+            $v = (count($o) === 1) ? $o[key($o)] : $o;
+        }
+
         if ($metadata->xmlAttribute) {
             $node = $this->navigator->accept($v, null, $this);
             if (!$node instanceof \DOMCharacterData) {
