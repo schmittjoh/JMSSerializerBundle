@@ -87,15 +87,15 @@ class JMSSerializerExtension extends Extension
             }
         }
 
-        foreach (array('json', 'xml', 'yaml') as $format) {
+        foreach ($container->findTaggedServiceIds('jms_serializer.serialization_visitor') as $id => $options) {
             $container
-                ->getDefinition('jms_serializer.'.$format.'_serialization_visitor')
+                ->getDefinition($id)
                 ->replaceArgument(1, $serializationHandlers)
             ;
         }
-        foreach (array('json', 'xml') as $format) {
+        foreach ($container->findTaggedServiceIds('jms_serializer.deserialization_visitor') as $id => $options) {
             $container
-                ->getDefinition('jms_serializer.'.$format.'_deserialization_visitor')
+                ->getDefinition($id)
                 ->replaceArgument(1, $deserializationHandlers)
             ;
         }
