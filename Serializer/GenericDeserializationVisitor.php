@@ -37,7 +37,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
     private $objectStack;
     private $currentObject;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $customHandlers, ObjectConstructorInterface $objectConstructor)
     {
         parent::__construct($namingStrategy, $customHandlers);
         $this->objectConstructor = $objectConstructor;
