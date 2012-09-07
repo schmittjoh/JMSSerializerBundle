@@ -25,10 +25,18 @@ abstract class AbstractVisitor implements VisitorInterface
     protected $namingStrategy;
     protected $customHandlers;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $customHandlers = array())
     {
         $this->namingStrategy = $namingStrategy;
-        $this->customHandlers = $customHandlers;
+        if (is_array($customHandlers)) {
+            $this->customHandlers = $customHandlers;
+        } else if ($customHandlers instanceof \Traversable) {
+            $this->customHandlers = iterator_to_array($customHandlers);
+        } else {
+            throw new \JMS\SerializerBundle\Exception\InvalidArgumentException(
+                '$customHandlers must be an array or Traversable'
+            );
+        }
     }
 
     public function getNamingStrategy()
