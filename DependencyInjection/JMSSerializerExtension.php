@@ -86,20 +86,12 @@ class JMSSerializerExtension extends Extension
                 $deserializationHandlers[] = new Reference($id);
             }
         }
-
-        foreach ($container->findTaggedServiceIds('jms_serializer.serialization_visitor') as $id => $options) {
-            $container
-                ->getDefinition($id)
-                ->replaceArgument(1, $serializationHandlers)
-            ;
-        }
-        foreach ($container->findTaggedServiceIds('jms_serializer.deserialization_visitor') as $id => $options) {
-            $container
-                ->getDefinition($id)
-                ->replaceArgument(1, $deserializationHandlers)
-            ;
-        }
-
+        
+        $container->getDefinition('jms_serializer.serialization_handlers')
+            ->replaceArgument(0, $serializationHandlers);
+        $container->getDefinition('jms_serializer.deserialization_handlers')
+            ->replaceArgument(0, $deserializationHandlers);
+        
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
@@ -158,7 +150,7 @@ class JMSSerializerExtension extends Extension
             ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
         ;
     }
-
+    
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         foreach ($this->kernel->getBundles() as $bundle) {
