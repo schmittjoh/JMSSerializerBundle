@@ -25,7 +25,7 @@ abstract class AbstractVisitor implements VisitorInterface
     protected $namingStrategy;
     protected $customHandlers;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $customHandlers = array())
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $customHandlers)
     {
         $this->namingStrategy = $namingStrategy;
         if (is_array($customHandlers)) {
