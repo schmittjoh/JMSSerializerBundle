@@ -37,7 +37,7 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     private $navigator;
     private $disableExternalEntities;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, $customHandlers, ObjectConstructorInterface $objectConstructor, $disableExternalEntities = true)
     {
         parent::__construct($namingStrategy, $customHandlers);
 

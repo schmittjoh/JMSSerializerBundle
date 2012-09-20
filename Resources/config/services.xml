@@ -168,5 +168,12 @@
         </service>
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="false" />
         <service id="jms_serializer.doctrine_handler" class="%jms_serializer.doctrine_handler.class%" public="false" />
+        
+        <service id="jms_serializer.serialization_handlers" class="ArrayObject">
+            <argument type="collection" />
+        </service>
+        <service id="jms_serializer.deserialization_handlers" class="ArrayObject">
+            <argument type="collection" />
+        </service>
     </services>
 </container>
