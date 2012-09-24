@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
 abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 {
@@ -90,7 +89,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         foreach ($data as $k => $v) {
             $v = $this->navigator->accept($v, null, $this);
 
-            if (null === $v) {
+            if (null === $v && (!is_string($k) || !$this->getSerializeNull())) {
                 continue;
             }
 
@@ -133,7 +132,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
                 : $data->{$metadata->getter}());
 
         $v = $this->navigator->accept($v, null, $this);
-        if (null === $v) {
+        if (null === $v && !$this->getSerializeNull()) {
             return;
         }
 
@@ -157,6 +156,9 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         return $this->root;
     }
 
+    /**
+     * @param array $data
+     */
     public function setRoot($data)
     {
         $this->root = $data;

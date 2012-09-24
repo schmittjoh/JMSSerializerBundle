@@ -41,13 +41,15 @@ final class GraphNavigator
         $this->visiting = new \SplObjectStorage();
     }
 
+    /**
+     * @param null|string $type
+     *
+     * @return object|null
+     */
     public function accept($data, $type, VisitorInterface $visitor)
     {
         // determine type if not given
         if (null === $type) {
-            if (null === $data) {
-                return null;
-            }
 
             $type = gettype($data);
             if ('object' === $type) {
@@ -57,15 +59,15 @@ final class GraphNavigator
 
         if ('string' === $type) {
             return $visitor->visitString($data, $type);
-        } else if ('integer' === $type) {
+        } elseif ('integer' === $type) {
             return $visitor->visitInteger($data, $type);
-        } else if ('boolean' === $type) {
+        } elseif ('boolean' === $type) {
             return $visitor->visitBoolean($data, $type);
-        } else if ('double' === $type) {
+        } elseif ('double' === $type) {
             return $visitor->visitDouble($data, $type);
-        } else if ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
+        } elseif ('array' === $type || ('a' === $type[0] && 0 === strpos($type, 'array<'))) {
             return $visitor->visitArray($data, $type);
-        } else if ('resource' === $type) {
+        } elseif ('resource' === $type) {
             $path = array();
             foreach ($this->visiting as $obj) {
                 $path[] = get_class($obj);
@@ -89,7 +91,7 @@ final class GraphNavigator
             $handled = false;
             $rs = $visitor->visitUsingCustomHandler($data, $type, $handled);
             if ($handled) {
-                if (self::DIRECTION_SERIALIZATION === $this->direction) {
+                if (null !== $data && self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
 
@@ -147,13 +149,16 @@ final class GraphNavigator
     {
         if (null === $object) {
             throw new InvalidArgumentException('$object cannot be null');
-        } else if (!is_object($object)) {
+        } elseif (!is_object($object)) {
             throw new InvalidArgumentException(sprintf('Expected an object to detach, given "%s".', gettype($object)));
         }
 
         $this->visiting->detach($object);
     }
 
+    /**
+     * @param \Traversable $object
+     */
     private function afterVisitingObject(ClassMetadata $metadata, $object)
     {
         if (self::DIRECTION_SERIALIZATION === $this->direction) {

@@ -25,6 +25,7 @@ use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
 use JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler;
 use JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler;
 use JMS\SerializerBundle\Serializer\Handler\DateTimeHandler;
+use JMS\SerializerBundle\Serializer\Handler\NullHandler;
 use JMS\SerializerBundle\Serializer\Handler\DeserializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\Handler\DoctrineProxyHandler;
 use JMS\SerializerBundle\Serializer\Handler\FormErrorHandler;
@@ -60,6 +61,7 @@ use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVirtualProperties;
 use JMS\SerializerBundle\Tests\Fixtures\Order;
 use JMS\SerializerBundle\Tests\Fixtures\Price;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
+use JMS\SerializerBundle\Tests\Fixtures\ObjectWithNullProperty;
 use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
@@ -70,6 +72,18 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    public function testNullableArray()
+    {
+        $arr = array('foo' => 'bar', 'baz' => null, null);
+        $this->assertEquals($this->getContent('nullable'), $this->getSerializer(true)->serialize($arr, $this->getFormat()));
+    }
+
+    public function testNullableObject()
+    {
+        $obj = new ObjectWithNullProperty('foo', 'bar');
+        $this->assertEquals($this->getContent('simple_object_nullable'), $this->getSerializer(true)->serialize($obj, $this->getFormat()));
+    }
+
     public function testString()
     {
         $this->assertEquals($this->getContent('string'), $this->serialize('foo'));
@@ -458,6 +472,9 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('virtual_properties_high'), $serializer->serialize(new ObjectWithVersionedVirtualProperties(), $this->getFormat()));
     }
 
+    /**
+     * @param string $key
+     */
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -466,17 +483,29 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return true;
     }
 
+    /**
+     * @param \JMS\SerializerBundle\Tests\Fixtures\InvalidUsageOfXmlValue|\JMS\SerializerBundle\Tests\Fixtures\PersonLocation|\JMS\SerializerBundle\Tests\Fixtures\PersonCollection|string|SimpleObject|array<double>|array<string|integer|boolean|SimpleObject|array<integer|boolean>>|BlogPost|AuthorReadOnly|Price|Order|CurrencyAwarePrice|CurrencyAwareOrder|Article|InlineParent|Log|CircularReferenceParent|ObjectWithLifecycleCallbacks|array<FormError>|Form|ConstraintViolation|ConstraintViolationList|IndexedCommentsBlogPost|GetSetObject|AccessorOrderParent|ObjectWithVirtualProperties $data
+     */
     protected function serialize($data)
     {
         return $this->getSerializer()->serialize($data, $this->getFormat());
     }
 
+    /**
+     * @param string $content
+     * @param string $type
+     *
+     * @return string|object
+     */
     protected function deserialize($content, $type)
     {
         return $this->getSerializer()->deserialize($content, $type, $this->getFormat());
     }
 
-    protected function getSerializer()
+    /**
+     * @param boolean $serializeNull
+     */
+    protected function getSerializer($serializeNull = false)
     {
         $factory = new MetadataFactory(new AnnotationDriver(new AnnotationReader()));
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
@@ -490,6 +519,13 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             'xml'  => new XmlSerializationVisitor($namingStrategy, $customSerializationHandlers),
             'yml'  => new YamlSerializationVisitor($namingStrategy, $customSerializationHandlers),
         );
+
+        if ($serializeNull) {
+            $serializationVisitors['json']->setSerializeNull(true);
+            $serializationVisitors['xml']->setSerializeNull(true);
+            $serializationVisitors['yml']->setSerializeNull(true);
+        }
+
         $deserializationVisitors = array(
             'json' => new JsonDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
             'xml'  => new XmlDeserializationVisitor($namingStrategy, $customDeserializationHandlers, $objectConstructor),
@@ -515,6 +551,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
             new FormErrorHandler($translatorMock),
             new ConstraintViolationHandler(),
             new DoctrineProxyHandler(),
+            new NullHandler(),
         );
 
         return $handlers;
@@ -535,6 +572,9 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         return $handlers;
     }
 
+    /**
+     * @param string $name
+     */
     private function getField($obj, $name)
     {
         $ref = new \ReflectionProperty($obj, $name);
@@ -610,7 +650,7 @@ class Article implements SerializationHandlerInterface, DeserializationHandlerIn
             $visited = true;
 
             $this->element = $data->getName();
-            $this->value = (string)$data;
+            $this->value = (string) $data;
         } elseif ($visitor instanceof JsonDeserializationVisitor) {
             $visited = true;
 

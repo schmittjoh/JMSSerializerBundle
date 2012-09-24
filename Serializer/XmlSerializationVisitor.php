@@ -21,7 +21,6 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 
 /**
  * XmlSerializationVisitor.
@@ -152,7 +151,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($object)
             : $object->{$metadata->getter}());
 
-        if (null === $v) {
+        if (null === $v && !$this->getSerializeNull()) {
             return;
         }
 
@@ -291,7 +290,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
      *
      * @param string $name
      *
-     * @return Boolean
+     * @return string|boolean|integer
      */
     private function isElementNameValid($name)
     {

@@ -28,6 +28,9 @@ class Configuration implements ConfigurationInterface
     private $debug;
     private $factories;
 
+    /**
+     * @param boolean $debug
+     */
     public function __construct($debug = false, array $factories = array())
     {
         $this->debug = $debug;
@@ -115,6 +118,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('json')
                         ->addDefaultsIfNotSet()
                         ->children()
+                            ->booleanNode('serialize_null')->defaultFalse()->end()
                             ->scalarNode('options')
                                 ->defaultValue(0)
                                 ->beforeNormalization()
@@ -156,6 +160,22 @@ class Configuration implements ConfigurationInterface
                                     })
                                 ->end()
                             ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->children()
+                    ->arrayNode('xml')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('serialize_null')->defaultFalse()->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->children()
+                    ->arrayNode('yaml')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('serialize_null')->defaultFalse()->end()
                         ->end()
                     ->end()
                 ->end()

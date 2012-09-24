@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Exception\RuntimeException;
-use JMS\SerializerBundle\Tests\Fixtures\SimpleObject;
 
 class JsonSerializationTest extends BaseSerializationTest
 {
@@ -68,6 +67,8 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
+            $outputs['nullable'] = '{"foo":"bar","baz":null}';
+            $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
         }
 
         if (!isset($outputs[$key])) {
