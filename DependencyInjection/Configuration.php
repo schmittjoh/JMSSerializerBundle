@@ -64,6 +64,8 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
+        $builder->booleanNode('allow_empty_value')->defaultTrue()->end();
+
         $handlerNode = $builder
             ->arrayNode('handlers')
                 ->addDefaultsIfNotSet()

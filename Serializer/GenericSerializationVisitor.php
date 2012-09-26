@@ -29,6 +29,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
     private $root;
     private $dataStack;
     private $data;
+    private $allowEmtpyValue;
 
     public function setNavigator(GraphNavigator $navigator)
     {
@@ -91,6 +92,10 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
             $v = $this->navigator->accept($v, null, $this);
 
             if (null === $v) {
+                continue;
+            }
+
+            if (!$this->allowEmptyValue && empty($v)) {
                 continue;
             }
 
@@ -160,5 +165,10 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
     public function setRoot($data)
     {
         $this->root = $data;
+    }
+
+    public function setAllowEmptyValue($allowEmptyValue)
+    {
+        $this->allowEmptyValue = $allowEmptyValue;
     }
 }
