@@ -207,6 +207,8 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
         if (null === $this->result) {
             $this->result = $this->currentObject;
         }
+
+        $this->depth++;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
@@ -266,6 +268,8 @@ class XmlDeserializationVisitor extends AbstractDeserializationVisitor
     {
         $rs = $this->currentObject;
         $this->revertCurrentObject();
+
+        $this->depth--;
 
         return $rs;
     }

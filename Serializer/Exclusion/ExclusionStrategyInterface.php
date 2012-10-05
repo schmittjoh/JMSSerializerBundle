@@ -36,7 +36,7 @@ interface ExclusionStrategyInterface
      *
      * @return boolean
      */
-    function shouldSkipClass(ClassMetadata $metadata, $object = null);
+    function shouldSkipClass(ClassMetadata $metadata, $depth, $object = null);
 
     /**
      * Whether the property should be skipped.
@@ -46,5 +46,5 @@ interface ExclusionStrategyInterface
      *
      * @return boolean
      */
-    function shouldSkipProperty(PropertyMetadata $property, $object = null);
+    function shouldSkipProperty(PropertyMetadata $property, $depth, $object = null);
 }

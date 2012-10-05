@@ -163,6 +163,7 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
         if (null === $this->result) {
             $this->result = $this->currentObject;
         }
+        $this->depth++;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
@@ -195,6 +196,8 @@ abstract class GenericDeserializationVisitor extends AbstractDeserializationVisi
     {
         $obj = $this->currentObject;
         $this->revertCurrentObject();
+
+        $this->depth--;
 
         return $obj;
     }
