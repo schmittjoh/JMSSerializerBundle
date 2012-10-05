@@ -43,5 +43,5 @@ interface ExclusionStrategyInterface
      *
      * @return boolean
      */
-    function shouldSkipProperty(PropertyMetadata $property);
+    function shouldSkipProperty(PropertyMetadata $property, $depth);
 }

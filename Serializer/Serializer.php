@@ -54,7 +54,7 @@ class Serializer implements SerializerInterface
 
         $this->exclusionStrategy = new VersionExclusionStrategy($version);
     }
-    
+
     public function setGroups($groups)
     {
         if (!$groups) {

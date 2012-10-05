@@ -145,6 +145,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
         }
 
         $this->hasValue = false;
+        $this->depth++;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $object)
@@ -211,6 +212,7 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
     {
+        $this->depth--;
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)

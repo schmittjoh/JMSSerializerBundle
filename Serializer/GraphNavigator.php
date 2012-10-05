@@ -122,7 +122,7 @@ final class GraphNavigator
 
             $visitor->startVisitingObject($metadata, $data, $type);
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $visitor->getDepth())) {
                     continue;
                 }
 
