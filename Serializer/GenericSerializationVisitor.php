@@ -38,11 +38,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         $this->dataStack = new \SplStack;
     }
 
-    public function getDepth()
-    {
-        return $this->depth;
-    }
-
     public function getNavigator()
     {
         return $this->navigator;

@@ -33,7 +33,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->with($metadata, $object);
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->with($metadata->propertyMetadata['foo'], $object);
+            ->with($metadata->propertyMetadata['foo'], 0, $object);
 
         $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $exclusionStrategy);
         $this->navigator->accept($object, null, $this->visitor);
