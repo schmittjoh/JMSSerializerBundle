@@ -45,7 +45,7 @@ class GroupsExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property)
+    public function shouldSkipProperty(PropertyMetadata $property, $depth)
     {
         if (!$property->groups) {
             return true;

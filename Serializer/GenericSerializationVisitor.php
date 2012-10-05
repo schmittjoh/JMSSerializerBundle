@@ -29,12 +29,18 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
     private $root;
     private $dataStack;
     private $data;
+    private $depth;
 
     public function setNavigator(GraphNavigator $navigator)
     {
         $this->navigator = $navigator;
         $this->root = null;
         $this->dataStack = new \SplStack;
+    }
+
+    public function getDepth()
+    {
+        return $this->depth;
     }
 
     public function getNavigator()
@@ -113,6 +119,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 
         $this->dataStack->push($this->data);
         $this->data = array();
+        $this->depth++;
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
@@ -123,6 +130,7 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         if ($this->root instanceof \stdClass && 0 === $this->dataStack->count()) {
             $this->root = $rs;
         }
+        $this->depth--;
 
         return $rs;
     }
