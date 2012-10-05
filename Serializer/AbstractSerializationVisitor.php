@@ -25,6 +25,8 @@ namespace JMS\SerializerBundle\Serializer;
  */
 abstract class AbstractSerializationVisitor extends AbstractVisitor
 {
+    protected $depth;
+
     public function visitUsingCustomHandler($data, $type, &$visited)
     {
         foreach ($this->customHandlers as $handler) {
@@ -34,4 +36,10 @@ abstract class AbstractSerializationVisitor extends AbstractVisitor
             }
         }
     }
+
+    public function getDepth()
+    {
+        return $this->depth;
+    }
+
 }
