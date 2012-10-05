@@ -42,6 +42,7 @@ interface ExclusionStrategyInterface
      * Whether the property should be skipped.
      *
      * @param PropertyMetadata $property
+     * @param int              $depth  The current depth in the object graph
      * @param object           $object instance, provided during serialization but not deserialization
      *
      * @return boolean
