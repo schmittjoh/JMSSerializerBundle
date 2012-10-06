@@ -33,10 +33,10 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
         $exclusionStrategy = $this->getMock('JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface');
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipClass')
-            ->with($metadata, $object);
+            ->with($metadata, 0, $object);
         $exclusionStrategy->expects($this->once())
             ->method('shouldSkipProperty')
-            ->with($metadata->propertyMetadata['foo'], $object);
+            ->with($metadata->propertyMetadata['foo'], 0, $object);
 
         $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $this->dispatcher, $exclusionStrategy);
         $this->navigator->accept($object, null, $this->visitor);

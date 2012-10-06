@@ -144,6 +144,8 @@ class XmlSerializationVisitor extends AbstractSerializationVisitor
             $this->document->appendChild($this->currentNode = $this->document->createElement($metadata->xmlRootName ?: $this->defaultRootName));
         }
 
+        $this->depth++;
+
         $this->hasValue = false;
     }
 
