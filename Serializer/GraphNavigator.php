@@ -32,6 +32,7 @@ final class GraphNavigator
     private $exclusionStrategy;
     private $metadataFactory;
     private $visiting;
+    private $depth = 0;
 
     public function __construct($direction, MetadataFactoryInterface $metadataFactory, ExclusionStrategyInterface $exclusionStrategy = null)
     {
@@ -97,7 +98,7 @@ final class GraphNavigator
             }
 
             $metadata = $this->metadataFactory->getMetadataForClass($type);
-            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $visitor->getDepth(), self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
+            if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $this->depth, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                 if (self::DIRECTION_SERIALIZATION === $this->direction) {
                     $this->visiting->detach($data);
                 }
@@ -121,8 +122,9 @@ final class GraphNavigator
             }
 
             $visitor->startVisitingObject($metadata, $data, $type);
+            $this->depth++;
             foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $visitor->getDepth(), self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->depth, self::DIRECTION_SERIALIZATION === $this->direction ? $data : null)) {
                     continue;
                 }
 
@@ -137,6 +139,7 @@ final class GraphNavigator
             }
 
             $rs = $visitor->endVisitingObject($metadata, $data, $type);
+            $this->depth--;
             $this->afterVisitingObject($metadata, self::DIRECTION_SERIALIZATION === $this->direction ? $data : $rs);
 
             return $rs;

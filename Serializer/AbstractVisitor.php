@@ -24,7 +24,6 @@ abstract class AbstractVisitor implements VisitorInterface
 {
     protected $namingStrategy;
     protected $customHandlers;
-    protected $depth;
 
     public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers)
     {
@@ -40,10 +39,5 @@ abstract class AbstractVisitor implements VisitorInterface
     public function prepare($data)
     {
         return $data;
-    }
-
-    public function getDepth()
-    {
-        return $this->depth;
     }
 }

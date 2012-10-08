@@ -143,7 +143,6 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
     public function startVisitingObject(ClassMetadata $metadata, $data, $type)
     {
-        $this->depth++;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
@@ -184,7 +183,6 @@ class YamlSerializationVisitor extends AbstractSerializationVisitor
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
     {
-        $this->depth--;
     }
 
     public function visitPropertyUsingCustomHandler(PropertyMetadata $metadata, $object)

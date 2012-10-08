@@ -113,8 +113,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
 
         $this->dataStack->push($this->data);
         $this->data = array();
-
-        $this->depth++;
     }
 
     public function endVisitingObject(ClassMetadata $metadata, $data, $type)
@@ -125,8 +123,6 @@ abstract class GenericSerializationVisitor extends AbstractSerializationVisitor
         if ($this->root instanceof \stdClass && 0 === $this->dataStack->count()) {
             $this->root = $rs;
         }
-
-        $this->depth--;
 
         return $rs;
     }

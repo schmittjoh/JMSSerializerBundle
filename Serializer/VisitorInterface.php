@@ -38,5 +38,4 @@ interface VisitorInterface
     function setNavigator(GraphNavigator $navigator);
     function getNavigator();
     function getResult();
-    function getDepth();
 }
