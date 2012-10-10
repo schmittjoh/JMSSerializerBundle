@@ -77,10 +77,11 @@ use Symfony\Component\Yaml\Inline;
 
 abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
 {
+    protected $factory;
     protected $dispatcher;
     protected $serializer;
     protected $handlerRegistry;
-    protected $serializatonVisitors;
+    protected $serializationVisitors;
     protected $deserializationVisitors;
 
     public function testString()
