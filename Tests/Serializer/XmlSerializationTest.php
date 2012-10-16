@@ -104,7 +104,10 @@ class XmlSerializationTest extends BaseSerializationTest
             '<!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">',
             '<!DOCTYPE author [<!ENTITY foo SYSTEM "php://filter/read=convert.base64-encode/resource='.basename(__FILE__).'">]>'));
 
-        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), array(), array('xml' => $xmlVisitor));
+        $router = $this->getMockBuilder('Symfony\Component\Routing\RouterInterface')
+                    ->getMock();
+
+        $serializer = new Serializer(new MetadataFactory(new AnnotationDriver(new AnnotationReader())), $router, array(), array('xml' => $xmlVisitor));
 
         $serializer->deserialize('<?xml version="1.0"?>
             <!DOCTYPE authorized SYSTEM "http://authorized_url.dtd">

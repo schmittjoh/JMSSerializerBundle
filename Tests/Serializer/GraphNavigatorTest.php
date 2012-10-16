@@ -36,7 +36,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('shouldSkipProperty')
             ->with($metadata->propertyMetadata['foo'], $object);
 
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $exclusionStrategy);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_SERIALIZATION, $this->metadataFactory, $this->router, $exclusionStrategy);
         $this->navigator->accept($object, null, $this->visitor);
     }
 
@@ -54,7 +54,7 @@ class GraphNavigatorTest extends \PHPUnit_Framework_TestCase
             ->method('shouldSkipProperty')
             ->with($metadata->propertyMetadata['foo'], null);
 
-        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, $exclusionStrategy);
+        $this->navigator = new GraphNavigator(GraphNavigator::DIRECTION_DESERIALIZATION, $this->metadataFactory, $this->router, $exclusionStrategy);
         $this->navigator->accept('random', $class, $this->visitor);
     }
 
