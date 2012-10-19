@@ -70,7 +70,7 @@ class HalJsonSerializationTest extends BaseSerializationTest
             $outputs['virtual_properties_low'] = '{"low":1}';
             $outputs['virtual_properties_high'] = '{"high":8}';
             $outputs['virtual_properties_all'] = '{"low":1,"high":8}';
-            $outputs['link'] = '{"_links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/42\/"}},"serialized":"Miha"}';
+            $outputs['link'] = '{"_links":{"http:\/\/rels.kartoncek.si\/rel1":{"href":"\/p1\/123\/p2\/link rulez\/p3\/static1\/"},"http:\/\/rels.kartoncek.si\/rel2":{"href":"http:\/\/example.com\/p1\/123\/p2\/link rulez\/p3\/{placeholder}\/","name":"pebkac","templated":true}},"serialized":"Miha"}';
             $outputs['traversable'] = '{"_embedded":{"items":[{"full_name":"Johannes"},{"full_name":"Miha"}]}}';
             $outputs['log_list'] = '{"_embedded":{"items":[{"_embedded":{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}},{"_embedded":{"author_list":[{"full_name":"Johannes Schmitt"},{"full_name":"John Doe"}],"comments":[{"author":{"full_name":"Foo Bar"},"text":"foo"},{"author":{"full_name":"Foo Bar"},"text":"bar"},{"author":{"full_name":"Foo Bar"},"text":"baz"}]}}]}}';
         }

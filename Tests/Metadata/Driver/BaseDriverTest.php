@@ -77,6 +77,8 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             ),
             'http://rels.kartoncek.si/rel1',
             null,
+            null,
+            false,
             null
         );
         $this->assertEquals($l, $m->links[0]);
@@ -87,11 +89,13 @@ abstract class BaseDriverTest extends \PHPUnit_Framework_TestCase
             array(
                  'p1' => array('type' => 'property', 'value' => 'prop1'),
                  'p2' => array('type' => 'method', 'value' => 'method1'),
-                 'p3' => array('type' => 'static', 'value' => '42')
+                 'p3' => array('type' => 'static', 'value' => '{placeholder}')
             ),
             'http://rels.kartoncek.si/rel2',
             '__links',
-            '_link'
+            '_link',
+            true,
+            'pebkac'
         );
         $this->assertEquals($l, $m->links[1]);
 

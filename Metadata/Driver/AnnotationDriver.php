@@ -91,7 +91,9 @@ class AnnotationDriver implements DriverInterface
                     $annot->getRouteParameters(),
                     $annot->getLinkRel(),
                     $annot->getCollectionNodeName(),
-                    $annot->getNodeName()
+                    $annot->getNodeName(),
+                    $annot->isTemplated(),
+                    $annot->getName()
                 ));
             }
         }

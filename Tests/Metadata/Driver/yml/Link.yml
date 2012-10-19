@@ -13,7 +13,9 @@ JMS\SerializerBundle\Tests\Fixtures\Link:
             nodeName:           _link
             route:              r2
             rel:                "http://rels.kartoncek.si/rel2"
+            templated:          true
+            name:               pebkac
             parameters:
                 - {name: "p1", type: "property", value: "prop1"}
                 - {name: "p2", type: "method", value: "method1"}
-                - {name: "p3", type: "static", value: "42"}
+                - {name: "p3", type: "static", value: "{placeholder}"}

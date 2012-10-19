@@ -215,11 +215,21 @@ final class GraphNavigator
                     }
                 }
 
+                $uri = $this->router->generate($linkData->getRouteName(), $parameters, $linkData->generateAbsolute());
+                if ($linkData->isTemplated()) {
+                    $uri = str_replace(array('%7B', '%7b', '%7D', '%7d'), array('{', '{', '}', '}'), $uri);
+                }
                 $link = array(
-                    'href'  => $this->router->generate($linkData->getRouteName(), $parameters, $linkData->generateAbsolute()),
+                    'href'  => $uri,
                 );
                 if (null !== $linkData->getLinkRel()) {
                     $link['rel'] = $linkData->getLinkRel();
+                }
+                if (null !== $linkData->getName()) {
+                    $link['name'] = $linkData->getName();
+                }
+                if ($linkData->isTemplated()) {
+                    $link['templated'] = $linkData->isTemplated();
                 }
                 $links[$linkData->getCollectionNodeName()][$linkData->getNodeName()][] = $link;
             }

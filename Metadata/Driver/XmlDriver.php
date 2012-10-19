@@ -261,7 +261,9 @@ class XmlDriver extends AbstractFileDriver
                 count($parameters) > 0 ? $parameters : array(),
                 isset($link->attributes()->rel) ? (string) $link->attributes()->rel : null,
                 isset($link->attributes()->collectionNodeName) ? (string) $link->attributes()->collectionNodeName : null,
-                isset($link->attributes()->nodeName) ? (string) $link->attributes()->nodeName : null
+                isset($link->attributes()->nodeName) ? (string) $link->attributes()->nodeName : null,
+                isset($link->attributes()->templated) ? (bool) $link->attributes()->templated : null,
+                isset($link->attributes()->name) ? (string) $link->attributes()->name : null
             ));
         }
 

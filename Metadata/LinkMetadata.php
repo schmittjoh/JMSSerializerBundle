@@ -29,19 +29,23 @@ class LinkMetadata implements \Serializable
     static $TYPES = array('property', 'method', 'static');
 
     /** @var string */
-    private $route;
+    public $route;
     /** @var boolean */
-    private $absolute;
+    public $absolute;
     /** @var array */
-    private $parameters;
+    public $parameters;
     /** @var string */
-    private $rel;
+    public $rel;
     /** @var string */
-    private $collectionNodeName;
+    public $collectionNodeName;
     /** @var string */
-    private $nodeName;
+    public $nodeName;
+    /** @var bool */
+    public $templated;
+    /** @var string */
+    public $name;
 
-    public function __construct($route, $absolute, array $parameters, $rel, $collectionNodeName, $nodeName)
+    public function __construct($route, $absolute, array $parameters, $rel, $collectionNodeName, $nodeName, $templated, $name)
     {
         $this->route = $route;
         $this->absolute = $absolute;
@@ -49,6 +53,8 @@ class LinkMetadata implements \Serializable
         $this->rel = $rel;
         $this->collectionNodeName = $collectionNodeName;
         $this->nodeName = $nodeName;
+        $this->templated = $templated;
+        $this->name = $name;
     }
 
     /**
@@ -63,6 +69,8 @@ class LinkMetadata implements \Serializable
             $this->rel,
             $this->collectionNodeName,
             $this->nodeName,
+            $this->templated,
+            $this->name,
         ));
     }
 
@@ -78,6 +86,8 @@ class LinkMetadata implements \Serializable
             $this->rel,
             $this->collectionNodeName,
             $this->nodeName,
+            $this->templated,
+            $this->name,
         ) = unserialize($serialized);
     }
 
@@ -127,5 +137,21 @@ class LinkMetadata implements \Serializable
     public function getNodeName()
     {
         return is_null($this->nodeName) || ('' == $this->nodeName) ? 'link' : $this->nodeName;
+    }
+
+    public function isTemplated()
+    {
+        return is_bool($this->templated) ? $this->templated : false;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

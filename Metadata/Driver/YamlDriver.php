@@ -238,7 +238,9 @@ class YamlDriver extends AbstractFileDriver
                     $parameters,
                     isset($link['rel']) ? $link['rel'] : null,
                     isset($link['collectionNodeName']) ? $link['collectionNodeName'] : null,
-                    isset($link['nodeName']) ? $link['nodeName'] : null
+                    isset($link['nodeName']) ? $link['nodeName'] : null,
+                    isset($link['templated']) ? $link['templated'] : null,
+                    isset($link['name']) ? $link['name'] : null
                 ));
             }
         }

@@ -41,8 +41,10 @@ use JMS\SerializerBundle\Annotation\Exclude;
  *      parameters={
  *          {"name"="p1", "type"="property", "value"="prop1"},
  *          {"name"="p2", "type"="method", "value"="method1"},
- *          {"name"="p3", "type"="static", "value"="42"}
- *      }
+ *          {"name"="p3", "type"="static", "value"="{placeholder}"}
+ *      },
+ *      name="pebkac",
+ *      templated=true
  * )
  */
 class Link

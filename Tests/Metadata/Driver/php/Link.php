@@ -15,6 +15,8 @@ $l = new LinkMetadata(
     ),
     'http://rels.kartoncek.si/rel1',
     null,
+    null,
+    false,
     null
 );
 $metadata->addLink($l);
@@ -25,11 +27,13 @@ $l = new LinkMetadata(
     array(
          'p1' => array('type' => 'property', 'value' => 'prop1'),
          'p2' => array('type' => 'method', 'value' => 'method1'),
-         'p3' => array('type' => 'static', 'value' => '42')
+         'p3' => array('type' => 'static', 'value' => '{placeholder}'),
     ),
     'http://rels.kartoncek.si/rel2',
     '__links',
-    '_link'
+    '_link',
+    true,
+    'pebkac'
 );
 $metadata->addLink($l);
 

@@ -41,6 +41,10 @@ final class Link
     private $collectionNodeName;
     /** @var string */
     private $nodeName;
+    /** @var bool */
+    private $templated;
+    /** @var string */
+    private $name;
 
     public function __construct(array $values)
     {
@@ -94,6 +98,14 @@ final class Link
                 );
             }
         }
+
+        if (isset($values['templated'])) {
+            $this->templated = $values['templated'];
+        }
+
+        if (isset($values['name'])) {
+            $this->name = $values['name'];
+        }
     }
 
     /**
@@ -142,5 +154,21 @@ final class Link
     public function getNodeName()
     {
         return $this->nodeName;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTemplated()
+    {
+        return $this->templated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }
