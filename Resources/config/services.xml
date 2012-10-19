@@ -42,6 +42,7 @@
         <parameter key="jms_serializer.handler_registry.class">JMS\SerializerBundle\Serializer\Handler\LazyHandlerRegistry</parameter>
 
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
+        <parameter key="jms_serializer.dateinterval_handler.class">JMS\SerializerBundle\Serializer\Handler\DateIntervalHandler</parameter>
         <parameter key="jms_serializer.array_collection_handler.class">JMS\SerializerBundle\Serializer\Handler\ArrayCollectionHandler</parameter>
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
@@ -62,6 +63,9 @@
             <argument type="service" id="service_container" />
         </service>
         <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+        <service id="jms_serializer.dateinterval_handler" class="%jms_serializer.dateinterval_handler.class%">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
         <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%">

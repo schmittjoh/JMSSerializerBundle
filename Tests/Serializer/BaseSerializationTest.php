@@ -19,6 +19,8 @@
 namespace JMS\SerializerBundle\Tests\Serializer;
 
 use JMS\SerializerBundle\Serializer\GraphNavigator;
+use JMS\SerializerBundle\Serializer\Handler\DateIntervalHandler;
+use JMS\SerializerBundle\Tests\Fixtures\Duration;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\IdentityTranslator;
 use JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber;
@@ -535,6 +537,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->getContent('hash_empty'), $this->serializer->serialize(new ObjectWithEmptyHash(), $this->getFormat()));
     }
 
+    public function testDateInterval()
+    {
+        $duration = new Duration();
+
+        $duration->duration = new \DateInterval('PT45M');
+
+        $this->assertEquals($this->getContent('date_interval'), $this->serializer->serialize($duration, $this->getFormat()));
+    }
+
     abstract protected function getContent($key);
     abstract protected function getFormat();
 
@@ -560,6 +571,7 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateTimeHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new DateIntervalHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator(new MessageSelector())));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
         $this->handlerRegistry->registerHandler(GraphNavigator::DIRECTION_SERIALIZATION, 'AuthorList', $this->getFormat(),
