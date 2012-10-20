@@ -60,6 +60,7 @@ use JMS\SerializerBundle\Tests\Fixtures\GetSetObject;
 use JMS\SerializerBundle\Tests\Fixtures\GroupsObject;
 use JMS\SerializerBundle\Tests\Fixtures\IndexedCommentsBlogPost;
 use JMS\SerializerBundle\Tests\Fixtures\InlineParent;
+use JMS\SerializerBundle\Tests\Fixtures\InitializedObjectConstructor;
 use JMS\SerializerBundle\Tests\Fixtures\Log;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithLifecycleCallbacks;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithVersionedVirtualProperties;
@@ -533,6 +534,32 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testObjectWithEmptyHash()
     {
         $this->assertEquals($this->getContent('hash_empty'), $this->serializer->serialize(new ObjectWithEmptyHash(), $this->getFormat()));
+    }
+
+    public function testDeserializingNull()
+    {
+        if (get_class($this) === 'JMS\SerializerBundle\Tests\Serializer\XmlSerializationTest') {
+            $this->markTestSkipped('Deserializing null not working in XML.');
+        }
+
+        $objectConstructor = new InitializedObjectConstructor();
+        $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
+        $this->serializer->setSerializeNull(true);
+
+        $post = new BlogPost('This is a nice title.', $author = new Author('Foo Bar'), new \DateTime('2011-07-30 00:00', new \DateTimeZone('UTC')));
+
+        $this->setField($post, 'author', null);
+
+        $this->assertEquals($this->getContent('blog_post_unauthored'), $this->serialize($post));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent('blog_post_unauthored'), get_class($post));
+            $this->assertEquals('2011-07-30T00:00:00+0000', $this->getField($deserialized, 'createdAt')->format(\DateTime::ISO8601));
+            $this->assertAttributeEquals('This is a nice title.', 'title', $deserialized);
+            $this->assertAttributeSame(false, 'published', $deserialized);
+            $this->assertAttributeEquals(new ArrayCollection(), 'comments', $deserialized);
+            $this->assertEquals(null, $this->getField($deserialized, 'author'));
+        }
     }
 
     abstract protected function getContent($key);
