@@ -56,6 +56,7 @@ file of your Symfony Standard Distribution:
     [JMSSerializerBundle]
         git=git://github.com/schmittjoh/JMSSerializerBundle.git
         target=bundles/JMS/SerializerBundle
+        version=0.9.0
 
 Then register the bundle with your kernel:
 
