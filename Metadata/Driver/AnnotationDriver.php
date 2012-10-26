@@ -163,6 +163,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->xmlKeyAttribute = $annot->keyAttribute;
                     } else if ($annot instanceof XmlKeyValuePairs) {
                         $propertyMetadata->xmlKeyValuePairs = true;
+                        $propertyMetadata->xmlEntryName = $annot->entry;
+                        $propertyMetadata->xmlCollectionInline = $annot->inline;
                     } else if ($annot instanceof XmlAttribute) {
                         $propertyMetadata->xmlAttribute = true;
                     } else if ($annot instanceof XmlValue) {
