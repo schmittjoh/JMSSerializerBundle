@@ -161,9 +161,9 @@
         </service>
 
         <!-- PHP templating helper -->
-        <service id="jms_serializer.templating.helper.serializer" class="%jms_serializer.templating.helper.class%" public="false">
+        <service id="jms_serializer.templating.helper.serializer" class="%jms_serializer.templating.helper.class%">
             <argument type="service" id="serializer" />
-            <tag type="templating.helper" alias="serializer" />
+            <tag name="templating.helper" alias="jms_serializer" />
         </service>
 
         <!-- Visitors -->
