@@ -22,6 +22,6 @@ namespace JMS\SerializerBundle\Annotation;
  * @Annotation
  * @Target({"PROPERTY","METHOD"})
  */
-final class XmlKeyValuePairs
+final class XmlKeyValuePairs extends XmlCollection
 {
 }
