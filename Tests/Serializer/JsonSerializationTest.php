@@ -82,6 +82,7 @@ class JsonSerializationTest extends BaseSerializationTest
             $outputs['simple_object_nullable'] = '{"foo":"foo","moo":"bar","camel_case":"boo","null_property":null}';
             $outputs['input'] = '{"attributes":{"type":"text","name":"firstname","value":"Adrien"}}';
             $outputs['hash_empty'] = '{"hash":{}}';
+            $outputs['date_time'] = '"2011-08-30T00:00:00+0000"';
         }
 
         if (!isset($outputs[$key])) {

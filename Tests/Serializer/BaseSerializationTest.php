@@ -145,21 +145,26 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getNumerics
      */
-    public function testNumerics($key, $value)
+    public function testNumerics($key, $value, $type)
     {
         $this->assertEquals($this->getContent($key), $this->serialize($value));
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals($value, $this->deserialize($this->getContent($key), is_double($value) ? 'double' : 'integer'));
+            $this->assertEquals($value, $this->deserialize($this->getContent($key), $type));
         }
     }
 
     public function getNumerics()
     {
         return array(
-            array('integer', 1),
-            array('float', 4.533),
-            array('float_trailing_zero', 1.0),
+            array('null', null, 'integer'),
+            array('null', null, 'double'),
+            array('null', null, 'float'),
+            array('integer', 1, 'integer'),
+            array('float', 4.533, 'double'),
+            array('float', 4.533, 'float'),
+            array('float_trailing_zero', 1.0, 'double'),
+            array('float_trailing_zero', 1.0, 'float'),
         );
     }
 
@@ -225,6 +230,33 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testArrayMixed()
     {
         $this->assertEquals($this->getContent('array_mixed'), $this->serialize(array('foo', 1, true, new SimpleObject('foo', 'bar'), array(1, 3, true))));
+    }
+
+    /**
+     * @dataProvider getDateTime
+     */
+    public function testDateTime($key, $value, $type)
+    {
+        $this->assertEquals($this->getContent($key), $this->serialize($value, $type));
+
+        if ($this->hasDeserializer()) {
+            $deserialized = $this->deserialize($this->getContent($key), $type);
+
+            if (is_object($deserialized)) {
+                $this->assertEquals(get_class($value), get_class($deserialized));
+                $this->assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
+            } else {
+                $this->assertEquals($value, $deserialized);
+            }
+        }
+    }
+
+    public function getDateTime()
+    {
+        return array(
+            array('null', null, 'DateTime'),
+            array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
+        );
     }
 
     public function testBlogPost()
