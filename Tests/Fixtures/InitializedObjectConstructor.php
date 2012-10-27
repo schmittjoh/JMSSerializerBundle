@@ -38,6 +38,8 @@ class InitializedObjectConstructor implements ObjectConstructorInterface
         $post->comments = new ArrayCollection();
         $post->published = false;
 
+        $post->comments->add(new \StdClass);
+
         return $post;
     }
 }
