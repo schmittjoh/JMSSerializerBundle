@@ -72,7 +72,7 @@ class DateTimeHandler implements SubscribingHandlerInterface
     public function serializeDateTimeToYml(YamlSerializationVisitor $visitor, $date, array $type)
     {
         if ($date === null) {
-            return Inline::dump('null');
+            return $visitor->visitNull(null, $type);
         }
 
         return $visitor->visitString($date->format($this->getFormat($type)), $type);
@@ -81,7 +81,7 @@ class DateTimeHandler implements SubscribingHandlerInterface
     public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, $date, array $type)
     {
         if ($date === null) {
-            return 'null';
+            return $visitor->visitNull(null, $type);
         }
 
         return $visitor->visitString($date->format($this->getFormat($type)), $type);

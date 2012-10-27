@@ -241,7 +241,7 @@ final class GraphNavigator
     {
         if (null === $object) {
             throw new InvalidArgumentException('$object cannot be null');
-        } else if (!is_object($object)) {
+        } elseif (!is_object($object)) {
             throw new InvalidArgumentException(sprintf('Expected an object to detach, given "%s".', gettype($object)));
         }
 
