@@ -107,13 +107,28 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $this->serializer->setSerializeNull(false);
     }
 
-    public function testNull()
+    /**
+     * @dataProvider getTypes
+     */
+    public function testNull($type)
     {
-        $this->assertEquals($this->getContent('null'), $this->serialize(null));
+        $this->assertEquals($this->getContent('null'), $this->serialize(null), $type);
 
         if ($this->hasDeserializer()) {
-            $this->assertEquals(null, $this->deserialize($this->getContent('null'), 'NULL'));
+            $this->assertEquals(null, $this->deserialize($this->getContent('null'), $type));
         }
+    }
+
+    public function getTypes()
+    {
+        return array(
+            array('NULL'),
+            array('integer'),
+            array('double'),
+            array('float'),
+            array('string'),
+            array('DateTime'),
+        );
     }
 
     public function testString()
@@ -157,9 +172,6 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function getNumerics()
     {
         return array(
-            array('null', null, 'integer'),
-            array('null', null, 'double'),
-            array('null', null, 'float'),
             array('integer', 1, 'integer'),
             array('float', 4.533, 'double'),
             array('float', 4.533, 'float'),
@@ -242,19 +254,15 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         if ($this->hasDeserializer()) {
             $deserialized = $this->deserialize($this->getContent($key), $type);
 
-            if (is_object($deserialized)) {
-                $this->assertEquals(get_class($value), get_class($deserialized));
-                $this->assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
-            } else {
-                $this->assertEquals($value, $deserialized);
-            }
+            $this->assertTrue(is_object($deserialized));
+            $this->assertEquals(get_class($value), get_class($deserialized));
+            $this->assertEquals($value->getTimestamp(), $deserialized->getTimestamp());
         }
     }
 
     public function getDateTime()
     {
         return array(
-            array('null', null, 'DateTime'),
             array('date_time', new \DateTime('2011-08-30 00:00', new \DateTimeZone('UTC')), 'DateTime'),
         );
     }
