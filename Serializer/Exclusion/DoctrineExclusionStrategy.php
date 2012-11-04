@@ -20,7 +20,6 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
-use JMS\SerializerBundle\Exception\RuntimeException;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -39,7 +38,7 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
     private $managerRegistry;
 
     /**
-     * @param Doctrine\Common\Persistence\ManagerRegistry $managerRegistry
+     * @param ManagerRegistry $managerRegistry
      */
     public function __construct(ManagerRegistry $managerRegistry)
     {
@@ -62,8 +61,12 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
      */
     public function setExposeClass($className, $clear = false)
     {
-        if ($clear) $this->exposeClasses = array();
-        if (strlen($className) > 0) $this->exposeClasses[$className] = true;
+        if ($clear) {
+            $this->exposeClasses = array();
+        }
+        if (strlen($className) > 0) {
+            $this->exposeClasses[$className] = true;
+        }
     }
 
     /**
@@ -109,8 +112,7 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
         $identifierValuesList  = $classMetadata->getIdentifierValues($object);
         $missingIdentifierList = array_filter(
             $identifierList,
-            function ($identifier) use ($identifierValuesList)
-            {
+            function ($identifier) use ($identifierValuesList) {
                 return !isset($identifierValuesList[$identifier]);
             }
         );
@@ -143,5 +145,4 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
         }
     }
 }
-
 ?>
