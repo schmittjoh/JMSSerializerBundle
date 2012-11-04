@@ -95,6 +95,11 @@ final class GraphNavigator
      */
     public function accept($data, array $type = null, VisitorInterface $visitor)
     {
+        // if data is null, then stop to traverse
+        if (null === $data) {
+            return;
+        }
+
         // If the type was not given, we infer the most specific type from the
         // input data in serialization mode.
         if (null === $type) {

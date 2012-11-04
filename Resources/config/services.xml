@@ -26,6 +26,7 @@
         <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor</parameter>
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
+        <parameter key="jms_serializer.doctrine_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\DoctrineExclusionStrategy</parameter>
 
         <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
 
@@ -124,7 +125,12 @@
                  class="%jms_serializer.version_exclusion_strategy.class%"
                  public="false"
                  abstract="true" />
-
+        <service id="jms_serializer.doctrine_exclusion_strategy"
+                 class="%jms_serializer.doctrine_exclusion_strategy.class%"
+                 public="true">
+            <argument type="service" id="doctrine" />
+        </service>
+        
         <!-- Naming Strategies -->
         <service id="jms_serializer.camel_case_naming_strategy" class="%jms_serializer.camel_case_naming_strategy.class%" public="false" />
         <service id="jms_serializer.serialized_name_annotation_strategy" class="%jms_serializer.serialized_name_annotation_strategy.class%" public="false">
@@ -156,6 +162,22 @@
             <tag name="jms_serializer.serializer" />
         </service>
         <service id="serializer" alias="jms_serializer.serializer" />
+        <service id="jms_serializer.doctrine_serializer" class="%jms_serializer.serializer.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata_factory" />
+            <argument type="service" id="jms_serializer.handler_registry" />
+            <argument type="service" id="jms_serializer.doctrine_object_constructor" />
+            <argument type="service" id="jms_serializer.event_dispatcher" />
+            <argument>null</argument>
+            <argument type="collection" /><!-- Serialization Visitors -->
+            <argument type="collection" /><!-- Deserialization Visitors -->
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <call method="setExclusionStrategy">
+                <argument type="service" id="jms_serializer.doctrine_exclusion_strategy" />
+            </call>
+            <tag name="jms_serializer.serializer" />
+        </service>
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">
