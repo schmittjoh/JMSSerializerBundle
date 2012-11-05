@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Serializer\Exclusion;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Exclusion strategy for de-/serialization of properties specified in array.
@@ -59,3 +60,4 @@ class ArrayExclusionStrategy implements ExclusionStrategyInterface
         return array_search($property->name, $this->properties) === false;
     }
 }
+?>
