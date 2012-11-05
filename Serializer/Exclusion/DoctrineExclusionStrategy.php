@@ -46,12 +46,12 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
     }
 
     /**
-     * Exception classes, those properties will be serialized without
+     * Array of classes, those properties will be serialized without
      * taking into account the identificator
      *
      * @var array<string>
      */
-    private $exposeClasses = array();
+    private $exposedClasses = array();
 
     /**
      * Add class into the exception list
@@ -59,13 +59,13 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
      * @param string  $className class name without leading "\" (like get_class() returns)
      * @param boolean $clear remove previosly added classes
      */
-    public function setExposeClass($className, $clear = false)
+    public function addExposedClass($className, $clear = false)
     {
         if ($clear) {
-            $this->exposeClasses = array();
+            $this->exposedClasses = array();
         }
         if (strlen($className) > 0) {
-            $this->exposeClasses[$className] = true;
+            $this->exposedClasses[$className] = true;
         }
     }
 
@@ -74,36 +74,30 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
      *
      * @param string $className
      */
-    public function isExposeClass($className)
+    public function hasExposedClass($className)
     {
-        return isset($this->exposeClasses[$className]);
+        return isset($this->exposedClasses[$className]);
     }
 
     /**
-     * Get array of properties for given object to de-/serialize
+     * Get exclusion strategy for given object
      *
      * @param string $class
      * @param object $object
-     * @return array<string> | null The value null means all object properties
+     * @return ExclusionStrategyInterface | null
+     * @note the return value null means that all properties will be de-/serialized
      */
-    public function getPassProperties($class, $object)
+    private function getObjectExclusionStrategy($class, $object)
     {
-        if ($this->isExposeClass($class) || $object == null) {
-            return false;
+        if ($this->hasExposedClass($class) || $object == null) {
+            return null;
         }
 
         // Locate possible ObjectManager
         $objectManager = $this->managerRegistry->getManagerForClass($class);
 
         if (!$objectManager) {
-            return false;
-        }
-
-        // Locate possible ClassMetadata
-        $classMetadataFactory = $objectManager->getMetadataFactory();
-
-        if ($classMetadataFactory->isTransient($class)) {
-            return false;
+            return null;
         }
 
         // Entity update, load it from database
@@ -118,16 +112,15 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
         );
 
         if (count($missingIdentifierList) > 0) {
-            return false;
-        } else {
-            return $identifierList;
+            return null;
         }
+        return new ArrayExclusionStrategy($identifierList);
     }
 
     /**
      * {@inheritDoc}
      */
-    function shouldSkipClass(ClassMetadata $metadata, $object = null)
+    public function shouldSkipClass(ClassMetadata $metadata, $object = null)
     {
         return false;
     }
@@ -135,14 +128,13 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    function shouldSkipProperty(PropertyMetadata $property, $object = null)
+    public function shouldSkipProperty(PropertyMetadata $property, $object = null)
     {
-        $passList = $this->getPassProperties($property->class, $object);
-        if ($passList == false) {
+        $strategy = $this->getObjectExclusionStrategy($property->class, $object);
+        if ($strategy === null) {
             return false;
         } else {
-            return array_search($property->name, $passList) === false;
+            return $strategy->shouldSkipProperty($property, $object);
         }
     }
 }
-?>
