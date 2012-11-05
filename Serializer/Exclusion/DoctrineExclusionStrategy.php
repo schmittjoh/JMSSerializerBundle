@@ -57,7 +57,7 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
      * Add class into the exception list
      *
      * @param string  $className class name without leading "\" (like get_class() returns)
-     * @param boolean $clear remove previosly added classes
+     * @param boolean $clear remove previously added classes
      */
     public function addExposedClass($className, $clear = false)
     {
