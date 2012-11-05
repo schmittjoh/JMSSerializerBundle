@@ -84,7 +84,7 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
      *
      * @param string $class
      * @param object $object
-     * @return ExclusionStrategyInterface | null
+     * @return null|ExclusionStrategyInterface
      * @note the return value null means that all properties will be de-/serialized
      */
     private function getObjectExclusionStrategy($class, $object)
