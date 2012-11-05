@@ -133,8 +133,7 @@ class DoctrineExclusionStrategy implements ExclusionStrategyInterface
         $strategy = $this->getObjectExclusionStrategy($property->class, $object);
         if ($strategy === null) {
             return false;
-        } else {
-            return $strategy->shouldSkipProperty($property, $object);
         }
+        return $strategy->shouldSkipProperty($property, $object);
     }
 }
