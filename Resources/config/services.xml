@@ -26,8 +26,10 @@
         <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor</parameter>
 
         <parameter key="jms_serializer.version_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy</parameter>
+        <parameter key="jms_serializer.group_exclusion_strategy.class">JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy</parameter>
 
         <parameter key="jms_serializer.serializer.class">JMS\SerializerBundle\Serializer\LazyLoadingSerializer</parameter>
+        <parameter key="jms_serializer.builder.class">JMS\SerializerBundle\Serializer\SerializerBuilder</parameter>
 
         <parameter key="jms_serializer.twig_extension.class">JMS\SerializerBundle\Twig\SerializerExtension</parameter>
 
@@ -38,7 +40,7 @@
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.doctype_whitelist" type="collection"></parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
-        
+
         <parameter key="jms_serializer.handler_registry.class">JMS\SerializerBundle\Serializer\Handler\LazyHandlerRegistry</parameter>
 
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
@@ -56,7 +58,7 @@
         <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
         </service>
-        
+
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%">
             <argument type="service" id="service_container" />
@@ -74,7 +76,7 @@
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-            
+
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
@@ -125,6 +127,10 @@
                  public="false"
                  abstract="true" />
 
+        <service id="jms_serializer.group_exclusion_strategy" class="%jms_serializer.group_exclusion_strategy.class%" public="false">
+            <argument type="collection" />
+        </service>
+
         <!-- Naming Strategies -->
         <service id="jms_serializer.camel_case_naming_strategy" class="%jms_serializer.camel_case_naming_strategy.class%" public="false" />
         <service id="jms_serializer.serialized_name_annotation_strategy" class="%jms_serializer.serialized_name_annotation_strategy.class%" public="false">
@@ -155,7 +161,23 @@
             </call>
             <tag name="jms_serializer.serializer" />
         </service>
+        <service id="jms_serializer.builder" class="%jms_serializer.builder.class%" public="false" scope="prototype">
+            <argument type="service" id="jms_serializer.metadata_factory" />
+            <argument type="service" id="jms_serializer.handler_registry" />
+            <argument type="service" id="jms_serializer.object_constructor" />
+            <argument type="service" id="jms_serializer.event_dispatcher" />
+            <argument>null</argument>
+            <argument type="collection" /><!-- Serialization Visitors -->
+            <argument type="collection" /><!-- Deserialization Visitors -->
+            <argument>%jms_serializer.serializer.class%</argument>
+            <argument type="service" id="jms_serializer.group_exclusion_strategy" />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <tag name="jms_serializer.serializer" />
+        </service>
         <service id="serializer" alias="jms_serializer.serializer" />
+        <service id="serializer_builder" alias="jms_serializer.builder" />
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">

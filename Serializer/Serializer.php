@@ -25,9 +25,6 @@ use JMS\SerializerBundle\Serializer\Handler\HandlerRegistryInterface;
 use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\SerializerBundle\Exception\UnsupportedFormatException;
 use Metadata\MetadataFactoryInterface;
-use JMS\SerializerBundle\Exception\InvalidArgumentException;
-use JMS\SerializerBundle\Serializer\Exclusion\VersionExclusionStrategy;
-use JMS\SerializerBundle\Serializer\Exclusion\GroupsExclusionStrategy;
 use JMS\SerializerBundle\Serializer\Exclusion\ExclusionStrategyInterface;
 
 class Serializer implements SerializerInterface
@@ -42,7 +39,7 @@ class Serializer implements SerializerInterface
     private $exclusionStrategy;
     private $serializeNull;
 
-    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, array $serializationVisitors = array(), array $deserializationVisitors = array())
+    public function __construct(MetadataFactoryInterface $factory, HandlerRegistryInterface $handlerRegistry, ObjectConstructorInterface $objectConstructor, EventDispatcherInterface $dispatcher = null, TypeParser $typeParser = null, array $serializationVisitors = array(), array $deserializationVisitors = array(), ExclusionStrategyInterface $exclusionStrategy = null)
     {
         $this->factory = $factory;
         $this->handlerRegistry = $handlerRegistry;
@@ -52,6 +49,7 @@ class Serializer implements SerializerInterface
         $this->serializationVisitors = $serializationVisitors;
         $this->deserializationVisitors = $deserializationVisitors;
         $this->serializeNull = false;
+        $this->exclusionStrategy = $exclusionStrategy;
     }
 
     /**
@@ -60,39 +58,6 @@ class Serializer implements SerializerInterface
     public function setSerializeNull($serializeNull)
     {
         $this->serializeNull = $serializeNull;
-    }
-
-    public function setExclusionStrategy(ExclusionStrategyInterface $exclusionStrategy = null)
-    {
-        $this->exclusionStrategy = $exclusionStrategy;
-    }
-
-    /**
-     * @param integer $version
-     */
-    public function setVersion($version)
-    {
-        if (null === $version) {
-            $this->exclusionStrategy = null;
-
-            return;
-        }
-
-        $this->exclusionStrategy = new VersionExclusionStrategy($version);
-    }
-
-    /**
-     * @param null|array $groups
-     */
-    public function setGroups($groups)
-    {
-        if ( ! $groups) {
-            $this->exclusionStrategy = null;
-
-            return;
-        }
-
-        $this->exclusionStrategy = new GroupsExclusionStrategy((array) $groups);
     }
 
     public function serialize($data, $format)

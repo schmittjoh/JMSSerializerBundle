@@ -20,38 +20,38 @@ namespace JMS\SerializerBundle\Tests\Fixtures;
 
 use JMS\SerializerBundle\Annotation\Groups;
 use JMS\SerializerBundle\Annotation\Type;
+use JMS\SerializerBundle\Annotation\Exclude;
+use JMS\SerializerBundle\Annotation\Until;
+use JMS\SerializerBundle\Annotation\Since;
 
 /** blablub */
-class GroupsObject
+class ChainObject
 {
     /**
-     * @Groups({"foo"})
+     * @Exclude()
+     * @Until("1")
      * @Type("string")
      */
     private $foo;
 
     /**
-     * @Groups({"foo", "bar"})
-     * @Type("string")
-     */
-    private $foobar;
-
-    /**
-     * @Groups({"bar", "Default"})
+     * @Groups({"Default"})
+     * @Since("1")
      * @Type("string")
      */
     private $bar;
 
-     /**
+    /**
+     * @Groups({"bar"})
+     * @Since("1")
      * @Type("string")
      */
-    private $none;
+    private $baz;
 
     public function __construct()
     {
         $this->foo  = "foo";
         $this->bar = "bar";
-        $this->foobar  = "foobar";
-        $this->none = "none";
+        $this->baz = "baz";
     }
 }
