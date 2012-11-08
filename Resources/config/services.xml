@@ -38,7 +38,7 @@
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.doctype_whitelist" type="collection"></parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
-        
+
         <parameter key="jms_serializer.handler_registry.class">JMS\SerializerBundle\Serializer\Handler\LazyHandlerRegistry</parameter>
 
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
@@ -46,6 +46,7 @@
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
         <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
+        <parameter key="jms_serializer.jsonhal_serialization_visitor.class">JMS\SerializerBundle\Serializer\JsonHalSerializationVisitor</parameter>
     </parameters>
 
     <services>
@@ -56,7 +57,7 @@
         <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
         </service>
-        
+
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%">
             <argument type="service" id="service_container" />
@@ -74,7 +75,7 @@
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-            
+
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
@@ -192,5 +193,11 @@
             <argument type="service" id="jms_serializer.naming_strategy" />
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
+        <service id="jms_serialize.jsonhal_serialization_visitor" class="%jms_serializer.jsonhal_serialization_visitor.class%" public="false">
+            <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.object_constructor" />
+            <tag name="jms_serializer.serialization_visitor" format="jsonhal" />
+        </service>
+
     </services>
 </container>
