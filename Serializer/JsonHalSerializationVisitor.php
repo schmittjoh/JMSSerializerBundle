@@ -20,13 +20,49 @@ namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkParameterFactoryInterface;
 use JMS\SerializerBundle\Annotation\Link;
+use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\SerializerBundle\Serializer\Construction\UnserializeObjectConstructor;
+use JMS\SerializerBundle\Exception\InvalidArgumentException;
+
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Form\Util\PropertyPath;
 
 class JsonHalSerializationVisitor extends JsonSerializationVisitor
 {
-    public function visitLink(Link $link)
+    /**
+     * Router for regular (non-templated links)
+     * @var Router
+     */
+    protected $router;
+
+    public function __construct(PropertyNamingStrategyInterface $cacheNamingStrategy,
+        UnserializeObjectConstructor $objectConstructor,
+        RouterInterface $router,
+        LinkParameterFactoryInterface $linkParameterFactory
+        )
     {
-        $this->data['_links'][$link->rel] []= $link->href;
+        parent::__construct($cacheNamingStrategy);
+
+        $this->router               = $router;
+        $this->linkParameterFactory = $linkParameterFactory;
+    }
+
+    public function visitLink(Link $link, $data)
+    {
+        if (!empty($link->route)) {
+            $routeParams = $this->linkParameterFactory->generateParameters($link->parameters, $data);
+            $l = $this->router->generate($link->route, $routeParams, true);
+        } else if (!empty($link->href)) {
+            $l = $link->href;
+        } else {
+            throw new InvalidArgumentException("A link needs either an href or a route");
+        }
+        // if ($link->rel != 'rel') {
+
+            $this->data['_links'][$link->rel] []= $l;
+        // }
 
         return $this->data;
     }
@@ -44,6 +80,12 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
         $k = $this->namingStrategy->translateName($metadata);
 
         if (is_array($v)) {
+            if (is_array($v)) {
+                if (!empty($v[0]['_links']['rel'][0])) {
+                    $k = (string) $v[0]['_links']['rel'][0];
+                }
+            }
+
             $this->data['_embedded'][$k] = $v;
         } else {
             $this->data[$k] = $v;

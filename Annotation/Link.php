@@ -32,6 +32,11 @@ final class Link
     public $templated;
 
     /**
+     * @var array
+     */
+    public $parameters;
+
+    /**
      * @var string
      */
     public $title;
