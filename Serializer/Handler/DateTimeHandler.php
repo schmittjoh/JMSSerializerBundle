@@ -60,32 +60,50 @@ class DateTimeHandler implements SubscribingHandlerInterface
         $this->defaultTimezone = new \DateTimeZone($defaultTimezone);
     }
 
-    public function serializeDateTimeToXml(XmlSerializationVisitor $visitor, \DateTime $date, array $type)
+    public function serializeDateTimeToXml(XmlSerializationVisitor $visitor, $date, array $type)
     {
-        if (null === $visitor->document) {
-            $visitor->document = $visitor->createDocument(null, null, true);
+        if ($date === null) {
+            return $visitor->visitNull(null, $type);
         }
 
-        return $visitor->document->createTextNode($date->format($this->getFormat($type)));
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
-    public function serializeDateTimeToYml(YamlSerializationVisitor $visitor, \DateTime $date, array $type)
+    public function serializeDateTimeToYml(YamlSerializationVisitor $visitor, $date, array $type)
     {
-        return Inline::dump($date->format($this->getFormat($type)));
+        if ($date === null) {
+            return $visitor->visitNull(null, $type);
+        }
+
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
-    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, \DateTime $date, array $type)
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, $date, array $type)
     {
-        return $date->format($this->getFormat($type));
+        if ($date === null) {
+            return $visitor->visitNull(null, $type);
+        }
+
+        return $visitor->visitString($date->format($this->getFormat($type)), $type);
     }
 
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
+        $attributes = $data->attributes();
+
+        if (isset($attributes['nil'][0]) && (string) $attributes['nil'][0] === 'true') {
+            return null;
+        }
+
         return $this->parseDateTime($data, $type);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
     {
+        if ($data === null) {
+            return null;
+        }
+
         return $this->parseDateTime($data, $type);
     }
 
