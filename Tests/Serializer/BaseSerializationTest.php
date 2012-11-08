@@ -38,6 +38,7 @@ use JMS\SerializerBundle\Serializer\Handler\ObjectBasedCustomHandler;
 use JMS\SerializerBundle\Serializer\Handler\SerializationHandlerInterface;
 use JMS\SerializerBundle\Serializer\JsonDeserializationVisitor;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
+use JMS\SerializerBundle\Serializer\JsonHalSerializationVisitor;
 use JMS\SerializerBundle\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\SerializerBundle\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\SerializerBundle\Serializer\Serializer;
@@ -593,13 +594,14 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
         $namingStrategy = new SerializedNameAnnotationStrategy(new CamelCaseNamingStrategy());
         $objectConstructor = new UnserializeObjectConstructor();
         $this->serializationVisitors = array(
-            'json' => new JsonSerializationVisitor($namingStrategy),
-            'xml'  => new XmlSerializationVisitor($namingStrategy),
-            'yml'  => new YamlSerializationVisitor($namingStrategy),
+            'json'     => new JsonSerializationVisitor($namingStrategy),
+            'xml'      => new XmlSerializationVisitor($namingStrategy),
+            'yml'      => new YamlSerializationVisitor($namingStrategy),
+            'jsonhal'  => new JsonHalSerializationVisitor($namingStrategy),
         );
         $this->deserializationVisitors = array(
-            'json' => new JsonDeserializationVisitor($namingStrategy),
-            'xml'  => new XmlDeserializationVisitor($namingStrategy),
+            'json'     => new JsonDeserializationVisitor($namingStrategy),
+            'xml'      => new XmlDeserializationVisitor($namingStrategy),
         );
 
         $this->serializer = new Serializer($this->factory, $this->handlerRegistry, $objectConstructor, $this->dispatcher, null, $this->serializationVisitors, $this->deserializationVisitors);
