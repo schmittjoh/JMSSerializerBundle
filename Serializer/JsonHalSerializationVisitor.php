@@ -20,26 +20,16 @@ namespace JMS\SerializerBundle\Serializer;
 
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Annotation\Link;
 
 class JsonHalSerializationVisitor extends JsonSerializationVisitor
 {
-    // public function visitLink($data, $type)
-    // {
-    //     $final = array('_links' => array());
+    public function visitLink(Link $link)
+    {
+        $this->data['_links'][$link->rel] []= $link->href;
 
-    //     foreach ($data as $linkNodes) {
-    //         foreach ($linkNodes as $links) {
-    //             foreach ($links as $link) {
-    //                 $rel = $link['rel'];
-    //                 unset($link['rel']);
-    //                 $newData = parent::visitArray($link, $type);
-    //                 $final['_links'][$rel] = $newData;
-    //             }
-    //         }
-    //     }
-
-    //     $this->data = array_merge($this->data, $final);
-    // }
+        return $this->data;
+    }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
     {
@@ -54,33 +44,10 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
         $k = $this->namingStrategy->translateName($metadata);
 
         if (is_array($v)) {
-            $this->data['_embedded'][$k] = $v; //array_merge($this->data, $v);
+            $this->data['_embedded'][$k] = $v;
         } else {
             $this->data[$k] = $v;
         }
-
-
-        // echo "<pre>";
-        // print_r($metadata);
-        // return parent::visitProperty($metadata, $data);
-        // $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
-        //         : $data->{$metadata->getter}());
-
-        // $v = $this->navigator->accept($v, null, $this);
-        // if (null === $v) {
-        //     return;
-        // }
-
-        // if ($metadata->inline && is_array($v)) {
-        //     $this->data = array_merge($this->data, $v);
-        // } else {
-        //     $k = $this->namingStrategy->translateName($metadata);
-        //     if ($metadata->xmlCollection || $metadata->xmlCollectionInline) {
-        //         $this->data['_embedded'][$k] = $v;
-        //     } else {
-        //         $this->data[$k] = $v;
-        //     }
-        // }
     }
 
     public function visitTraversable(ClassMetadata $metadata, $data, $type)

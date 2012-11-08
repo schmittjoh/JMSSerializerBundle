@@ -23,6 +23,7 @@ use Metadata\MergeableInterface;
 use Metadata\MethodMetadata;
 use Metadata\MergeableClassMetadata;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
+use JMS\SerializerBundle\Annotation\Link;
 
 /**
  * Class Metadata used to customize the serialization process.
@@ -42,6 +43,7 @@ class ClassMetadata extends MergeableClassMetadata
     public $accessorOrder;
     public $customOrder;
     public $handlerCallbacks = array();
+    protected $links = array();
 
     /**
      * Sets the order of properties in the class.
@@ -126,6 +128,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
+            $this->links,
             parent::serialize(),
         ));
     }
@@ -139,6 +142,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->xmlRootName,
             $this->accessorOrder,
             $this->customOrder,
+            $this->links,
             $parentStr
         ) = unserialize($str);
 
@@ -174,5 +178,19 @@ class ClassMetadata extends MergeableClassMetadata
                 });
                 break;
         }
+    }
+
+    public function addLink(Link $l)
+    {
+        if ($l->rel == 'self') {
+            $this->links[$l->rel] = array($l);
+        } else {
+            $this->links[$l->rel] []= $l;
+        }
+    }
+
+    public function getLinks()
+    {
+        return $this->links;
     }
 }

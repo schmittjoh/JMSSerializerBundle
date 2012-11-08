@@ -56,6 +56,7 @@ use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Metadata\VirtualPropertyMetadata;
 use JMS\SerializerBundle\Annotation\XmlAttributeMap;
+use JMS\SerializerBundle\Annotation\Link;
 use Metadata\Driver\DriverInterface;
 
 class AnnotationDriver implements DriverInterface
@@ -89,6 +90,8 @@ class AnnotationDriver implements DriverInterface
                 $classAccessType = $annot->type;
             } else if ($annot instanceof AccessorOrder) {
                 $classMetadata->setAccessorOrder($annot->order, $annot->custom);
+            } else if ($annot instanceof Link) {
+                $classMetadata->addLink($annot);
             }
         }
 
