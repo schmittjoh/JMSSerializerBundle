@@ -134,7 +134,10 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         $v = (null === $metadata->getter ? $metadata->reflection->getValue($data)
                 : $data->{$metadata->getter}());
 
-        $v = $this->navigator->accept($v, $metadata->type, $this);
+        if ($v !== null) {
+            $v = $this->navigator->accept($v, $metadata->type, $this);
+        }
+
         if (null === $v && !$this->shouldSerializeNull()) {
             return;
         }

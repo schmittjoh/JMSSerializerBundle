@@ -173,18 +173,21 @@ class YamlSerializationVisitor extends AbstractVisitor
 
         $count = $this->writer->changeCount;
 
-        if (null !== $v = $this->navigator->accept($v, $metadata->type, $this)) {
+        if ($v === null) {
+            $this->writer->rtrim(false)->writeln(' null');
+        } elseif (null !== $v = $this->navigator->accept($v, $metadata->type, $this)) {
             $this->writer
                 ->rtrim(false)
                 ->writeln(' '.$v)
             ;
-        } else if ($count === $this->writer->changeCount) {
+        } elseif ($count === $this->writer->changeCount) {
             $this->writer->revert();
         }
 
         if (!$metadata->inline) {
             $this->writer->outdent();
         }
+
         $this->revertCurrentMetadata();
     }
 
