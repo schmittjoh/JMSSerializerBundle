@@ -52,6 +52,12 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
         $this->linkParameterFactory = $linkParameterFactory;
     }
 
+    /**
+     * Visit a link and add it to the serialization result. If the route parameter is set, then the router is used.
+     * Otherwise, the href is just used verbose.
+     * @param  Link   $link
+     * @param  Object $data
+     */
     public function visitLink(Link $link, $data)
     {
         if (!empty($link->route)) {
@@ -62,12 +68,8 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
         } else {
             throw new InvalidArgumentException("A link needs either an href or a route");
         }
-        // if ($link->rel != 'rel') {
 
-            $this->data['_links'][$link->rel] []= $l;
-        // }
-
-        return $this->data;
+        $this->data['_links'][$link->rel] []= $l;
     }
 
     public function visitProperty(PropertyMetadata $metadata, $data)
@@ -90,21 +92,6 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
             $this->data['_embedded'][$k] = $v;
         } else {
             $this->data[$k] = $v;
-        }
-    }
-
-    public function visitTraversable(ClassMetadata $metadata, $data, $type)
-    {
-        echo "visitTraversable";
-        $rs = parent::visitTraversable($metadata, $data, $type);
-        $node = $metadata->xmlRootName ?: $this->defaultRootName;
-
-        //traversable as a property of an object?
-        if (($this->root instanceof \stdClass) || $this->dataStack->count() > 0) {
-            return $rs;
-        } else {
-            $this->root = array('_embedded' => array($node => $this->root));
-            return array('_embedded' => array($node => $rs));
         }
     }
 }

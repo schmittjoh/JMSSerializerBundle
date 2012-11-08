@@ -32,8 +32,13 @@ class LinkParameterFactory implements LinkParameterFactoryInterface
 	{
 		$newParams = array();
         foreach ($parameters as $parameter => $value) {
-            $propertyPath = new PropertyPath($value);
-            $value = $propertyPath->getValue($data);
+        	if ('=' === substr($value, 0, 1)) {
+            	$value = substr($value, 1);
+            } else {
+            	$propertyPath = new PropertyPath($value);
+            	$value = $propertyPath->getValue($data);
+            }
+
             $newParams[$parameter] = $value;
         }
 
