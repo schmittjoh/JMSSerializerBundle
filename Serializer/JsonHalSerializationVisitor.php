@@ -29,6 +29,9 @@ use JMS\SerializerBundle\Exception\InvalidArgumentException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Form\Util\PropertyPath;
 
+/**
+ * @author Baldur Rensch <baldur.rensch@hautelook.com>
+ */
 class JsonHalSerializationVisitor extends JsonSerializationVisitor
 {
     /**
@@ -80,10 +83,8 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
         $k = $this->namingStrategy->translateName($metadata);
 
         if (is_array($v)) {
-            if (is_array($v)) {
-                if (!empty($v[0]['_links']['rel'][0])) {
-                    $k = (string) $v[0]['_links']['rel'][0];
-                }
+            if (!empty($v[0]['_links']['rel'][0])) {
+                $k = (string) $v[0]['_links']['rel'][0];
             }
 
             $this->data['_embedded'][$k] = $v;

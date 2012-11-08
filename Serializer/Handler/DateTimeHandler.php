@@ -34,6 +34,7 @@ use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Serializer\GenericSerializationVisitor;
 use JMS\SerializerBundle\Serializer\JsonSerializationVisitor;
 use JMS\SerializerBundle\Serializer\XmlSerializationVisitor;
+use JMS\SerializerBundle\Serializer\JsonHalSerializationVisitor;
 use JMS\SerializerBundle\Serializer\VisitorInterface;
 
 class DateTimeHandler implements SubscribingHandlerInterface
@@ -44,7 +45,7 @@ class DateTimeHandler implements SubscribingHandlerInterface
     public static function getSubscribingMethods()
     {
         $methods = array();
-        foreach (array('json', 'xml', 'yml') as $format) {
+        foreach (array('json', 'xml', 'yml', 'jsonhal') as $format) {
             $methods[] = array(
                 'type' => 'DateTime',
                 'format' => $format,
@@ -79,12 +80,22 @@ class DateTimeHandler implements SubscribingHandlerInterface
         return $date->format($this->getFormat($type));
     }
 
+    public function serializeDateTimeToJsonHal(JsonHalSerializationVisitor $visitor, \DateTime $date, array $type)
+    {
+        return $date->format($this->getFormat($type));
+    }
+
     public function deserializeDateTimeFromXml(XmlDeserializationVisitor $visitor, $data, array $type)
     {
         return $this->parseDateTime($data, $type);
     }
 
     public function deserializeDateTimeFromJson(JsonDeserializationVisitor $visitor, $data, array $type)
+    {
+        return $this->parseDateTime($data, $type);
+    }
+
+    public function deserializeDateTimeFromJsonHal(JsonDeserializationVisitor $visitor, $data, array $type)
     {
         return $this->parseDateTime($data, $type);
     }
