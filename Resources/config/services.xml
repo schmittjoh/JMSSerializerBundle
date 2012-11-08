@@ -181,6 +181,8 @@
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="router" />
+            <argument type="service" id="jms_serialize.link.parameter_factory" />
             <tag name="jms_serializer.serialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%" public="false">
@@ -193,6 +195,8 @@
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="router" />
+            <argument type="service" id="jms_serialize.link.parameter_factory" />
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
         <service id="jms_serialize.jsonhal_serialization_visitor" class="%jms_serializer.jsonhal_serialization_visitor.class%" public="false">

@@ -40,6 +40,11 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
      */
     protected $router;
 
+    /**
+     * @var LinkParameterFactoryInterface
+     */
+    protected $linkParameterFactory;
+
     public function __construct(PropertyNamingStrategyInterface $cacheNamingStrategy = null,
         UnserializeObjectConstructor $objectConstructor = null,
         RouterInterface $router = null,
