@@ -21,6 +21,9 @@ namespace JMS\SerializerBundle\Metadata;
 use Symfony\Component\Form\Util\PropertyPath;
 
 /**
+ * This class extracts the parameters that are needed for the route from the data. Heavily inspired
+ * by Adrien Brault's work in the HateoasBundle (https://github.com/TheFootballSocialClub/FSCHateoasBundle)
+ *
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
  */
 class LinkParameterFactory implements LinkParameterFactoryInterface
