@@ -147,7 +147,7 @@ class XmlSerializationVisitor extends AbstractVisitor
         return $this->visitNumeric($data, $type);
     }
 
-    public function visitLink(Link $link, $data)
+    public function visitLink($data, Link $link)
     {
         if (null === $this->document) {
             $this->document = $this->createDocument(null, null, true);

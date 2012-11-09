@@ -98,7 +98,7 @@ class YamlSerializationVisitor extends AbstractVisitor
         return $v;
     }
 
-    public function visitLink(Link $link, $data)
+    public function visitLink($data, Link $link)
     {
         if (!empty($link->route)) {
             $routeParams = $this->linkParameterFactory->generateParameters($link->parameters, $data);

@@ -180,6 +180,12 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 
+    /**
+     * Add a link to the class metadata. They are sorted by their rel. Only one link with the self link is
+     * allowed. Only the last added self link is kept.
+     *
+     * @param Link $l
+     */
     public function addLink(Link $l)
     {
         if ($l->rel == 'self') {
@@ -189,6 +195,11 @@ class ClassMetadata extends MergeableClassMetadata
         }
     }
 
+    /**
+     * Returns an array containing all the links. Their key is the rel, and each value is an array itself.
+     *
+     * @return array
+     */
     public function getLinks()
     {
         return $this->links;

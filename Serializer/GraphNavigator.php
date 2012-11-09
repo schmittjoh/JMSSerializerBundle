@@ -219,7 +219,7 @@ final class GraphNavigator
                 if ($isSerializing && !empty($links)) {
                     foreach ($links as $linkArr) {
                         foreach ($linkArr as $link) {
-                            $visitor->visitLink($link, $data);
+                            $visitor->visitLink($data, $link);
                         }
                     }
                 }

@@ -60,10 +60,10 @@ class JsonHalSerializationVisitor extends JsonSerializationVisitor
     /**
      * Visit a link and add it to the serialization result. If the route parameter is set, then the router is used.
      * Otherwise, the href is just used verbose.
-     * @param  Link   $link
      * @param  Object $data
+     * @param  Link   $link
      */
-    public function visitLink(Link $link, $data)
+    public function visitLink($data, Link $link)
     {
         if (!empty($link->route)) {
             $routeParams = $this->linkParameterFactory->generateParameters($link->parameters, $data);

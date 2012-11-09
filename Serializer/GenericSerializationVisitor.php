@@ -57,7 +57,7 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
         return $data;
     }
 
-    public function visitLink(Link $link, $data)
+    public function visitLink($data, Link $link)
     {
         return $data;
     }
