@@ -38,7 +38,7 @@
         <parameter key="jms_serializer.xml_deserialization_visitor.class">JMS\SerializerBundle\Serializer\XmlDeserializationVisitor</parameter>
         <parameter key="jms_serializer.xml_deserialization_visitor.doctype_whitelist" type="collection"></parameter>
         <parameter key="jms_serializer.yaml_serialization_visitor.class">JMS\SerializerBundle\Serializer\YamlSerializationVisitor</parameter>
-        
+
         <parameter key="jms_serializer.handler_registry.class">JMS\SerializerBundle\Serializer\Handler\LazyHandlerRegistry</parameter>
 
         <parameter key="jms_serializer.datetime_handler.class">JMS\SerializerBundle\Serializer\Handler\DateTimeHandler</parameter>
@@ -46,6 +46,9 @@
         <parameter key="jms_serializer.form_error_handler.class">JMS\SerializerBundle\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\SerializerBundle\Serializer\Handler\ConstraintViolationHandler</parameter>
         <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\SerializerBundle\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
+        <parameter key="jms_serializer.jsonhal_serialization_visitor.class">JMS\SerializerBundle\Serializer\JsonHalSerializationVisitor</parameter>
+        <parameter key="jms_serializer.jsonhal_serialization_visitor.router">router</parameter>
+        <parameter key="jms_serializer.link.parameter_factory.class">JMS\SerializerBundle\Metadata\LinkParameterFactory</parameter>
     </parameters>
 
     <services>
@@ -56,7 +59,7 @@
         <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
         </service>
-        
+
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%">
             <argument type="service" id="service_container" />
@@ -74,7 +77,7 @@
         <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-            
+
         <!-- Metadata Drivers -->
         <service id="jms_serializer.metadata.file_locator" class="%jms_serializer.metadata.file_locator.class%" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
@@ -178,6 +181,8 @@
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="router" />
+            <argument type="service" id="jms_serialize.link.parameter_factory" />
             <tag name="jms_serializer.serialization_visitor" format="xml" />
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%" public="false">
@@ -190,7 +195,20 @@
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="router" />
+            <argument type="service" id="jms_serialize.link.parameter_factory" />
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
+        <service id="jms_serialize.jsonhal_serialization_visitor" class="%jms_serializer.jsonhal_serialization_visitor.class%" public="false">
+            <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.object_constructor" />
+            <argument type="service" id="router" />
+            <argument type="service" id="jms_serialize.link.parameter_factory" />
+            <tag name="jms_serializer.serialization_visitor" format="jsonhal" />
+        </service>
+
+        <service id="jms_serialize.link.parameter_factory" class="%jms_serializer.link.parameter_factory.class%" public="false">
+        </service>
+
     </services>
 </container>

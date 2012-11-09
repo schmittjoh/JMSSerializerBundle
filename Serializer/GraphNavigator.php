@@ -214,6 +214,16 @@ final class GraphNavigator
                     $visitor->visitProperty($propertyMetadata, $data);
                 }
 
+                // Add Links
+                $links = $metadata->getLinks();
+                if ($isSerializing && !empty($links)) {
+                    foreach ($links as $linkArr) {
+                        foreach ($linkArr as $link) {
+                            $visitor->visitLink($data, $link);
+                        }
+                    }
+                }
+
                 if ($isSerializing) {
                     $this->afterVisitingObject($visitor, $metadata, $data, $type);
 

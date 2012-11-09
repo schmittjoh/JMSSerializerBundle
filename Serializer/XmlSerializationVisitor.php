@@ -21,7 +21,11 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\SerializerBundle\Exception\RuntimeException;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkParameterFactoryInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
+use JMS\SerializerBundle\Annotation\Link;
+
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * XmlSerializationVisitor.
@@ -41,6 +45,28 @@ class XmlSerializationVisitor extends AbstractVisitor
     private $currentNode;
     private $currentMetadata;
     private $hasValue;
+
+    /**
+     * Router for regular (non-templated links)
+     * @var Router
+     */
+    protected $router;
+
+    /**
+     * @var LinkParameterFactoryInterface
+     */
+    protected $linkParameterFactory;
+
+    public function __construct(PropertyNamingStrategyInterface $cacheNamingStrategy = null,
+        RouterInterface $router = null,
+        LinkParameterFactoryInterface $linkParameterFactory = null
+        )
+    {
+        parent::__construct($cacheNamingStrategy);
+
+        $this->router               = $router;
+        $this->linkParameterFactory = $linkParameterFactory;
+    }
 
     public function setDefaultRootName($name)
     {
@@ -119,6 +145,31 @@ class XmlSerializationVisitor extends AbstractVisitor
     public function visitDouble($data, array $type)
     {
         return $this->visitNumeric($data, $type);
+    }
+
+    public function visitLink($data, Link $link)
+    {
+        if (null === $this->document) {
+            $this->document = $this->createDocument(null, null, true);
+        }
+
+        if (!empty($link->route)) {
+            $routeParams = $this->linkParameterFactory->generateParameters($link->parameters, $data);
+            $l = $this->router->generate($link->route, $routeParams, true);
+        } else if (!empty($link->href)) {
+            $l = $link->href;
+        } else {
+            throw new InvalidArgumentException("A link needs either an href or a route");
+        }
+
+        $linkNode = $this->document->createElement('link');
+        $linkNode->setAttribute('rel', $link->rel);
+        if (!empty($link->title)) {
+            $linkNode->setAttribute('title', $link->title);
+        }
+        $linkNode->appendChild($this->document->createTextNode($l));
+
+        $this->currentNode->appendChild($linkNode);
     }
 
     public function visitArray($data, array $type)

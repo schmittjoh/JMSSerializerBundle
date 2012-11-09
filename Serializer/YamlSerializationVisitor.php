@@ -18,8 +18,11 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Yaml\Inline;
+use JMS\SerializerBundle\Annotation\Link;
 use JMS\SerializerBundle\Metadata\PropertyMetadata;
+use JMS\SerializerBundle\Metadata\LinkParameterFactoryInterface;
 use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\SerializerBundle\Metadata\ClassMetadata;
 use JMS\SerializerBundle\Util\Writer;
@@ -39,10 +42,26 @@ class YamlSerializationVisitor extends AbstractVisitor
     private $metadataStack;
     private $currentMetadata;
 
-    public function __construct(PropertyNamingStrategyInterface $namingStrategy)
-    {
-        parent::__construct($namingStrategy);
+    /**
+     * Router for regular (non-templated links)
+     * @var Router
+     */
+    protected $router;
 
+    /**
+     * @var LinkParameterFactoryInterface
+     */
+    protected $linkParameterFactory;
+
+    public function __construct(PropertyNamingStrategyInterface $cacheNamingStrategy = null,
+        RouterInterface $router = null,
+        LinkParameterFactoryInterface $linkParameterFactory = null
+        )
+    {
+        parent::__construct($cacheNamingStrategy);
+
+        $this->router               = $router;
+        $this->linkParameterFactory = $linkParameterFactory;
         $this->writer = new Writer();
     }
 
@@ -77,6 +96,22 @@ class YamlSerializationVisitor extends AbstractVisitor
         }
 
         return $v;
+    }
+
+    public function visitLink($data, Link $link)
+    {
+        if (!empty($link->route)) {
+            $routeParams = $this->linkParameterFactory->generateParameters($link->parameters, $data);
+            $l = $this->router->generate($link->route, $routeParams, true);
+        } else if (!empty($link->href)) {
+            $l = $link->href;
+        } else {
+            throw new InvalidArgumentException("A link needs either an href or a route");
+        }
+
+        // $this->writer
+        //      ->rtrim(false)
+        //      ->writeln($link->rel . ': ' . $l);
     }
 
     public function visitArray($data, array $type)
