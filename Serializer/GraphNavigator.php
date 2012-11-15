@@ -194,6 +194,10 @@ final class GraphNavigator
                     $object = $this->objectConstructor->construct($visitor, $metadata, $data, $type);
                 }
 
+                if ($isSerializing && null === $object) {
+                    return null;
+                }
+
                 if (isset($metadata->handlerCallbacks[$this->direction][$this->format])) {
                     $rs = $object->{$metadata->handlerCallbacks[$this->direction][$this->format]}($visitor, $isSerializing ? null : $data);
                     $this->afterVisitingObject($visitor, $metadata, $object, $type);
