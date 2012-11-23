@@ -69,6 +69,7 @@ use JMS\SerializerBundle\Tests\Fixtures\SimpleObjectProxy;
 use JMS\SerializerBundle\Tests\Fixtures\Article;
 use JMS\SerializerBundle\Tests\Fixtures\Input;
 use JMS\SerializerBundle\Tests\Fixtures\ObjectWithEmptyHash;
+use JMS\SerializerBundle\Tests\Fixtures\Node;
 use Metadata\MetadataFactory;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -540,6 +541,22 @@ abstract class BaseSerializationTest extends \PHPUnit_Framework_TestCase
     public function testObjectWithEmptyHash()
     {
         $this->assertEquals($this->getContent('hash_empty'), $this->serializer->serialize(new ObjectWithEmptyHash(), $this->getFormat()));
+    }
+
+    public function testDepthExclusionStrategy()
+    {
+        $this->serializer->setExclusionStrategy(new \JMS\SerializerBundle\Serializer\Exclusion\DepthExclusionStrategy());
+        $rootNode = $node = new Node();
+        $node->depth = 1;
+
+        for ($depth = 2; $depth <= 5; $depth++) {
+            $child = new Node();
+            $node->children = array($child);
+            $child->depth = $depth;
+            $node = $child;
+        }
+
+        $this->assertEquals($this->getContent('tree'), $this->serializer->serialize($rootNode, $this->getFormat()));
     }
 
     abstract protected function getContent($key);

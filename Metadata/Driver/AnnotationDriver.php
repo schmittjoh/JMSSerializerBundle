@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Metadata\Driver;
 
 use JMS\SerializerBundle\Serializer\GraphNavigator;
+use JMS\SerializerBundle\Annotation\MaxDepth;
 use JMS\SerializerBundle\Annotation\HandlerCallback;
 use JMS\SerializerBundle\Annotation\AccessorOrder;
 use JMS\SerializerBundle\Annotation\Accessor;
@@ -182,6 +183,8 @@ class AnnotationDriver implements DriverInterface
                         $propertyMetadata->inline = true;
                     } elseif ($annot instanceof XmlAttributeMap) {
                         $propertyMetadata->xmlAttributeMap = true;
+                    } elseif ($annot instanceof MaxDepth) {
+                        $propertyMetadata->maxDepth = $annot->depth;
                     }
                 }
 
