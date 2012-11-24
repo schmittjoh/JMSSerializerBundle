@@ -23,29 +23,27 @@ use JMS\SerializerBundle\Metadata\PropertyMetadata;
 use JMS\SerializerBundle\Serializer\NavigatorContext;
 
 /**
- * Interface for exclusion strategies.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ * @author Adrien Brault <adrien.brault@gmail.com>
  */
-interface ExclusionStrategyInterface
+class DepthExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
-     * Whether the class should be skipped.
-     *
-     * @param ClassMetadata    $metadata
-     * @param NavigatorContext $navigatorContext
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, NavigatorContext $navigatorContext);
+    public function shouldSkipClass(ClassMetadata $metadata, NavigatorContext $navigatorContext)
+    {
+        return false;
+    }
 
     /**
-     * Whether the property should be skipped.
-     *
-     * @param PropertyMetadata $property
-     * @param NavigatorContext $navigatorContext
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, NavigatorContext $navigatorContext);
+    public function shouldSkipProperty(PropertyMetadata $property, NavigatorContext $navigatorContext)
+    {
+        if (null === $property->maxDepth) {
+            return false;
+        }
+
+        return $property->maxDepth <= $navigatorContext->getDepth();
+    }
 }

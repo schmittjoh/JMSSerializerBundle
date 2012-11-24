@@ -50,6 +50,7 @@ final class GraphNavigator
     private $exclusionStrategy;
     private $customHandlers = array();
     private $visiting;
+    private $depth = 0;
 
     /**
      * Parses a direction string to one of the direction constants.
@@ -175,7 +176,7 @@ final class GraphNavigator
 
                 // Load metadata, and check whether this class should be excluded.
                 $metadata = $this->metadataFactory->getMetadataForClass($type['name']);
-                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $isSerializing ? $data : null)) {
+                if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipClass($metadata, $this->createNavigatorContext($data))) {
                     if ($isSerializing) {
                         $this->visiting->detach($data);
                     }
@@ -202,8 +203,9 @@ final class GraphNavigator
                 }
 
                 $visitor->startVisitingObject($metadata, $object, $type);
+                $this->depth++;
                 foreach ($metadata->propertyMetadata as $propertyMetadata) {
-                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $isSerializing ? $data : null)) {
+                    if (null !== $this->exclusionStrategy && $this->exclusionStrategy->shouldSkipProperty($propertyMetadata, $this->createNavigatorContext($data))) {
                         continue;
                     }
 
@@ -213,6 +215,7 @@ final class GraphNavigator
 
                     $visitor->visitProperty($propertyMetadata, $data);
                 }
+                $this->depth--;
 
                 if ($isSerializing) {
                     $this->afterVisitingObject($visitor, $metadata, $data, $type);
@@ -284,5 +287,17 @@ final class GraphNavigator
         if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.post_deserialize', $metadata->name, $this->format)) {
             $this->dispatcher->dispatch('serializer.post_deserialize', $metadata->name, $this->format, new Event($visitor, $object, $type));
         }
+    }
+
+    private function createNavigatorContext($object)
+    {
+        $isSerializing = self::DIRECTION_SERIALIZATION === $this->direction;
+
+        return new NavigatorContext(
+            $this->direction,
+            $this->depth,
+            $this->getCurrentPath(),
+            $isSerializing ? $object : null
+        );
     }
 }

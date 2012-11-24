@@ -1,0 +1,4 @@
+JMS\SerializerBundle\Tests\Fixtures\Node:
+    properties:
+        children:
+            max_depth: 3
