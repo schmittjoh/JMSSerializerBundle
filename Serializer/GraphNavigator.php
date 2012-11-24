@@ -152,6 +152,14 @@ final class GraphNavigator
                     $this->visiting->attach($data);
                 }
 
+                // Trigger pre-serialization callbacks, and listeners if they exist.
+                if ($isSerializing) {
+                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
+                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($visitor, $data, $type));
+                        $type = $event->getType();
+                    }
+                }
+
                 // First, try whether a custom handler exists for the given type. This is done
                 // before loading metadata because the type name might not be a class, but
                 // could also simply be an artifical type.
@@ -163,14 +171,6 @@ final class GraphNavigator
                     }
 
                     return $rs;
-                }
-
-                // Trigger pre-serialization callbacks, and listeners if they exist.
-                if ($isSerializing) {
-                    if (null !== $this->dispatcher && $this->dispatcher->hasListeners('serializer.pre_serialize', $type['name'], $this->format)) {
-                        $this->dispatcher->dispatch('serializer.pre_serialize', $type['name'], $this->format, $event = new PreSerializeEvent($visitor, $data, $type));
-                        $type = $event->getType();
-                    }
                 }
 
                 // Load metadata, and check whether this class should be excluded.
