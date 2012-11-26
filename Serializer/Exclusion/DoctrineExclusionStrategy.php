@@ -33,7 +33,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 class DoctrineExclusionStrategy implements ExclusionStrategyInterface
 {
     /**
-     * @var Doctrine\Common\Persistence\ManagerRegistry
+     * @var ManagerRegistry
      */
     private $managerRegistry;
 
