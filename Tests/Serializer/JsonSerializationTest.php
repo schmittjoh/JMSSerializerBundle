@@ -116,10 +116,12 @@ class LinkAddingSubscriber implements EventSubscriberInterface
     {
         $author = $event->getObject();
 
-        $event->getVisitor()->addData('_links', array(
+        $links = array(
             'details' => 'http://foo.bar/details/'.$author->getName(),
             'comments' => 'http://foo.bar/details/'.$author->getName().'/comments',
-        ));
+        );
+        $event->getVisitor()->addData('_links', $links);
+        $event->getVisitor()->addData('_links', $links, true);
     }
 
     public static function getSubscribedEvents()
