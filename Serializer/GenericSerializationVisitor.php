@@ -153,17 +153,23 @@ abstract class GenericSerializationVisitor extends AbstractVisitor
     /**
      * Allows you to add additional data to the current object/root element.
      *
-     * @param string $key
-     * @param scalar|array $value This value must either be a regular scalar, or an array.
-     *                            It must not contain any objects anymore.
+     * @param string       $key
+     * @param scalar|array $value   This value must either be a regular scalar, or an array.
+     *                              It must not contain any objects anymore.
+     * @param boolean      $replace Whether the user intended to replace existing data
      */
-    public function addData($key, $value)
+    public function addData($key, $value, $replace = false)
     {
-        if (isset($this->data[$key])) {
+        if (!$replace && isset($this->data[$key])) {
             throw new \InvalidArgumentException(sprintf('There is already data for "%s".', $key));
         }
 
         $this->data[$key] = $value;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function getRoot()
