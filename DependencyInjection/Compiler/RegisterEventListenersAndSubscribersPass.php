@@ -2,8 +2,8 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use JMS\SerializerBundle\Serializer\EventDispatcher\EventDispatcher;
-use JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -37,7 +37,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
 
             $subscriberClassReflectionObj = new \ReflectionClass($subscriberClass);
 
-            if ( ! $subscriberClassReflectionObj->implementsInterface('JMS\SerializerBundle\Serializer\EventDispatcher\EventSubscriberInterface') ) {
+            if ( ! $subscriberClassReflectionObj->implementsInterface('JMS\Serializer\EventDispatcher\EventSubscriberInterface') ) {
                 throw new \RuntimeException(sprintf('The service "%s" (class: %s) does not implement the EventSubscriberInterface.', $id, $subscriberClass));
             }
 

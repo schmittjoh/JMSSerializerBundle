@@ -20,7 +20,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\DependencyInjection\Alias;
-use JMS\SerializerBundle\Exception\RuntimeException;
+use JMS\Serializer\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;

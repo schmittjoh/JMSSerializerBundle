@@ -19,8 +19,8 @@ then it is easier to change the exclusion policy, and only mark these few proper
 
     <?php
 
-    use JMS\SerializerBundle\Annotation\ExclusionPolicy;
-    use JMS\SerializerBundle\Annotation\Expose;
+    use JMS\Serializer\Annotation\ExclusionPolicy;
+    use JMS\Serializer\Annotation\Expose;
 
     /**
      * The following annotations tells the serializer to skip all properties which
@@ -95,7 +95,7 @@ You can achieve that by using the ``@Groups`` annotation on your properties.
 
     <?php 
     
-    use JMS\SerializerBundle\Annotation\Groups;
+    use JMS\Serializer\Annotation\Groups;
     
     class BlogPost
     {

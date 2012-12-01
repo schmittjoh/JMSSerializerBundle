@@ -1,12 +1,5 @@
-Configuration
-=============
-
-Initial Configuration
----------------------
-JMSSerializerBundle requires no initial configuration to get you started.
-
-Reference
----------
+Configuration Reference
+=======================
 
 Below you find a reference of all configuration options with their default
 values:

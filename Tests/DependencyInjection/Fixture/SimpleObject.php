@@ -16,21 +16,38 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Tests\Fixtures;
+namespace JMS\SerializerBundle\Tests\DependencyInjection\Fixture;
 
-use JMS\SerializerBundle\Annotation\VirtualProperty;
-use JMS\SerializerBundle\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
 
-/**
- * @ExclusionPolicy("all")
- */
-class ObjectWithVirtualPropertiesAndExcludeAll
+class SimpleObject
 {
+    /** @Type("string") */
+    private $foo;
+
     /**
-     * @VirtualProperty
+     * @SerializedName("moo")
+     * @Type("string")
      */
-    public function getVirtualValue()
+    private $bar;
+
+    /** @Type("string") */
+    protected $camelCase = 'boo';
+
+    public function __construct($foo, $bar)
     {
-        return 'value';
+        $this->foo = $foo;
+        $this->bar = $bar;
+    }
+
+    public function getFoo()
+    {
+        return $this->foo;
+    }
+
+    public function getBar()
+    {
+        return $this->bar;
     }
 }

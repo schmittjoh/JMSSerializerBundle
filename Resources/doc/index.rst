@@ -3,48 +3,64 @@ JMSSerializerBundle
 
 Introduction
 ------------
+JMSSerializerBundle allows you to serialize your data into a requested
+output format such as JSON, XML, or YAML, and vice versa.
 
-JMSSerializerBundle allows you to serialize your objects into a requested
-output format such as JSON, XML, or YAML, and vice versa. It provides you 
-with a rich toolset which empowers you to adapt the output to your specific
-needs.
+You can learn more in the `documentation <http://jmsyst.com/libs/serializer>`_ for the standalone library.
 
-Built-in features include:
+Installation
+------------
+You can install this bundle using composer
 
-- (de-)serialize object graphs of any complexity including circular references
-- supports many built-in PHP types (such as dates)
-- integrates with Doctrine ORM, et. al.
-- supports versioning, e.g. for APIs
-- configurable via PHP, XML, YAML, or annotations
+.. code-block :: bash
 
-Documentation
+    composer require jms/serializer-bundle
+
+or add the package to your ``composer.json`` file directly.
+
+After you have installed the package, you just need to add the bundle to your ``AppKernel.php`` file::
+
+    // in AppKernel::registerBundles()
+    $bundles = array(
+        // ...
+        new JMS\SerializerBundle\JMSSerializerBundle(),
+        // ...
+    );
+
+Configuration
 -------------
+JMSSerializerBundle requires no initial configuration to get you started.
+
+For all available configuration options, please see the :doc:`configuration reference <configuration>`.
+
+Usage
+-----
+The configured serializer is available as ``serializer`` service::
+
+    $serializer = $container->get('serializer');
+    $serializer->serialize($data, $format);
+    $data = $serializer->deserialize($inputStr, $typeName, $format);
+
+In templates, you may also use the ``serialize`` filter:
+
+.. code-block :: html+jinja
+
+    {{ data | serialize }} {# serializes to JSON #}
+    {{ data | serialize('json') }}
+    {{ data | serialize('xml') }}
+
+Learn more in the `documentation for the dedicated library <http://jmsyst.com/libs/serializer/master/usage>`_.
+
+Cookbook
+--------
 
 .. toctree ::
     :hidden:
-    
-    installation
-    configuration
-    usage
-    event_system
-    handlers
-    reference
+
     cookbook
 
-- :doc:`Installation <installation>`
-- :doc:`Configuration <configuration>`
-- :doc:`Usage <usage>`
-- :doc:`Events <event_system>`
-- :doc:`Handlers <handlers>`
-
-- Recipies
-    * :doc:`/cookbook/exclusion_strategies`
-    * :doc:`/cookbook/metadata_for_third_party`
-    
-- Reference
-    * :doc:`Annotations </reference/annotations>`
-    * :doc:`XML Reference </reference/xml_reference>`
-    * :doc:`YML Reference </reference/yml_reference>`
+- :doc:`</cookbook/exclusion_strategies>`
+- :doc:`</cookbook/metadata_for_third_party>`
 
 License
 -------

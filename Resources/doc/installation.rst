@@ -41,7 +41,7 @@ register the new bundle:
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\SerializerBundle\JMSSerializerBundle(),
+        new JMS\Serializer\JMSSerializerBundle(),
         // ...
     );
     
@@ -66,7 +66,7 @@ Then register the bundle with your kernel:
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\SerializerBundle\JMSSerializerBundle($this),
+        new JMS\Serializer\JMSSerializerBundle($this),
         // ...
     );
 

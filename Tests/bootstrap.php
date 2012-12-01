@@ -25,19 +25,5 @@ call_user_func(function() {
 
     require_once $autoloadFile;
 
-    $bundleLoader = function($v) {
-        if (0 !== strpos($v, 'JMS\\SerializerBundle')) {
-            return false;
-        }
-
-        if ( ! is_file($file = __DIR__.'/../'.str_replace('\\', '/', substr($v, 21)).'.php')) {
-            return false;
-        }
-
-        require_once $file;
-
-        return true;
-    };
-    spl_autoload_register($bundleLoader);
-    AnnotationRegistry::registerLoader($bundleLoader);
+    AnnotationRegistry::registerLoader('class_exists');
 });
