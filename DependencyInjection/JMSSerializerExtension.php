@@ -107,13 +107,12 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->replaceArgument(0, $directories)
         ;
 
-        $container
-            ->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist'])
-        ;
+        $container->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist']);
+        $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
 
-        $container
-            ->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options'])
-        ;
+        if ( ! $config['enable_short_alias']) {
+            $container->removeAlias('serializer');
+        }
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

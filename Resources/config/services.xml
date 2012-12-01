@@ -150,7 +150,8 @@
             <argument type="collection" /><!-- Deserialization Visitors -->
             <argument type="service" id="jms_serializer.event_dispatcher" />
         </service>
-        <service id="serializer" alias="jms_serializer.serializer" />
+        <service id="jms_serializer" alias="jms_serializer.serializer" /><!-- Preferred Alias -->
+        <service id="serializer" alias="jms_serializer.serializer" /><!-- Here for BC, may be disabled in the config -->
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">

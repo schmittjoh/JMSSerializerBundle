@@ -42,6 +42,7 @@ class Configuration implements ConfigurationInterface
         $root = $tb
             ->root('jms_serializer', 'array')
                 ->children()
+                    ->booleanNode('enable_short_alias')->defaultTrue()->end()
         ;
 
         $this->addHandlersSection($root);
