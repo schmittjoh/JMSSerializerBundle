@@ -10,10 +10,11 @@ Upgrading From 0.9 to 1.0
     to make it easier re-usable in any kind of PHP project, not only in Symfony2 projects.
     This results in several namespace changes. You can adjust your projects by performing
     these replacements (in order):
-
-    JMS\Serializer -> JMS\Serializer
-    JMS\Serializer -> JMS\Serializer
-    JMS\SerializerBundle\DependencyInjection -> JMS\SerializerBundle\DependencyInjection
+    
+    - ``JMS\SerializerBundle\Serializer`` -> ``JMS\Serializer``
+    - ``JMS\SerializerBundle`` -> ``JMS\Serializer``
+    - ``JMS\Serializer\DependencyInjection`` -> ``JMS\SerializerBundle\DependencyInjection``
+    
 
 - Custom Handlers
 
