@@ -51,17 +51,6 @@ In templates, you may also use the ``serialize`` filter:
 
 Learn more in the `documentation for the dedicated library <http://jmsyst.com/libs/serializer/master/usage>`_.
 
-Cookbook
---------
-
-.. toctree ::
-    :hidden:
-
-    cookbook
-
-- :doc:`</cookbook/exclusion_strategies>`
-- :doc:`</cookbook/metadata_for_third_party>`
-
 License
 -------
 

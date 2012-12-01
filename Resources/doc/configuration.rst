@@ -1,5 +1,72 @@
-Configuration Reference
-=======================
+Configuration
+=============
+
+Handlers
+--------
+You can register any service as a handler by adding either the ``jms_serializer.handler``,
+or the ``jms_serializer.subscribing_handler``.
+
+.. code-block :: xml
+
+    <service id="my_handler" class="MyHandler" public="false">
+        <tag name="jms_serializer.handler" type="DateTime" direction="serialization" format="json"
+                    method="serializeDateTimeToJson" />
+    </service>
+
+.. tip ::
+
+    The ``direction`` attribute is not required if you want to support both directions. Likewise can the
+    ``method`` attribute be omitted, then a default using the scheme ``serializeTypeToFormat``,
+    or ``deserializeTypeFromFormat`` will be used for serialization or deserialization
+    respectively.
+
+Event Dispatcher
+----------------
+You can use the tags ``jms_serializer.event_listener``, or ``jms_serializer.event_subscriber``
+in order to register a listener.
+
+The semantics are mainly the same as registering a regular Symfony2 event listener
+except that you can to specify some additional attributes:
+
+- *format*: The format that you want to listen to; defaulting to all formats.
+- *type*: The type name that you want to listen to; defaulting to all types.
+- *direction*: The direction (serialization, or deserialization); defaulting to both.
+
+.. note ::
+
+    Events are not dispatched by Symfony2's event dispatcher as such
+    you cannot register listeners with the ``kernel.event_listener`` tag,
+    or the ``@DI\Observe`` annotation. Please see above.
+
+Overriding Third-Party Metadata
+-------------------------------
+Sometimes you want to serialize objects which are shipped by a third-party bundle.
+Such a third-party bundle might not ship with metadata that suits your needs, or
+possibly none, at all. In such a case, you can override the default location that
+is searched for metadata with a path that is under your control.
+
+.. configuration-block ::
+
+    .. code-block :: yaml
+
+        jms_serializer:
+            metadata:
+                directories:
+                    FOSUB:
+                        namespace_prefix: "FOS\\UserBundle"
+                        path: "%kernel.root_dir%/serializer/FOSUB"
+
+    .. code-block :: xml
+
+        <jms-serializer>
+            <metadata>
+                <directory namespace_prefix="FOS\UserBundle"
+                           path="%kernel.root_dir%/serializer/FOSUB" />
+            </metadata>
+        </jms-serializer>
+
+Extension Reference
+-------------------
 
 Below you find a reference of all configuration options with their default
 values:
