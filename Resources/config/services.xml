@@ -155,7 +155,7 @@
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">
-            <argument type="service" id="serializer" />
+            <argument type="service" id="jms_serializer.serializer" />
             <tag name="twig.extension" />
         </service>
 
