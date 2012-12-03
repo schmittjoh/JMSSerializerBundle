@@ -162,7 +162,7 @@
 
         <!-- PHP templating helper -->
         <service id="jms_serializer.templating.helper.serializer" class="%jms_serializer.templating.helper.class%">
-            <argument type="service" id="serializer" />
+            <argument type="service" id="jms_serializer" />
             <tag name="templating.helper" alias="jms_serializer" />
         </service>
 

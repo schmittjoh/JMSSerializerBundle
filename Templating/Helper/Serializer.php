@@ -1,7 +1,6 @@
 <?php
 /*
  * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
- * Copyright 2012 Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +25,8 @@ use Symfony\Component\Templating\Helper\Helper;
  * Serializer PHP helper
  *
  * Basically provides access to JMSSerializer from PHP templates
+ *
+ * @author Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
  */
 class Serializer extends Helper
 {
