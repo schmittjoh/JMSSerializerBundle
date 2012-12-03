@@ -14,6 +14,7 @@ Upgrading From 0.10 to 1.0
     - ``JMS\SerializerBundle\Serializer`` -> ``JMS\Serializer``
     - ``JMS\SerializerBundle`` -> ``JMS\Serializer``
     - ``JMS\Serializer\DependencyInjection`` -> ``JMS\SerializerBundle\DependencyInjection``
+    - ``JMS\SerializerBundle\Annotation`` -> ``JMS\Serializer\Annotation``
 
 Upgrading From 0.9 to 0.10
 ==========================
