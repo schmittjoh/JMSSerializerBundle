@@ -15,6 +15,13 @@ Upgrading From 0.10 to 1.0
     - ``JMS\SerializerBundle`` -> ``JMS\Serializer``
     - ``JMS\Serializer\DependencyInjection`` -> ``JMS\SerializerBundle\DependencyInjection``
 
+- Dependency Changes
+
+    You might need to increase versions of jms/di-extra-bundle, and also jms/security-extra-bundle
+    depending on your stability settings. Sometimes it is also necessary to run a composer update
+    twice because of a bug in composer's solving algorithm.
+    
+
 Upgrading From 0.9 to 0.10
 ==========================
 
