@@ -11,6 +11,7 @@
         <parameter key="jms_serializer.metadata.yaml_driver.class">JMS\Serializer\Metadata\Driver\YamlDriver</parameter>
         <parameter key="jms_serializer.metadata.xml_driver.class">JMS\Serializer\Metadata\Driver\XmlDriver</parameter>
         <parameter key="jms_serializer.metadata.php_driver.class">JMS\Serializer\Metadata\Driver\PhpDriver</parameter>
+        <parameter key="jms_serializer.metadata.doctrine_type_driver.class">JMS\Serializer\Metadata\Driver\DoctrineTypeDriver</parameter>
         <parameter key="jms_serializer.metadata.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
 
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
@@ -99,7 +100,11 @@
                 <argument type="service" id="jms_serializer.metadata.annotation_driver" />
             </argument>
         </service>
-        <service id="jms_serializer.metadata.lazy_loading_driver" class="%jms_serializer.metadata.lazy_loading_driver.class%">
+        <service id="jms_serializer.metadata.doctrine_type_driver" class="%jms_serializer.metadata.doctrine_type_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.chain_driver" />
+            <argument type="service" id="doctrine" />
+        </service>
+        <service id="jms_serializer.metadata.lazy_loading_driver" class="%jms_serializer.metadata.lazy_loading_driver.class%" public="false">
             <argument type="service" id="service_container" />
             <argument>jms_serializer.metadata_driver</argument>
         </service>
