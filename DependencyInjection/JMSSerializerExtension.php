@@ -53,6 +53,8 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
         }
 
+        $bundles = $container->getParameter('kernel.bundles');
+
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
@@ -72,7 +74,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
         }
 
-        if ($config['metadata']['infer_types_from_doctrine_metadata']) {
+        if ($config['metadata']['infer_types_from_doctrine_metadata'] && isset($bundles['DoctrineBundle'])) {
             $container->setAlias('jms_serializer.metadata_driver', 'jms_serializer.metadata.doctrine_type_driver');
         }
 
@@ -83,7 +85,6 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         // directories
         $directories = array();
-        $bundles = $container->getParameter('kernel.bundles');
         if ($config['metadata']['auto_detection']) {
             foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
