@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace JMS\SerializerBundle\Templating\Helper;
+namespace JMS\SerializerBundle\Templating;
 
 use JMS\SerializerBundle\Serializer\SerializerInterface;
 
@@ -28,7 +28,7 @@ use Symfony\Component\Templating\Helper\Helper;
  *
  * @author Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
  */
-class Serializer extends Helper
+class SerializerHelper extends Helper
 {
     protected $serializer;
 
