@@ -26,9 +26,18 @@ values:
                 form_error: true
                 constraint_violation: true
     
+            # To use lowerCamelCase set property_naming configuration like this
+            # separator: ""
+            # lower_case: false
+            # lower_camel_case: true
+            # To use UpperCamelCase set property_naming configuration like this
+            # separator: ""
+            # lower_case: false
+            # lower_camel_case: false
             property_naming:
                 separator:  _
                 lower_case: true
+                lower_camel_case: false
     
             metadata:
                 cache: file
@@ -70,7 +79,8 @@ values:
             
             <property-naming
                 seperator="_"
-                lower-case="true" />
+                lower-case="true"
+                lower-camel-case="false" />
                 
             <metadata
                 cache="file"
