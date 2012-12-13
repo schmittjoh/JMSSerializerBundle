@@ -1,13 +1,8 @@
 JMSSerializerBundle
 ===================
 
-Documentation: 
-[Resources/doc](http://jmsyst.com/bundles/JMSSerializerBundle)
-    
+This bundle integrates the [serializer library](https://github.com/schmittjoh/serializer) into Symfony2.
 
-Code License:
-[Resources/meta/LICENSE](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/meta/LICENSE)
+Please open new issues or feature request which are related to the library on the new repository.
 
-
-Documentation License:
-[Resources/doc/LICENSE](https://github.com/schmittjoh/JMSSerializerBundle/blob/master/Resources/doc/LICENSE)
+You can learn more about the bundle in its [documentation](http://jmsyst.com/bundles/JMSSerializerBundle).
