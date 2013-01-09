@@ -29,7 +29,7 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($attrs['method']) ? $attrs['method'] : HandlerRegistry::getDefaultMethod($direction, $attrs['type'], $attrs['format']);
-                    $handlers[$direction][$attrs['type']][$attrs['format']] = array($id, $method);
+                    $handlers[$direction][$attrs['type']][$attrs['format']] = array($container->getDefinition($id), $method);
                 }
             }
         }
@@ -53,7 +53,7 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($methodData['method']) ? $methodData['method'] : HandlerRegistry::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
-                    $handlers[$direction][$methodData['type']][$methodData['format']] = array($id, $method);
+                    $handlers[$direction][$methodData['type']][$methodData['format']] = array($container->getDefinition($id), $method);
                 }
             }
         }
