@@ -26,11 +26,11 @@ You can use the tags ``jms_serializer.event_listener``, or ``jms_serializer.even
 in order to register a listener.
 
 The semantics are mainly the same as registering a regular Symfony2 event listener
-except that you can to specify some additional attributes:
+except that you can specify some additional attributes:
 
-- *format*: The format that you want to listen to; defaulting to all formats.
-- *type*: The type name that you want to listen to; defaulting to all types.
-- *direction*: The direction (serialization, or deserialization); defaulting to both.
+- *format*: The format that you want to listen to; defaults to all formats.
+- *type*: The type name that you want to listen to; defaults to all types.
+- *direction*: The direction (serialization, or deserialization); defaults to both.
 
 .. note ::
 
