@@ -15,13 +15,13 @@ class CustomHandlersPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('jms_serializer.handler') as $id => $tags) {
             foreach ($tags as $attrs) {
                 if ( ! isset($attrs['type'], $attrs['format'])) {
-                    throw new \RuntimeException(sprintf('Each tag named "jms_serializer.custom_handler" of service "%s" must have at least two attributes: "type", and "format".', $id));
+                    throw new \RuntimeException(sprintf('Each tag named "jms_serializer.handler" of service "%s" must have at least two attributes: "type" and "format".', $id));
                 }
 
                 $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
                 if (isset($attrs['direction'])) {
                     if ( ! defined($directionConstant = 'JMS\Serializer\GraphNavigator::DIRECTION_'.strtoupper($attrs['direction']))) {
-                        throw new \RuntimeException(sprintf('The direction "%s" of tag "jms_serializer.custom_handler" of service "%s" does not exist.', $attrs['direction'], $id));
+                        throw new \RuntimeException(sprintf('The direction "%s" of tag "jms_serializer.handler" of service "%s" does not exist.', $attrs['direction'], $id));
                     }
 
                     $directions = array(constant($directionConstant));
