@@ -1,8 +1,12 @@
 This document details the changes that you need to make to your code
 when upgrading from one version to another.
 
-Upgrading From 0.10 to 1.0
+Upgrading From 0.11 to 1.0
 ==========================
+Nothing yet.
+
+Upgrading From 0.10 to 0.11
+===========================
 
 - Namespace Changes
 
