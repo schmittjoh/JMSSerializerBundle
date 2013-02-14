@@ -51,8 +51,10 @@ class JMSSerializerExtension extends ConfigurableExtension
                 ->addArgument(new Reference((string) $container->getAlias('jms_serializer.naming_strategy')))
             ;
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
-        } else {
-            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.property_name_strategy');
+        }
+
+        if ($config['property_naming']['identical']) {
+            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.identical_property_naming_strategy');
         }
 
         $bundles = $container->getParameter('kernel.bundles');

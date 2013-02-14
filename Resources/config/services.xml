@@ -22,7 +22,7 @@
         <parameter key="jms_serializer.camel_case_naming_strategy.class">JMS\Serializer\Naming\CamelCaseNamingStrategy</parameter>
         <parameter key="jms_serializer.serialized_name_annotation_strategy.class">JMS\Serializer\Naming\SerializedNameAnnotationStrategy</parameter>
         <parameter key="jms_serializer.cache_naming_strategy.class">JMS\Serializer\Naming\CacheNamingStrategy</parameter>
-        <parameter key="jms_serializer.property_name_strategy.class">JMS\SerializerBundle\Serializer\Naming\PropertyNameStrategy</parameter>
+        <parameter key="jms_serializer.identical_property_naming_strategy.class">JMS\Serializer\Naming\IdenticalPropertyNamingStrategy</parameter>
 
         <parameter key="jms_serializer.doctrine_object_constructor.class">JMS\Serializer\Construction\DoctrineObjectConstructor</parameter>
         <parameter key="jms_serializer.unserialize_object_constructor.class">JMS\Serializer\Construction\UnserializeObjectConstructor</parameter>
@@ -143,7 +143,7 @@
         </service>
         <service id="jms_serializer.cache_naming_strategy" class="%jms_serializer.cache_naming_strategy.class%" public="false" />
         <service id="jms_serializer.naming_strategy" alias="jms_serializer.serialized_name_annotation_strategy" public="false" />
-        <service id="jms_serializer.property_name_strategy" class="%jms_serializer.property_name_strategy.class%" public="false" />
+        <service id="jms_serializer.identical_property_naming_strategy" class="%jms_serializer.identical_property_naming_strategy.class%" public="false" />
 
         <!-- Object Constructors -->
         <service id="jms_serializer.doctrine_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
