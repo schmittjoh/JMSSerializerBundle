@@ -18,6 +18,7 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -70,11 +71,9 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'json'), get_class($simpleObject), 'json'));
         $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'xml'), get_class($simpleObject), 'xml'));
 
-        $serializer->setVersion('0.0.1');
-        $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json'));
+        $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('0.0.1')));
 
-        $serializer->setVersion('1.1.1');
-        $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
+        $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('1.1.1')));
     }
 
     /**
