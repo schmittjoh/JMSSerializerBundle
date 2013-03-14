@@ -17,7 +17,7 @@
 
 namespace JMS\SerializerBundle\Templating;
 
-use JMS\SerializerBundle\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
 
 use Symfony\Component\Templating\Helper\Helper;
 
