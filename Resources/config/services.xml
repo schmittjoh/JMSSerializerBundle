@@ -33,6 +33,8 @@
         <parameter key="jms_serializer.twig_extension.class">JMS\Serializer\Twig\SerializerExtension</parameter>
         <parameter key="jms_serializer.templating.helper.class">JMS\SerializerBundle\Templating\SerializerHelper</parameter>
 
+        <parameter key="jms_serializer.array_serialization_visitor.class">JMS\Serializer\ArraySerializationVisitor</parameter>
+        <parameter key="jms_serializer.array_deserialization_visitor.class">JMS\Serializer\ArrayDeserializationVisitor</parameter>
         <parameter key="jms_serializer.json_serialization_visitor.class">JMS\Serializer\JsonSerializationVisitor</parameter>
         <parameter key="jms_serializer.json_serialization_visitor.options" type="collection"></parameter>
         <parameter key="jms_serializer.json_deserialization_visitor.class">JMS\Serializer\JsonDeserializationVisitor</parameter>
@@ -176,6 +178,15 @@
         </service>
 
         <!-- Visitors -->
+        <service id="jms_serializer.array_serialization_visitor" class="%jms_serializer.array_serialization_visitor.class%">
+            <argument type="service" id="jms_serializer.naming_strategy" />
+            <tag name="jms_serializer.serialization_visitor" format="array" />
+        </service>
+        <service id="jms_serializer.array_deserialization_visitor" class="%jms_serializer.array_deserialization_visitor.class%">
+            <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.object_constructor" />
+            <tag name="jms_serializer.deserialization_visitor" format="array" />
+        </service>
         <service id="jms_serializer.json_serialization_visitor" class="%jms_serializer.json_serialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <call method="setOptions">
