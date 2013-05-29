@@ -63,7 +63,7 @@ Upgrading From 0.9 to 0.10
         handlers:
             datetime:
                 default_format: DateTime::ISO8601
-                default_timzone: UTC
+                default_timezone: UTC
     ```
 
     This is not necessary anymore though as you can now specify the format each time when
