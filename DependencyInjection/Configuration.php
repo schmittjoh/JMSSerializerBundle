@@ -104,7 +104,7 @@ class Configuration implements ConfigurationInterface
                     ->booleanNode('auto_detection')->defaultTrue()->end()
                     ->booleanNode('infer_types_from_doctrine_metadata')
                         ->info('Infers type information from Doctrine metadata if no explicit type has been defined for a property.')
-                        ->defaultTrue()
+                        ->defaultValue(class_exists('Doctrine\ORM\Version'))
                     ->end()
                     ->arrayNode('directories')
                         ->prototype('array')
