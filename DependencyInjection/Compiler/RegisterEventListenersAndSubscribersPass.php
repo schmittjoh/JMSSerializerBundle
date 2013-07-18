@@ -53,7 +53,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $class = isset($eventData['class']) ? strtolower($eventData['class']) : null;
                 $format = isset($eventData['format']) ? $eventData['format'] : null;
                 $method = isset($eventData['method']) ? $eventData['method'] : EventDispatcher::getDefaultMethodName($eventData['event']);
-                $priority = isset($attributes['priority']) ? (integer) $attributes['priority'] : 0;
+                $priority = isset($eventData['priority']) ? (integer) $eventData['priority'] : 0;
 
                 $listeners[$eventData['event']][$priority][] = array(array($id, $method), $class, $format);
             }
