@@ -19,9 +19,9 @@
 namespace JMS\SerializerBundle;
 
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use JMS\SerializerBundle\DependencyInjection\Compiler\SetVisitorsPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\ServiceMapPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass;
@@ -31,12 +31,12 @@ class JMSSerializerBundle extends Bundle
 {
     public function build(ContainerBuilder $builder)
     {
-        $builder->addCompilerPass(new LazyServiceMapPass('jms_serializer.serialization_visitor', 'format',
+        $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.serialization_visitor', 'format',
             function(ContainerBuilder $container, Definition $def) {
                 $container->getDefinition('jms_serializer.serializer')->replaceArgument(3, $def);
             }
         ));
-        $builder->addCompilerPass(new LazyServiceMapPass('jms_serializer.deserialization_visitor', 'format',
+        $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.deserialization_visitor', 'format',
             function(ContainerBuilder $container, Definition $def) {
                 $container->getDefinition('jms_serializer.serializer')->replaceArgument(4, $def);
             }
@@ -44,5 +44,14 @@ class JMSSerializerBundle extends Bundle
 
         $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_BEFORE_REMOVING);
+    }
+
+    private function getServiceMapPass($tagName, $keyAttributeName, $callable)
+    {
+        if (class_exists('JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass')) {
+            return new LazyServiceMapPass($tagName, $keyAttributeName, $callable);
+        }
+
+        return new ServiceMapPass($tagName, $keyAttributeName, $callable);
     }
 }
