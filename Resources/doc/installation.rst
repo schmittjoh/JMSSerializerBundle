@@ -44,7 +44,7 @@ register the new bundle:
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\Serializer\JMSSerializerBundle(),
+        new JMS\SerializerBundle\JMSSerializerBundle(),
         // ...
     );
     
