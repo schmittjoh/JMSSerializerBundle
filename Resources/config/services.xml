@@ -49,6 +49,7 @@
         <parameter key="jms_serializer.form_error_handler.class">JMS\Serializer\Handler\FormErrorHandler</parameter>
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\Serializer\Handler\ConstraintViolationHandler</parameter>
         <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
+        <parameter key="jms_serializer.stopwatch_subscriber.class">JMS\SerializerBundle\Serializer\StopwatchEventSubscriber</parameter>
     </parameters>
 
     <services>
@@ -58,6 +59,10 @@
         </service>
         <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
+        </service>
+        <service id="jms_serializer.stopwatch_subscriber" class="%jms_serializer.stopwatch_subscriber.class%">
+            <tag name="jms_serializer.event_subscriber" />
+            <argument type="service" id="debug.stopwatch" />
         </service>
         
         <!-- Handlers -->
