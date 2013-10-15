@@ -119,6 +119,10 @@ class JMSSerializerExtension extends ConfigurableExtension
         if ( ! $config['enable_short_alias']) {
             $container->removeAlias('serializer');
         }
+
+        if (!$container->getParameter('kernel.debug')) {
+            $container->removeDefinition('jms_serializer.stopwatch_subscriber');
+        }
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
