@@ -5,7 +5,6 @@ namespace JMS\SerializerBundle\Serializer;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -24,7 +23,9 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @var Stopwatch
+     * A stopwatch object which exposes a start($name) and a stop($name) method.
+     * 
+     * @var object
      */
     private $stopwatch;
 
@@ -33,7 +34,7 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
      */
     private $rootObject;
 
-    public function __construct(Stopwatch $stopwatch)
+    public function __construct($stopwatch)
     {
         $this->stopwatch = $stopwatch;
     }
