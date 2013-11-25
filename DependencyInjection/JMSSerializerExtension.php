@@ -74,8 +74,8 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
         }
 
-        if ($config['metadata']['infer_types_from_doctrine_metadata'] && isset($bundles['DoctrineBundle'])) {
-            $container->setAlias('jms_serializer.metadata_driver', 'jms_serializer.metadata.doctrine_type_driver');
+        if ($config['metadata']['infer_types_from_doctrine_metadata']) {
+            $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', true);
         }
 
         $container

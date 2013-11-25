@@ -12,6 +12,7 @@
         <parameter key="jms_serializer.metadata.xml_driver.class">JMS\Serializer\Metadata\Driver\XmlDriver</parameter>
         <parameter key="jms_serializer.metadata.php_driver.class">JMS\Serializer\Metadata\Driver\PhpDriver</parameter>
         <parameter key="jms_serializer.metadata.doctrine_type_driver.class">JMS\Serializer\Metadata\Driver\DoctrineTypeDriver</parameter>
+        <parameter key="jms_serializer.metadata.doctrine_phpcr_type_driver.class">JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver</parameter>
         <parameter key="jms_serializer.metadata.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
 
         <parameter key="jms_serializer.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
@@ -114,6 +115,10 @@
             <argument type="service" id="jms_serializer.metadata.chain_driver" />
             <argument type="service" id="doctrine" />
         </service>
+        <service id="jms_serializer.metadata.doctrine_phpcr_type_driver" class="%jms_serializer.metadata.doctrine_phpcr_type_driver.class%" public="false">
+            <argument type="service" id="jms_serializer.metadata.chain_driver" />
+            <argument type="service" id="doctrine_phpcr" />
+        </service>
         <service id="jms_serializer.metadata.lazy_loading_driver" class="%jms_serializer.metadata.lazy_loading_driver.class%" public="false">
             <argument type="service" id="service_container" />
             <argument>jms_serializer.metadata_driver</argument>
@@ -151,6 +156,10 @@
         <!-- Object Constructors -->
         <service id="jms_serializer.doctrine_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
             <argument type="service" id="doctrine"/>
+            <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
+        </service>
+        <service id="jms_serializer.doctrine_phpcr_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
+            <argument type="service" id="doctrine_phpcr"/>
             <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
         </service>
         <service id="jms_serializer.unserialize_object_constructor" class="%jms_serializer.unserialize_object_constructor.class%" public="false" />
