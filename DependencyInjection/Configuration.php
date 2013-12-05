@@ -64,6 +64,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('default_format')->defaultValue(\DateTime::ISO8601)->end()
                             ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
+                            ->scalarNode('cdata')->defaultTrue()->end()
                         ->end()
                    ->end()
                 ->end()
