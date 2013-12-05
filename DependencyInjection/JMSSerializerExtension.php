@@ -37,7 +37,9 @@ class JMSSerializerExtension extends ConfigurableExtension
         // Built-in handlers.
         $container->getDefinition('jms_serializer.datetime_handler')
             ->addArgument($config['handlers']['datetime']['default_format'])
-            ->addArgument($config['handlers']['datetime']['default_timezone']);
+            ->addArgument($config['handlers']['datetime']['default_timezone'])
+            ->addArgument($config['handlers']['datetime']['cdata'])
+        ;
 
         // property naming
         $container
