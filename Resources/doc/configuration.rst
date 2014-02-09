@@ -29,7 +29,7 @@ The semantics are mainly the same as registering a regular Symfony2 event listen
 except that you can specify some additional attributes:
 
 - *format*: The format that you want to listen to; defaults to all formats.
-- *type*: The type name that you want to listen to; defaults to all types.
+- *class*: The type name that you want to listen to; defaults to all types.
 - *direction*: The direction (serialization, or deserialization); defaults to both.
 
 .. note ::
