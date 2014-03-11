@@ -78,10 +78,20 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('property_naming')
                 ->addDefaultsIfNotSet()
                 ->children()
-                    ->scalarNode('id')->cannotBeEmpty()->end()
-                    ->scalarNode('separator')->defaultValue('_')->end()
-                    ->booleanNode('lower_case')->defaultTrue()->end()
+                    ->scalarNode('strategy')->defaultValue('camel_case')->end()
+                    ->arrayNode('camel_case')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('separator')->defaultValue('_')->end()
+                            ->booleanNode('lower_case')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                    ->booleanNode('enable_annotation')->defaultTrue()->end()
                     ->booleanNode('enable_cache')->defaultTrue()->end()
+
+                    // For BC we include the old nodes
+                    ->scalarNode('separator')->defaultNull()->end()
+                    ->booleanNode('lower_case')->defaultNull()->end()
                 ->end()
             ->end()
         ;

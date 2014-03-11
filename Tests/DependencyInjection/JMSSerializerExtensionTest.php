@@ -182,4 +182,48 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         return $container;
     }
+
+    public function testDefaultPropertyNamingStrategy()
+    {
+        $config = array();
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = $serializer->serialize($simpleObject, 'json');
+
+        $this->assertEquals(json_encode(array('foo'=>'foo','moo'=>'bar','camel_case'=>'boo')), $actual);
+    }
+
+    public function testIdenticalPropertyNamingStrategy()
+    {
+        $config = array(
+            'property_naming' => array(
+                'strategy' => 'identical',
+                'enable_annotation' => false
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = json_decode($serializer->serialize($simpleObject, 'json'), true);
+
+        $this->assertArrayHasKey('camelCase', $actual);
+        $this->assertArrayNotHasKey('camel_case', $actual);
+    }
+
+    public function testDisablingAnotationNamingStrategy()
+    {
+        $config = array(
+            'property_naming' => array(
+                'enable_annotation' => false
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = json_decode($serializer->serialize($simpleObject, 'json'), true);
+
+        $this->assertArrayHasKey('bar', $actual);
+        $this->assertArrayNotHasKey('moo', $actual);
+    }
 }
