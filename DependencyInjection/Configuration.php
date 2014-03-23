@@ -89,9 +89,29 @@ class Configuration implements ConfigurationInterface
                     ->booleanNode('enable_annotation')->defaultTrue()->end()
                     ->booleanNode('enable_cache')->defaultTrue()->end()
 
-                    // For BC we include the old nodes
-                    ->scalarNode('separator')->defaultNull()->end()
-                    ->booleanNode('lower_case')->defaultNull()->end()
+                    // For BC we include the old nodes and convert them in beforeNormalization()
+                    ->scalarNode('separator')->end()
+                    ->booleanNode('lower_case')->end()
+                ->end()
+                ->beforeNormalization()
+                    ->ifTrue(function ($v) {
+                        return
+                            ( !isset($v['camel_case']) || empty($v['camel_case']) )
+                            &&
+                            ( isset($v['separator']) || isset($v['lower_case']) )
+                        ;
+                    })
+                    ->then(function ($v) {
+                        if (isset($v['separator'])) {
+                            $v['camel_case']['separator'] = $v['separator'];
+                        }
+                        if (isset($v['lower_case'])) {
+                            $v['camel_case']['lower_case'] = $v['lower_case'];
+                        }
+                        unset($v['lower_case'], $v['separator']);
+
+                        return $v;
+                    })
                 ->end()
             ->end()
         ;

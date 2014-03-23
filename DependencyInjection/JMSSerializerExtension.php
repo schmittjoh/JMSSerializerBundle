@@ -114,11 +114,11 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist']);
         $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
 
-        if ( ! $config['enable_short_alias']) {
+        if (! $config['enable_short_alias']) {
             $container->removeAlias('serializer');
         }
 
-        if ( ! $container->getParameter('kernel.debug')) {
+        if (! $container->getParameter('kernel.debug')) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
     }
@@ -134,14 +134,6 @@ class JMSSerializerExtension extends ConfigurableExtension
      */
     private function loadPropertyNamingStrategy(array $config, ContainerBuilder $container)
     {
-        // For BC we copy the old config nodes to the new ones
-        if (is_string($config['property_naming']['separator'])) {
-            $config['property_naming']['camel_case']['separator'] = $config['property_naming']['separator'];
-        }
-        if (is_bool($config['property_naming']['lower_case'])) {
-            $config['property_naming']['camel_case']['lower_case'] = $config['property_naming']['lower_case'];
-        }
-
         $container
             ->getDefinition('jms_serializer.camel_case_naming_strategy')
             ->addArgument($config['property_naming']['camel_case']['separator'])
@@ -156,7 +148,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         if ($config['property_naming']['enable_annotation']) {
             $container
                 ->getDefinition('jms_serializer.serialized_name_annotation_strategy')
-                ->addArgument(new Reference((string)$container->getAlias('jms_serializer.naming_strategy')));
+                ->addArgument(new Reference($strategy));
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.serialized_name_annotation_strategy');
         }
 

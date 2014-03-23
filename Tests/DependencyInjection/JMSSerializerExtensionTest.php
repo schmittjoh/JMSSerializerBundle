@@ -211,6 +211,60 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('camel_case', $actual);
     }
 
+    public function testOldConfigForCamelCasePropertyNaming()
+    {
+        $config = array(
+            'property_naming' => array(
+                'separator' => '-',
+                'lower_case' => false,
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = json_decode($serializer->serialize($simpleObject, 'json'), true);
+
+        $this->assertArrayHasKey('Camel-Case', $actual);
+    }
+
+    public function testEmptyNewConfigStillTriggersBCLayer()
+    {
+        $config = array(
+            'property_naming' => array(
+                'camel_case' => array (),
+                'separator' => '-',
+                'lower_case' => false,
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = json_decode($serializer->serialize($simpleObject, 'json'), true);
+
+        $this->assertArrayHasKey('Camel-Case', $actual);
+    }
+
+    public function testNewConfigHasPrecedenceOverOldConfigForCamelCasePropertyNaming()
+    {
+        $config = array(
+            'property_naming' => array(
+                'camel_case' => array (
+                    'separator' => '.',
+                    'lower_case' => true,
+                ),
+                'separator' => '-',
+                'lower_case' => false,
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $actual = json_decode($serializer->serialize($simpleObject, 'json'), true);
+
+        $this->assertArrayHasKey('camel.case', $actual);
+        $this->assertArrayNotHasKey('Camel-Case', $actual);
+    }
+
     public function testDisablingAnotationNamingStrategy()
     {
         $config = array(
