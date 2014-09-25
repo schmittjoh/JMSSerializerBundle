@@ -33,7 +33,7 @@ file of your project:
         {
             $bundles = array(
                 // ...
-                return new JMS\SerializerBundle\JMSSerializerBundle(),
+                new JMS\SerializerBundle\JMSSerializerBundle(),
             );
 
             // ...
