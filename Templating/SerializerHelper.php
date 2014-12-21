@@ -43,8 +43,9 @@ class SerializerHelper extends Helper
     }
 
     /**
-     * @param mixed $object
+     * @param mixed  $object
      * @param string $type
+     * 
      * @return string Serialized data
      */
     public function serialize($object, $type = 'json')
