@@ -8,7 +8,7 @@ or the ``jms_serializer.subscribing_handler``.
 
 .. code-block :: xml
 
-    <service id="my_handler" class="MyHandler" public="false">
+    <service id="my_handler" class="MyHandler">
         <tag name="jms_serializer.handler" type="DateTime" direction="serialization" format="json"
                     method="serializeDateTimeToJson" />
     </service>
