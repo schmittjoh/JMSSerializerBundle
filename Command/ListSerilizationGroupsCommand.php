@@ -50,14 +50,8 @@ class ListSerilizationGroupsCommand extends ContainerAwareCommand
     {
         $this->output = $output;
         $this->input = $input;
-
-        $this->output->writeln('<info>fetching groups from entity manager...</info>');
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-
-        $knownEntities = $em->getMetadataFactory()->getAllMetadata();
-        $this->getJmsGroups($knownEntities);
+        $this->getJmsGroups();
         $this->detectMaxOutputLength();
-
         $this->printGroups($input->getOption('short'));
     }
 
@@ -130,17 +124,13 @@ class ListSerilizationGroupsCommand extends ContainerAwareCommand
         }
     }
 
-    /**
-     * @param ClassMetadata[] $knownEntities
-     */
-    protected function getJmsGroups($knownEntities)
+    protected function getJmsGroups()
     {
         $this->output->writeln('<info>checking for serializer metadata...</info>');
         $serializer = $this->getContainer()->get('jms_serializer');
-        foreach ($knownEntities as $entity) {
-            $jmsMetadata = $serializer->getMetadataFactory()->getMetadataForClass(
-                $entity->getReflectionClass()->getName()
-            );
+        $knownClasses = $serializer->getMetadataFactory()->getAllClassNames();
+        foreach ($knownClasses as $class) {
+            $jmsMetadata = $serializer->getMetadataFactory()->getMetadataForClass($class);
             $this->fetchJmsGroupsFromMetadata($jmsMetadata);
         }
         $this->output->writeln('<info>done.</info>' . PHP_EOL);
