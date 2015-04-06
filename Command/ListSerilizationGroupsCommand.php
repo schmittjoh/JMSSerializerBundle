@@ -1,7 +1,9 @@
 <?php
 namespace JMS\SerializerBundle\Command;
-use Doctrine\ORM\Mapping\ClassMetadata;
+
 use JMS\Serializer\Metadata\PropertyMetadata;
+use Metadata\MergeableClassMetadata;
+use Metadata\MetadataFactory;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -106,7 +108,7 @@ class ListSerilizationGroupsCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param $jmsMetadata
+     * @param MergeableClassMetadata $jmsMetadata
      */
     protected function fetchJmsGroupsFromMetadata($jmsMetadata)
     {
@@ -128,9 +130,11 @@ class ListSerilizationGroupsCommand extends ContainerAwareCommand
     {
         $this->output->writeln('<info>checking for serializer metadata...</info>');
         $serializer = $this->getContainer()->get('jms_serializer');
-        $knownClasses = $serializer->getMetadataFactory()->getAllClassNames();
+        /** @var MetadataFactory $metadataFactory */
+        $metadataFactory = $serializer->getMetadataFactory();
+        $knownClasses = $metadataFactory->getAllClassNames();
         foreach ($knownClasses as $class) {
-            $jmsMetadata = $serializer->getMetadataFactory()->getMetadataForClass($class);
+            $jmsMetadata = $metadataFactory->getMetadataForClass($class);
             $this->fetchJmsGroupsFromMetadata($jmsMetadata);
         }
         $this->output->writeln('<info>done.</info>' . PHP_EOL);
