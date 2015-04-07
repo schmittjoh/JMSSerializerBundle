@@ -40,9 +40,9 @@ class ListSerializationGroupsCommandTest extends WebTestCase
     public function testExecute()
     {
         $application = new Application($this->kernelMock);
-        $listSerilizationGroupsCommand = new ListSerializationGroupsCommand();
-        $listSerilizationGroupsCommand->setContainer($this->kernelMock->getContainer());
-        $application->add($listSerilizationGroupsCommand);
+        $listSerializationGroupsCommand = new ListSerializationGroupsCommand();
+        $listSerializationGroupsCommand->setContainer($this->kernelMock->getContainer());
+        $application->add($listSerializationGroupsCommand);
 
         $command = $application->find('jms:serializer:list-groups');
         $commandTester = new CommandTester($command);
