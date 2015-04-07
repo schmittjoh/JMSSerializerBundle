@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListSerilizationGroupsCommand extends ContainerAwareCommand
+class ListSerializationGroupsCommand extends ContainerAwareCommand
 {
     private $usedGroups = [];
 
@@ -37,7 +37,7 @@ class ListSerilizationGroupsCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('serializer:list-groups')
+            ->setName('jms:serializer:list-groups')
             ->setDescription('list all groups used on the entites')
             ->addOption('short', null, InputOption::VALUE_OPTIONAL, 'print the occurences of each group', false);
     }
