@@ -1,6 +1,7 @@
 <?php
 namespace JMS\SerializerBundle\Command;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\MergeableClassMetadata;
 use Metadata\MetadataFactory;
@@ -52,7 +53,9 @@ class ListSerializationGroupsCommand extends ContainerAwareCommand
     {
         $this->output = $output;
         $this->input = $input;
-        $this->getJmsGroups();
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $knownEntities = $em->getMetadataFactory()->getAllMetadata();
+        $this->getJmsGroups($knownEntities);
         $this->detectMaxOutputLength();
         $this->printGroups($input->getOption('short'));
     }
@@ -126,15 +129,17 @@ class ListSerializationGroupsCommand extends ContainerAwareCommand
         }
     }
 
-    protected function getJmsGroups()
+    /**
+     * @param ClassMetadata[] $knownEntities
+     */
+    protected function getJmsGroups($knownEntities)
     {
         $this->output->writeln('<info>checking for serializer metadata...</info>');
         $serializer = $this->getContainer()->get('jms_serializer');
-        /** @var MetadataFactory $metadataFactory */
-        $metadataFactory = $serializer->getMetadataFactory();
-        $knownClasses = $metadataFactory->getAllClassNames();
-        foreach ($knownClasses as $class) {
-            $jmsMetadata = $metadataFactory->getMetadataForClass($class);
+        foreach ($knownEntities as $entity) {
+            $jmsMetadata = $serializer->getMetadataFactory()->getMetadataForClass(
+                $entity->getReflectionClass()->getName()
+            );
             $this->fetchJmsGroupsFromMetadata($jmsMetadata);
         }
         $this->output->writeln('<info>done.</info>' . PHP_EOL);
