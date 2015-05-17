@@ -51,6 +51,7 @@
         <parameter key="jms_serializer.constraint_violation_handler.class">JMS\Serializer\Handler\ConstraintViolationHandler</parameter>
         <parameter key="jms_serializer.doctrine_proxy_subscriber.class">JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber</parameter>
         <parameter key="jms_serializer.stopwatch_subscriber.class">JMS\SerializerBundle\Serializer\StopwatchEventSubscriber</parameter>
+        <parameter key="jms_serializer.constraint_violation_converter.class">JMS\SerializerBundle\Serializer\ConstraintViolationListSubscriber</parameter>
     </parameters>
 
     <services>
@@ -64,6 +65,9 @@
         <service id="jms_serializer.stopwatch_subscriber" class="%jms_serializer.stopwatch_subscriber.class%">
             <tag name="jms_serializer.event_subscriber" />
             <argument type="service" id="debug.stopwatch" />
+        </service>
+        <service id="jms_serializer.constraint_violation_converter.class" class="%jms_serializer.constraint_violation_converter.class%">
+            <tag name="jms_serializer.event_subscriber" />
         </service>
         
         <!-- Handlers -->
