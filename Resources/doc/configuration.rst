@@ -67,9 +67,9 @@ is searched for metadata with a path that is under your control.
 
 Changing the Object Constructor
 ----------------------------------
-A Constructor class is used to construct new objects during deserialization. The 
+A Constructor class is used to construct new objects during deserialization. The
 default constructor uses the `unserialize` function to construct objects. Other
-constructors are configured as services. You can set the constructor by changing 
+constructors are configured as services. You can set the constructor by changing
 the service alias:
 
 .. code-block :: yaml
@@ -91,6 +91,7 @@ values:
 
         # config.yml
         jms_serializer:
+            enable_short_alias: true # controls if "serializer" service is aliased to jms_serializer.serializer service
             handlers:
                 datetime:
                     default_format: "c" # ISO8601
