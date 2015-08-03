@@ -54,8 +54,8 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('The service "%s" (class: %s) must return an event for each subscribed event.', $id, $subscriberClass));
                 }
 
-                $class = isset($attributes['class'])
-                    ? strtolower($container->getParameterBag()->resolveValue($attributes['class']))
+                $class = isset($eventData['class'])
+                    ? strtolower($container->getParameterBag()->resolveValue($eventData['class']))
                     : null
                 ;
 
