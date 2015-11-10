@@ -12,9 +12,10 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
+        "php": ">=5.4.0",
         "jms/serializer": "^1.0.0",
-        "symfony/framework-bundle": "~2.1"
+        "phpoption/phpoption": "^1.1.0",
+        "symfony/framework-bundle": "~2.3|~3.0"
     },
     "require-dev": {
         "symfony/yaml": "*",
@@ -37,6 +38,7 @@
         "psr-0": { "JMS\\SerializerBundle": "" }
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "target-dir": "JMS/SerializerBundle",
     "extra": {
         "branch-alias": {
