@@ -62,7 +62,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('datetime')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('default_format')->defaultValue(\DateTime::ISO8601)->end()
+                            ->scalarNode('default_format')->defaultValue(\DateTime::ATOM)->end()
                             ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
                             ->scalarNode('cdata')->defaultTrue()->end()
                         ->end()
