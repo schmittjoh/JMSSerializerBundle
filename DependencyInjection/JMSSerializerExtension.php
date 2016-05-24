@@ -91,7 +91,10 @@ class JMSSerializerExtension extends ConfigurableExtension
             foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
 
-                $directories[$ref->getNamespaceName()] = dirname($ref->getFileName()).'/Resources/config/serializer';
+                $dir = dirname($ref->getFileName()).'/Resources/config/serializer';
+                if (file_exists($dir)) {
+                    $directories[$ref->getNamespaceName()] = $dir;
+                }
             }
         }
         foreach ($config['metadata']['directories'] as $directory) {
@@ -108,7 +111,12 @@ class JMSSerializerExtension extends ConfigurableExtension
                 $directory['path'] = dirname($ref->getFileName()).substr($directory['path'], strlen('@'.$bundleName));
             }
 
-            $directories[rtrim($directory['namespace_prefix'], '\\')] = rtrim($directory['path'], '\\/');
+            $dir = rtrim($directory['path'], '\\/');
+            if (!file_exists($dir)) {
+                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist', $dir));
+            }
+
+            $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
         }
         $container
             ->getDefinition('jms_serializer.metadata.file_locator')
