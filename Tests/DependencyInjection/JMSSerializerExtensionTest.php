@@ -169,10 +169,8 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
         if (null === $kernel) {
-            $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\Kernel');
+            $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
             $kernel
-                ->setConstructorArgs(array('test', true))
-                ->getMock()
                 ->expects($this->any())
                 ->method('getBundles')
                 ->will($this->returnValue(array()))
