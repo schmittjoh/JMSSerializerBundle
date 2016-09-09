@@ -146,11 +146,33 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         return $configs;
     }
 
+    public function testXmlVisitorFormatOutput()
+    {
+        $config = array(
+            'visitors' => array(
+                'xml' => array(
+                    'format_output' => false,
+                )
+            )
+        );
+        $container = $this->getContainerForConfig(array($config));
+
+        $this->assertFalse($container->get('jms_serializer.xml_serialization_visitor')->isFormatOutput());
+    }
+
+    public function testXmlVisitorDefaultValueToFormatOutput()
+    {
+        $container = $this->getContainerForConfig(array());
+        $this->assertTrue($container->get('jms_serializer.xml_serialization_visitor')->isFormatOutput());
+    }
+
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
         if (null === $kernel) {
-            $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
+            $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\Kernel');
             $kernel
+                ->setConstructorArgs(array('test', true))
+                ->getMock()
                 ->expects($this->any())
                 ->method('getBundles')
                 ->will($this->returnValue(array()))
