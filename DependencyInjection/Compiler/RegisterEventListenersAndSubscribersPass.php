@@ -42,7 +42,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
             }
 
             if (!$subscriberDefinition->isPublic()) {
-                throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires the service to be public.', $id));
+                throw new \RuntimeException(sprintf('The tag "jms_serializer.event_subscriber" of service "%s" requires the service to be public.', $id));
             }
 
             foreach (call_user_func(array($subscriberClass, 'getSubscribedEvents')) as $eventData) {
