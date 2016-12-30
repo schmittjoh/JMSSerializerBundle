@@ -22,7 +22,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires an attribute named "event".', $id));
                 }
 
-                $class = isset($attributes['class']) ? strtolower($attributes['class']) : null;
+                $class  = isset($attributes['class'])  ? $attributes['class']  : null;
                 $format = isset($attributes['format']) ? $attributes['format'] : null;
                 $method = isset($attributes['method']) ? $attributes['method'] : EventDispatcher::getDefaultMethodName($attributes['event']);
                 $priority = isset($attributes['priority']) ? (integer) $attributes['priority'] : 0;
@@ -50,7 +50,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('The service "%s" (class: %s) must return an event for each subscribed event.', $id, $subscriberClass));
                 }
 
-                $class = isset($eventData['class']) ? strtolower($eventData['class']) : null;
+                $class  = isset($eventData['class'])  ? $eventData['class']  : null;
                 $format = isset($eventData['format']) ? $eventData['format'] : null;
                 $method = isset($eventData['method']) ? $eventData['method'] : EventDispatcher::getDefaultMethodName($eventData['event']);
                 $priority = isset($eventData['priority']) ? (integer) $eventData['priority'] : 0;
