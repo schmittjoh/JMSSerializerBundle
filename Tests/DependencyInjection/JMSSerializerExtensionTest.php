@@ -58,6 +58,35 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testHasContextFactories()
+    {
+        $container = $this->getContainerForConfig(array(array()));
+
+        $factory = $container->get('jms_serializer.serialization_context_factory');
+        $this->assertInstanceOf('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface', $factory);
+
+        $factory = $container->get('jms_serializer.deserialization_context_factory');
+        $this->assertInstanceOf('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface', $factory);
+    }
+
+    public function testSerializerContextFactoriesAreSet()
+    {
+        $container = $this->getContainerForConfig(array(array()));
+
+        $def = $container->getDefinition('jms_serializer.serializer');
+        $calls = $def->getMethodCalls();
+
+        $this->assertCount(2, $calls);
+
+        $serializationCall = $calls[0];
+        $this->assertEquals('setSerializationContextFactory', $serializationCall[0]);
+        $this->assertEquals('jms_serializer.serialization_context_factory', (string)$serializationCall[1][0]);
+
+        $serializationCall = $calls[1];
+        $this->assertEquals('setDeserializationContextFactory', $serializationCall[0]);
+        $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
+    }
+
     public function testLoad()
     {
         $container = $this->getContainerForConfig(array(array()));
