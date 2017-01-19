@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\Serializer\SerializationContext;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -56,6 +57,41 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
             @rmdir($dir);
         }
+    }
+
+    public function testExpressionLanguage()
+    {
+        if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+            $this->markTestSkipped("Expression Language is not loaded");
+        }
+        $container = $this->getContainerForConfig(array(array()));
+
+        $serializer = $container->get('serializer');
+
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionLanguage('foo', true);
+        $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
+
+        $object = new ObjectUsingExpressionLanguage('foo', false);
+        $this->assertEquals('{}', $serializer->serialize($object, 'json'));
+    }
+
+    /**
+     * @expectedException JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage  To use conditional exclude/expose in JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage you must configure the expression language.
+     */
+    public function testExpressionLanguageNotLoaded()
+    {
+        if (class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+            $this->markTestSkipped("Expression Language is loaded");
+        }
+
+        $container = $this->getContainerForConfig(array(array()));
+        $serializer = $container->get('serializer');
+
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionLanguage('foo', true);
+        $serializer->serialize($object, 'json');
     }
 
     public function testLoad()
