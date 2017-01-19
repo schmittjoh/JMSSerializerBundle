@@ -47,7 +47,10 @@ class JMSSerializerBundle extends Bundle
         $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $builder->addCompilerPass(new DoctrinePass(), PassConfig::TYPE_BEFORE_REMOVING);
-        $builder->addCompilerPass(new RemoveExpressionLanguagePass(), PassConfig::TYPE_BEFORE_REMOVING);
+
+        if (!class_exists($builder->getParameter('jms_serializer.expression_language.class'))) {
+            $builder->removeDefinition('jms_serializer.expression_evaluator');
+        }
     }
 
     private function getServiceMapPass($tagName, $keyAttributeName, $callable)
