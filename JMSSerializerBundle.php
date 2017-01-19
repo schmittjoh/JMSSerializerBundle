@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle;
 
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\RemoveExpressionLanguagePass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
@@ -46,6 +47,10 @@ class JMSSerializerBundle extends Bundle
         $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $builder->addCompilerPass(new DoctrinePass(), PassConfig::TYPE_BEFORE_REMOVING);
+
+        if (!class_exists($builder->getParameter('jms_serializer.expression_language.class'))) {
+            $builder->removeDefinition('jms_serializer.expression_evaluator');
+        }
     }
 
     private function getServiceMapPass($tagName, $keyAttributeName, $callable)
