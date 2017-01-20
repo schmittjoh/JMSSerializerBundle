@@ -57,6 +57,14 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $bundles = $container->getParameter('kernel.bundles');
 
+        if (!empty($config['expression_evaluator']['id'])) {
+            $container
+                ->getDefinition('jms_serializer.serializer')
+                ->replaceArgument(7, new Reference($config['expression_evaluator']['id']));
+        } else {
+            $container->removeDefinition('jms_serializer.expression_evaluator');
+        }
+
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
