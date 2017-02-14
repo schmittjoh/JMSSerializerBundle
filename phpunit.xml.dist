@@ -22,4 +22,13 @@
             <group>performance</group>
         </exclude>
     </groups>
+    <filter>
+        <whitelist>
+            <directory>DependencyInjection</directory>
+            <directory>Templating</directory>
+            <directory>ExpressionLanguage</directory>
+            <directory>Serializer</directory>
+            <file>JMSSerializerBundle.php</file>
+        </whitelist>
+    </filter>
 </phpunit>

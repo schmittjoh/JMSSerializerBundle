@@ -1,6 +1,12 @@
 JMSSerializerBundle
 ===================
 
+
+[![Build Status](https://travis-ci.org/schmittjoh/JMSSerializerBundle.png)](https://travis-ci.org/schmittjoh/JMSSerializerBundle)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/badges/quality-score.png)](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/)
+[![Code Coverage](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/badges/coverage.png)](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/)
+[![Packagist](https://img.shields.io/packagist/v/jms/serializer-bundle.svg)](https://packagist.org/packages/schmittjoh/JMSSerializerBundle)
+
 This bundle integrates the [serializer library](https://github.com/schmittjoh/serializer) into Symfony2.
 
 Please open new issues or feature request which are related to the library on the new repository.
