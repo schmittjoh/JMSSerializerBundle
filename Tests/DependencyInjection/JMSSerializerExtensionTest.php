@@ -19,6 +19,7 @@
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\Serializer\SerializationContext;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -147,6 +148,42 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $configs[] = array(0, array());
 
         return $configs;
+    }
+
+    public function testExpressionLanguage()
+    {
+        if (!interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
+            $this->markTestSkipped("The Symfony Expression Language is not available");
+        }
+        $container = $this->getContainerForConfig(array(array()));
+        $serializer = $container->get('serializer');
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionLanguage('foo', true);
+        $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
+        $object = new ObjectUsingExpressionLanguage('foo', false);
+        $this->assertEquals('{}', $serializer->serialize($object, 'json'));
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage  To use conditional exclude/expose in JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage you must configure the expression language.
+     */
+    public function testExpressionLanguageNotLoaded()
+    {
+        $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
+        $serializer = $container->get('serializer');
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionLanguage('foo', true);
+        $serializer->serialize($object, 'json');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression language v2.6 or v3.0 to use the expression evaluator features
+     */
+    public function testExpressionInvalidEvaluator()
+    {
+        $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => 'foo'))));
     }
 
     /**

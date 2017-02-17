@@ -125,6 +125,9 @@ values:
                         namespace_prefix: "My\\BarBundle"
                         path: "@MyBarBundle/Resources/config/serializer"
 
+            expression_evaluator:
+                id: jms_serializer.expression_evaluator # auto detected
+
             visitors:
                 json:
                     options: 0 # json_encode options bitmask
