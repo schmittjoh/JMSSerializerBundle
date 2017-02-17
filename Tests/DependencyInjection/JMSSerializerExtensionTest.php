@@ -27,7 +27,6 @@ use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -212,16 +211,39 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         return $configs;
     }
 
-    private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
+    public function testCustomMetadataDirectories()
     {
-        if (null === $kernel) {
-            $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
-            $kernel
-                ->expects($this->any())
-                ->method('getBundles')
-                ->will($this->returnValue(array()))
-            ;
-        }
+        $modifyContainer = function(ContainerBuilder $container) {
+            $container->setParameter('kernel.bundles', array(
+                'FrameworkBundle' => 'Symfony\Bundle\FrameworkBundle\FrameworkBundle'
+            ));
+        };
+
+        $container = $this->getContainerForConfig(array(
+            array(
+                'metadata' => array(
+                    'auto_detection' => false,
+                    'directories' => array(
+                        'test' => array(
+                            'namespace_prefix' => 'prefix',
+                            'path'             => '@FrameworkBundle'
+                        ),
+                    )
+                )
+            )
+        ), $modifyContainer);
+
+        $this->assertFileExists($container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0)['prefix']);
+    }
+
+    private function getContainerForConfig(array $configs, callable $modifyContainer = null)
+    {
+        $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
+        $kernel
+            ->expects($this->any())
+            ->method('getBundles')
+            ->will($this->returnValue(array()))
+        ;
 
         $bundle = new JMSSerializerBundle($kernel);
         $extension = $bundle->getContainerExtension();
@@ -234,6 +256,11 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
         $container->set('debug.stopwatch', $this->getMock('Symfony\\Component\\Stopwatch\\Stopwatch'));
         $container->registerExtension($extension);
+
+        if ($modifyContainer) {
+            call_user_func($modifyContainer, $container);
+        }
+
         $extension->load($configs, $container);
 
         $bundle->build($container);

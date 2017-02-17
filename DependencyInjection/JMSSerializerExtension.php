@@ -106,7 +106,8 @@ class JMSSerializerExtension extends ConfigurableExtension
             $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
 
             if ('@' === $directory['path'][0]) {
-                $bundleName = substr($directory['path'], 1, strpos($directory['path'], '/') - 1);
+                $pathParts = explode('/', $directory['path']);
+                $bundleName = substr($pathParts[0], 1);
 
                 if (!isset($bundles[$bundleName])) {
                     throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
