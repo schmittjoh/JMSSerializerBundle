@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -162,6 +163,34 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
         $object = new ObjectUsingExpressionLanguage('foo', false);
         $this->assertEquals('{}', $serializer->serialize($object, 'json'));
+    }
+
+    public function testExpressionLanguageVirtualProperties()
+    {
+        if (!interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
+            $this->markTestSkipped("The Symfony Expression Language is not available");
+        }
+        $container = $this->getContainerForConfig(array(array()));
+        $serializer = $container->get('serializer');
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionProperties('foo');
+        $this->assertEquals('{"v_prop_name":"foo"}', $serializer->serialize($object, 'json'));
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
+     * @expectedExceptionMessage The property v_prop_name on JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties requires the expression evaluator to be enabled
+     */
+    public function testExpressionLanguageDisabledVirtualProperties()
+    {
+        if (!interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
+            $this->markTestSkipped("The Symfony Expression Language is not available");
+        }
+        $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
+        $serializer = $container->get('serializer');
+        // test that all components have been wired correctly
+        $object = new ObjectUsingExpressionProperties('foo');
+        $serializer->serialize($object, 'json');
     }
 
     /**

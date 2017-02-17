@@ -61,8 +61,13 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container
                 ->getDefinition('jms_serializer.serializer')
                 ->replaceArgument(7, new Reference($config['expression_evaluator']['id']));
+
+            $container
+                ->setAlias('jms_serializer.accessor_strategy', 'jms_serializer.accessor_strategy.expression');
+
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
+            $container->removeDefinition('jms_serializer.accessor_strategy.expression');
         }
 
         // metadata
