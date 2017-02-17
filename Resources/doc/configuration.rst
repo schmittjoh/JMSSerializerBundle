@@ -134,6 +134,7 @@ values:
                 xml:
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
+                    format_output: true
 
     .. code-block :: xml
 
