@@ -95,11 +95,13 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         // directories
         $directories = array();
+        $resDir = $container->getParameter('kernel.root_dir').'/Resources/';
         if ($config['metadata']['auto_detection']) {
             foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
 
-                $directories[$ref->getNamespaceName()] = dirname($ref->getFileName()).'/Resources/config/serializer';
+                $dir = $resDir . $name . '/config/serializer';
+                $directories[$ref->getNamespaceName()] = is_dir($dir) ? $dir : dirname($ref->getFileName()).'/Resources/config/serializer';
             }
         }
         foreach ($config['metadata']['directories'] as $directory) {
