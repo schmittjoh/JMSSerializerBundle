@@ -231,7 +231,6 @@
         </service>
         <service id="jms_serializer.json_deserialization_visitor" class="%jms_serializer.json_deserialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="service" id="jms_serializer.object_constructor" />
             <tag name="jms_serializer.deserialization_visitor" format="json" />
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%">
@@ -243,7 +242,6 @@
         </service>
         <service id="jms_serializer.xml_deserialization_visitor" class="%jms_serializer.xml_deserialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
-            <argument type="service" id="jms_serializer.object_constructor" />
             <call method="setDoctypeWhitelist">
                 <argument>%jms_serializer.xml_deserialization_visitor.doctype_whitelist%</argument>
             </call>
