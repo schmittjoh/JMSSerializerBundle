@@ -2,16 +2,17 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 class DoctrinePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata') 
-            && $container->getParameter('jms_serializer.infer_types_from_doctrine_metadata') === false) {
+        if ($container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata')
+            && $container->getParameter('jms_serializer.infer_types_from_doctrine_metadata') === false
+        ) {
             return;
         }
 
@@ -47,8 +48,7 @@ class DoctrinePass implements CompilerPassInterface
                 $id = sprintf($service['template'], $registry);
                 $container
                     ->getDefinition($id)
-                    ->replaceArgument($service['position'], new Reference($previousId[$serviceName]))
-                ;
+                    ->replaceArgument($service['position'], new Reference($previousId[$serviceName]));
                 $previousId[$serviceName] = $id;
                 $container->setAlias($serviceName, $previousId[$serviceName]);
             }
