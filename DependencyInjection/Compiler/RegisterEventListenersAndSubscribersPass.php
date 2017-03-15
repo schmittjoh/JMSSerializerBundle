@@ -22,7 +22,10 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('The tag "jms_serializer.event_listener" of service "%s" requires an attribute named "event".', $id));
                 }
 
-                $class = isset($attributes['class']) ? strtolower($attributes['class']) : null;
+                $class = isset($attributes['class'])
+                    ? strtolower($container->getParameterBag()->resolveValue($attributes['class']))
+                    : null;
+
                 $format = isset($attributes['format']) ? $attributes['format'] : null;
                 $method = isset($attributes['method']) ? $attributes['method'] : EventDispatcher::getDefaultMethodName($attributes['event']);
                 $priority = isset($attributes['priority']) ? (integer) $attributes['priority'] : 0;
