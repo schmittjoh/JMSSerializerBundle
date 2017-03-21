@@ -18,10 +18,11 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
+use JMS\Serializer\Exception\InvalidArgumentException;
+use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use JMS\Serializer\Exception\InvalidArgumentException;
 
 class Configuration implements ConfigurationInterface
 {
@@ -49,6 +50,7 @@ class Configuration implements ConfigurationInterface
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
+        $this->addContextSection($root);
 
         return $tb;
     }
@@ -203,6 +205,58 @@ class Configuration implements ConfigurationInterface
                                 ->defaultTrue()
                             ->end()
                         ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addContextSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('context')
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->booleanNode('serialize_null')
+                        ->defaultFalse()
+                        ->treatNullLike(false)
+                        ->info('Flag if null values should be serialized')
+                    ->end()
+                    ->arrayNode('attributes')
+                        ->fixXmlConfig('attribute')
+                        ->defaultValue([])
+                        ->treatNullLike([])
+                        ->useAttributeAsKey('key')
+                        ->prototype('scalar')->end()
+                        ->info('Arbitrary key-value data for context')
+                    ->end()
+                    ->arrayNode('groups')
+                        ->fixXmlConfig('group')
+                        ->defaultValue([GroupsExclusionStrategy::DEFAULT_GROUP])
+                        ->treatNullLike([GroupsExclusionStrategy::DEFAULT_GROUP])
+                        ->prototype('scalar')->end()
+                        ->info('Default serialization groups')
+                    ->end()
+                    ->scalarNode('version')
+                        ->defaultNull()
+                        ->validate()
+                            ->always(function ($value) {
+                                if ($value === null) {
+                                    return null;
+                                }
+
+                                if (!is_string($value)) {
+                                    throw new InvalidArgumentException('Version must be a string.');
+                                }
+
+                                if (!preg_match('#\d+\.\d+\.\d+#', $value)) {
+                                    throw new InvalidArgumentException('Version must follow semantic versioning format.');
+                                }
+
+                                return $value;
+                            })
+                        ->end()
+                        ->info('Application version to use in exclusion strategies')
                     ->end()
                 ->end()
             ->end()

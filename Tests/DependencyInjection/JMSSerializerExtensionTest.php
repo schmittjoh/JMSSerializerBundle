@@ -21,12 +21,12 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
-use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -64,10 +64,10 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getContainerForConfig(array(array()));
 
-        $factory = $container->get('jms_serializer.serialization_context_factory');
+        $factory = $container->get('jms_serializer.context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface', $factory);
 
-        $factory = $container->get('jms_serializer.deserialization_context_factory');
+        $factory = $container->get('jms_serializer.context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface', $factory);
     }
 
@@ -82,11 +82,21 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $serializationCall = $calls[0];
         $this->assertEquals('setSerializationContextFactory', $serializationCall[0]);
-        $this->assertEquals('jms_serializer.serialization_context_factory', (string)$serializationCall[1][0]);
+        $this->assertEquals('jms_serializer.context_factory', (string)$serializationCall[1][0]);
 
         $serializationCall = $calls[1];
         $this->assertEquals('setDeserializationContextFactory', $serializationCall[0]);
-        $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
+        $this->assertEquals('jms_serializer.context_factory', (string)$serializationCall[1][0]);
+    }
+
+    public function testConfiguringContextFactories()
+    {
+        $container = $this->getContainerForConfig(array(array()));
+
+        $def = $container->getDefinition('jms_serializer.context_factory');
+        $argument = $def->getArgument(0);
+        $this->assertNotEmpty($argument);
+        $this->assertArrayNotHasKey('context', $argument);
     }
 
     public function testLoad()
@@ -263,7 +273,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     private function getContainerForConfig(array $configs, KernelInterface $kernel = null)
     {
         if (null === $kernel) {
-            $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
+            $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')->getMock();
             $kernel
                 ->expects($this->any())
                 ->method('getBundles')
@@ -279,8 +289,8 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/serializer');
         $container->setParameter('kernel.bundles', array());
         $container->set('annotation_reader', new AnnotationReader());
-        $container->set('translator', $this->getMock('Symfony\\Component\\Translation\\TranslatorInterface'));
-        $container->set('debug.stopwatch', $this->getMock('Symfony\\Component\\Stopwatch\\Stopwatch'));
+        $container->set('translator', $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock());
+        $container->set('debug.stopwatch', $this->getMockBuilder('Symfony\\Component\\Stopwatch\\Stopwatch')->getMock());
         $container->registerExtension($extension);
         $extension->load($configs, $container);
 

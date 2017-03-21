@@ -18,13 +18,13 @@
 
 namespace JMS\SerializerBundle\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
-use Symfony\Component\DependencyInjection\Alias;
 use JMS\Serializer\Exception\RuntimeException;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -80,10 +80,8 @@ class JMSSerializerExtension extends ConfigurableExtension
             ;
 
             $dir = $container->getParameterBag()->resolveValue($config['metadata']['file_cache']['dir']);
-            if (!file_exists($dir)) {
-                if (!$rs = @mkdir($dir, 0777, true)) {
-                    throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
-                }
+            if (!is_dir($dir) && !@mkdir($dir, 0777, true) && !is_dir($dir)) {
+                throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
             }
         } else {
             $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
@@ -140,6 +138,10 @@ class JMSSerializerExtension extends ConfigurableExtension
         if ( ! $container->getParameter('kernel.debug')) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
+
+        // context factories
+        $container->getDefinition('jms_serializer.context_factory')
+            ->replaceArgument(0, $config['context']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

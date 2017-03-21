@@ -18,7 +18,9 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use JMS\SerializerBundle\DependencyInjection\Configuration;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
@@ -63,5 +65,22 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($ref->getPath(), $directories['JMSSerializerBundleNs1']);
         $this->assertEquals($ref->getPath().'/Resources/config', $directories['JMSSerializerBundleNs2']);
+    }
+
+    public function testContextDefaults()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertArrayHasKey('context', $config);
+        $this->assertArrayHasKey('attributes', $config['context']);
+        $this->assertTrue(is_array($config['context']['attributes']));
+        $this->assertEmpty($config['context']['attributes']);
+        $this->assertArrayHasKey('groups', $config['context']);
+        $this->assertSame(['Default'], $config['context']['groups']);
+        $this->assertArrayHasKey('version', $config['context']);
+        $this->assertNull($config['context']['version']);
+        $this->assertArrayHasKey('serialize_null', $config['context']);
+        $this->assertFalse($config['context']['serialize_null']);
     }
 }
