@@ -140,8 +140,18 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
 
         // context factories
-        $container->getDefinition('jms_serializer.context_factory')
-            ->replaceArgument(0, $config['context']);
+        $services = [
+            'serialization' => 'jms_serializer.serialization_context_factory',
+            'deserialization' => 'jms_serializer.deserialization_context_factory',
+        ];
+        foreach ($services as $configKey => $serviceId) {
+            $container->getDefinition($serviceId)
+                      ->replaceArgument(0, $config['default_context'][$configKey]['version'])
+                      ->replaceArgument(1, $config['default_context'][$configKey]['serialize_null'])
+                      ->replaceArgument(2, $config['default_context'][$configKey]['attributes'])
+                      ->replaceArgument(3, $config['default_context'][$configKey]['groups'])
+            ;
+        }
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

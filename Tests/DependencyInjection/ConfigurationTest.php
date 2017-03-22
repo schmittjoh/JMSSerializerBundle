@@ -72,15 +72,21 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(true), []);
 
-        $this->assertArrayHasKey('context', $config);
-        $this->assertArrayHasKey('attributes', $config['context']);
-        $this->assertTrue(is_array($config['context']['attributes']));
-        $this->assertEmpty($config['context']['attributes']);
-        $this->assertArrayHasKey('groups', $config['context']);
-        $this->assertSame(['Default'], $config['context']['groups']);
-        $this->assertArrayHasKey('version', $config['context']);
-        $this->assertNull($config['context']['version']);
-        $this->assertArrayHasKey('serialize_null', $config['context']);
-        $this->assertFalse($config['context']['serialize_null']);
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $item) {
+            $this->assertArrayHasKey($item, $config['default_context']);
+
+            $defaultContext = $config['default_context'][$item];
+            $this->assertArrayHasKey('attributes', $defaultContext);
+            $this->assertTrue(is_array($defaultContext['attributes']));
+            $this->assertEmpty($defaultContext['attributes']);
+            $this->assertArrayHasKey('groups', $defaultContext);
+            $this->assertSame(['Default'], $defaultContext['groups']);
+            $this->assertArrayHasKey('version', $defaultContext);
+            $this->assertNull($defaultContext['version']);
+            $this->assertArrayHasKey('serialize_null', $defaultContext);
+            $this->assertFalse($defaultContext['serialize_null']);
+        }
+
     }
 }

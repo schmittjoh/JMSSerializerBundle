@@ -213,8 +213,18 @@ class Configuration implements ConfigurationInterface
 
     private function addContextSection(NodeBuilder $builder)
     {
+        $root = $builder
+                    ->arrayNode('default_context')
+                    ->addDefaultsIfNotSet();
+
+        $this->createContextNode($root->children(), 'serialization');
+        $this->createContextNode($root->children(), 'deserialization');
+    }
+
+    private function createContextNode(NodeBuilder $builder, $name)
+    {
         $builder
-            ->arrayNode('context')
+            ->arrayNode($name)
                 ->addDefaultsIfNotSet()
                 ->children()
                     ->booleanNode('serialize_null')
@@ -239,27 +249,9 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->scalarNode('version')
                         ->defaultNull()
-                        ->validate()
-                            ->always(function ($value) {
-                                if ($value === null) {
-                                    return null;
-                                }
-
-                                if (!is_string($value)) {
-                                    throw new InvalidArgumentException('Version must be a string.');
-                                }
-
-                                if (!preg_match('#\d+\.\d+\.\d+#', $value)) {
-                                    throw new InvalidArgumentException('Version must follow semantic versioning format.');
-                                }
-
-                                return $value;
-                            })
-                        ->end()
                         ->info('Application version to use in exclusion strategies')
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 }

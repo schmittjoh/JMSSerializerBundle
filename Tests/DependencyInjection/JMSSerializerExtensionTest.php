@@ -64,10 +64,10 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getContainerForConfig(array(array()));
 
-        $factory = $container->get('jms_serializer.context_factory');
+        $factory = $container->get('jms_serializer.serialization_context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface', $factory);
 
-        $factory = $container->get('jms_serializer.context_factory');
+        $factory = $container->get('jms_serializer.deserialization_context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface', $factory);
     }
 
@@ -82,21 +82,58 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $serializationCall = $calls[0];
         $this->assertEquals('setSerializationContextFactory', $serializationCall[0]);
-        $this->assertEquals('jms_serializer.context_factory', (string)$serializationCall[1][0]);
+        $this->assertEquals('jms_serializer.serialization_context_factory', (string)$serializationCall[1][0]);
 
         $serializationCall = $calls[1];
         $this->assertEquals('setDeserializationContextFactory', $serializationCall[0]);
-        $this->assertEquals('jms_serializer.context_factory', (string)$serializationCall[1][0]);
+        $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
     }
 
     public function testConfiguringContextFactories()
     {
         $container = $this->getContainerForConfig(array(array()));
 
-        $def = $container->getDefinition('jms_serializer.context_factory');
-        $argument = $def->getArgument(0);
-        $this->assertNotEmpty($argument);
-        $this->assertArrayNotHasKey('context', $argument);
+        $def = $container->getDefinition('jms_serializer.serialization_context_factory');
+        $r   = new \ReflectionClass($def->getClass());
+        $this->assertCount($r->getConstructor()->getNumberOfParameters(), $def->getArguments());
+
+        $def = $container->getDefinition('jms_serializer.deserialization_context_factory');
+        $r   = new \ReflectionClass($def->getClass());
+        $this->assertCount($r->getConstructor()->getNumberOfParameters(), $def->getArguments());
+    }
+
+    public function testConfiguringContextFactoriesWithParams()
+    {
+        $config = array(
+            'default_context' => array(
+                'serialization' => array(
+                    'version' => 1600,
+                    'serialize_null' => true,
+                    'attributes' => array('x' => 1720),
+                    'groups' => array('Default', 'Registration')
+                ),
+                'deserialization' => array(
+                    'version' => 1640,
+                    'serialize_null' => false,
+                    'attributes' => array('x' => 1740),
+                    'groups' => array('Default', 'Profile')
+                )
+            )
+        );
+
+        $container = $this->getContainerForConfig(array($config));
+        $services  = [
+            'serialization' => 'jms_serializer.serialization_context_factory',
+            'deserialization' => 'jms_serializer.deserialization_context_factory',
+        ];
+        foreach ($services as $configKey => $serviceId) {
+            $def    = $container->getDefinition($serviceId);
+            $values = $config['default_context'][$configKey];
+            $this->assertSame($values['version'], $def->getArgument(0));
+            $this->assertSame($values['serialize_null'], $def->getArgument(1));
+            $this->assertSame($values['attributes'], $def->getArgument(2));
+            $this->assertSame($values['groups'], $def->getArgument(3));
+        }
     }
 
     public function testLoad()

@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle\Tests\ContextFactory;
 
+use JMS\Serializer\Context;
 use JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory;
 
 /**
@@ -9,45 +10,70 @@ use JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory;
  */
 class ConfiguredContextFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateSerializationContext()
-    {
-        $config = $this->getContextConfig();
-        $object = new ConfiguredContextFactory($config);
+    /**
+     * testCreateSerializationContext
+     *
+     * @param string $version
+     * @param bool   $serializeNulls
+     * @param array  $attributes
+     * @param array  $groups
+     * @param string $expectedInterface
+     * @param string $expectedContextClass
+     * @param string $factoryMethod
+     *
+     * @return void
+     * @dataProvider contextConfigDataProvider
+     */
+    public function testCreateSerializationContext(
+        $version,
+        $serializeNulls,
+        array $attributes,
+        array $groups,
+        $expectedInterface,
+        $expectedContextClass,
+        $factoryMethod
+    ) {
+        $object = new ConfiguredContextFactory($version, $serializeNulls, $attributes, $groups);
 
-        $this->assertInstanceOf('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface', $object);
+        $this->assertInstanceOf($expectedInterface, $object);
 
-        $context = $object->createSerializationContext();
-        $this->assertInstanceOf('JMS\Serializer\SerializationContext', $context);
-        $this->assertSame($config['serialize_null'], $context->shouldSerializeNull());
+        $context = $object->$factoryMethod();
+        /** @var Context $context */
+        $this->assertInstanceOf($expectedContextClass, $context);
+        $this->assertSame($serializeNulls, $context->shouldSerializeNull());
 
-        $this->assertSame($config['version'], $context->attributes->get('version')->get());
-        $this->assertSame($config['groups'], $context->attributes->get('groups')->get());
+        $this->assertSame($version, $context->attributes->get('version')->get());
+        $this->assertSame($groups, $context->attributes->get('groups')->get());
+        foreach ($attributes as $k => $v) {
+            $this->assertSame($v, $context->attributes->get($k)->get());
+        }
     }
 
-    public function testCreateDeserializationContext()
-    {
-        $config = $this->getContextConfig();
-        $object = new ConfiguredContextFactory($config);
-
-        $this->assertInstanceOf('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface', $object);
-
-        $context = $object->createDeserializationContext();
-        $this->assertInstanceOf('JMS\Serializer\DeserializationContext', $context);
-        $this->assertSame($config['serialize_null'], $context->shouldSerializeNull());
-
-        $this->assertSame($config['version'], $context->attributes->get('version')->get());
-        $this->assertSame($config['groups'], $context->attributes->get('groups')->get());
-    }
-
-    private function getContextConfig()
+    public function contextConfigDataProvider()
     {
         return [
-            'attributes'     => [
-                'x' => mt_rand(0, PHP_INT_MAX),
+            [
+                sprintf('%d.%d.%d', mt_rand(1, 10), mt_rand(1, 10), mt_rand(1, 10)),
+                true,
+                [
+                    'x' => mt_rand(0, PHP_INT_MAX),
+                ],
+                [ 'Default', 'Registration' ],
+                'JMS\Serializer\ContextFactory\SerializationContextFactoryInterface',
+                'JMS\Serializer\SerializationContext',
+                'createSerializationContext'
             ],
-            'groups'         => [ 'Default', 'Registration' ],
-            'serialize_null' => true,
-            'version'        => sprintf('%d.%d.%d', mt_rand(1, 10), mt_rand(1, 10), mt_rand(1, 10)),
+            [
+                sprintf('%d.%d.%d', mt_rand(1, 10), mt_rand(1, 10), mt_rand(1, 10)),
+                true,
+                [
+                    'x' => mt_rand(0, PHP_INT_MAX),
+                ],
+                [ 'Default', 'Registration' ],
+                'JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface',
+                'JMS\Serializer\DeserializationContext',
+                'createDeserializationContext'
+            ],
         ];
     }
 }

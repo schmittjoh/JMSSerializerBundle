@@ -14,20 +14,47 @@ use JMS\Serializer\SerializationContext;
 class ConfiguredContextFactory implements SerializationContextFactoryInterface, DeserializationContextFactoryInterface
 {
     /**
-     * Context config
+     * Application version
+     *
+     * @var null|string
+     */
+    private $version;
+
+    /**
+     * Flag if we should serialize null values
+     *
+     * @var bool
+     */
+    private $serializeNulls;
+
+    /**
+     * Key-value pairs with custom attributes
      *
      * @var array
      */
-    private $config;
+    private $attributes;
+
+    /**
+     * Serialization groups
+     *
+     * @var string[]
+     */
+    private $groups;
 
     /**
      * ConfiguredContextFactory constructor.
      *
-     * @param array $config Context configuration
+     * @param string|null $version        Application version
+     * @param bool        $serializeNulls Flag if we should serialize null values
+     * @param array       $attributes     Key-value pairs with custom attributes
+     * @param string[]    $groups         Serialization groups
      */
-    public function __construct(array $config)
+    public function __construct($version, $serializeNulls, array $attributes, array $groups)
     {
-        $this->config = $config;
+        $this->version = $version;
+        $this->serializeNulls = $serializeNulls;
+        $this->attributes = $attributes;
+        $this->groups = $groups;
     }
 
     /**
@@ -55,14 +82,14 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
      */
     private function configureContext(Context $context)
     {
-        foreach ($this->config['attributes'] as $key => $value) {
+        foreach ($this->attributes as $key => $value) {
             $context->setAttribute($key, $value);
         }
 
-        $context->setGroups($this->config['groups']);
-        $context->setSerializeNull($this->config['serialize_null']);
-        if ($this->config['version'] !== null) {
-            $context->setVersion($this->config['version']);
+        $context->setGroups($this->groups);
+        $context->setSerializeNull($this->serializeNulls);
+        if ($this->version !== null) {
+            $context->setVersion($this->version);
         }
 
         return $context;
