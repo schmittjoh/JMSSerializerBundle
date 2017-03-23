@@ -65,10 +65,10 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this->getContainerForConfig(array(array()));
 
-        $factory = $container->get('jms_serializer.serialization_context_factory');
+        $factory = $container->get('jms_serializer.configured_serialization_context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface', $factory);
 
-        $factory = $container->get('jms_serializer.deserialization_context_factory');
+        $factory = $container->get('jms_serializer.configured_deserialization_context_factory');
         $this->assertInstanceOf('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface', $factory);
     }
 
@@ -88,16 +88,51 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $serializationCall = $calls[1];
         $this->assertEquals('setDeserializationContextFactory', $serializationCall[0]);
         $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
+
+        $this->assertEquals('jms_serializer.configured_deserialization_context_factory', (string)$container->getAlias('jms_serializer.deserialization_context_factory'));
+        $this->assertEquals('jms_serializer.configured_serialization_context_factory', (string)$container->getAlias('jms_serializer.serialization_context_factory'));
     }
 
-    public function testConfiguringContextFactoriesX()
+    public function testSerializerContextFactoriesWithId()
+    {
+        $config = array(
+            'default_context' => array(
+                'serialization' => array(
+                    'id' => 'foo'
+                ),
+                'deserialization' => array(
+                    'id' => 'bar'
+                )
+            )
+        );
+
+        $container = $this->getContainerForConfig(array($config));
+
+        $def = $container->getDefinition('jms_serializer.serializer');
+        $calls = $def->getMethodCalls();
+
+        $this->assertCount(2, $calls);
+
+        $serializationCall = $calls[0];
+        $this->assertEquals('setSerializationContextFactory', $serializationCall[0]);
+        $this->assertEquals('jms_serializer.serialization_context_factory', (string)$serializationCall[1][0]);
+
+        $serializationCall = $calls[1];
+        $this->assertEquals('setDeserializationContextFactory', $serializationCall[0]);
+        $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
+
+        $this->assertEquals('bar', (string)$container->getAlias('jms_serializer.deserialization_context_factory'));
+        $this->assertEquals('foo', (string)$container->getAlias('jms_serializer.serialization_context_factory'));
+    }
+
+    public function testConfiguringContextFactories()
     {
         $container = $this->getContainerForConfig(array(array()));
 
-        $def = $container->getDefinition('jms_serializer.serialization_context_factory');
+        $def = $container->getDefinition('jms_serializer.configured_serialization_context_factory');
         $this->assertCount(0, $def->getMethodCalls());
 
-        $def = $container->getDefinition('jms_serializer.deserialization_context_factory');
+        $def = $container->getDefinition('jms_serializer.configured_deserialization_context_factory');
         $this->assertCount(0, $def->getMethodCalls());
     }
 
@@ -122,8 +157,8 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getContainerForConfig(array($config));
         $services  = [
-            'serialization' => 'jms_serializer.serialization_context_factory',
-            'deserialization' => 'jms_serializer.deserialization_context_factory',
+            'serialization' => 'jms_serializer.configured_serialization_context_factory',
+            'deserialization' => 'jms_serializer.configured_deserialization_context_factory',
         ];
         foreach ($services as $configKey => $serviceId) {
             $def    = $container->getDefinition($serviceId);
@@ -157,8 +192,8 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getContainerForConfig(array($config));
         $services = [
-            'serialization' => 'jms_serializer.serialization_context_factory',
-            'deserialization' => 'jms_serializer.deserialization_context_factory',
+            'serialization' => 'jms_serializer.configured_serialization_context_factory',
+            'deserialization' => 'jms_serializer.configured_deserialization_context_factory',
         ];
         foreach ($services as $configKey => $serviceId) {
             $def = $container->getDefinition($serviceId);

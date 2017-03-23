@@ -23,6 +23,7 @@ use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 class Configuration implements ConfigurationInterface
 {
@@ -225,12 +226,19 @@ class Configuration implements ConfigurationInterface
     {
         $builder
             ->arrayNode($name)
+                ->validate()->always(function ($v) {
+                    if (!empty($v['id'])) {
+                        return array('id' => $v['id']);
+                    }
+                    return $v;
+                })->end()
                 ->addDefaultsIfNotSet()
                 ->children()
+                    ->scalarNode('id')->cannotBeEmpty()->end()
                     ->scalarNode('serialize_null')
                         ->validate()->always(function ($v) {
                             if (!in_array($v, array(true, false, NULL), true)){
-                                throw new \RuntimeException("xx");
+                                throw new InvalidTypeException("Expected boolean or NULL for the serialize_null option");
                             }
                             return $v;
                         })

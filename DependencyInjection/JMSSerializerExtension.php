@@ -141,11 +141,17 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         // context factories
         $services = [
-            'serialization' => 'jms_serializer.serialization_context_factory',
-            'deserialization' => 'jms_serializer.deserialization_context_factory',
+            'serialization' => 'jms_serializer.configured_serialization_context_factory',
+            'deserialization' => 'jms_serializer.configured_deserialization_context_factory',
         ];
         foreach ($services as $configKey => $serviceId) {
             $contextFactory = $container->getDefinition($serviceId);
+
+            if (isset($config['default_context'][$configKey]['id'])) {
+                $container->setAlias('jms_serializer.' . $configKey . '_context_factory', $config['default_context'][$configKey]['id']);
+                $container->removeDefinition($serviceId);
+                continue;
+            }
 
             if (isset($config['default_context'][$configKey]['version'])) {
                 $contextFactory->addMethodCall('setVersion', [$config['default_context'][$configKey]['version']]);
