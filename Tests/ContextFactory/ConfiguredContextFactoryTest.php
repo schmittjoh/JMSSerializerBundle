@@ -33,7 +33,12 @@ class ConfiguredContextFactoryTest extends \PHPUnit_Framework_TestCase
         $expectedContextClass,
         $factoryMethod
     ) {
-        $object = new ConfiguredContextFactory($version, $serializeNulls, $attributes, $groups);
+        $object = new ConfiguredContextFactory();
+
+        $object->setVersion($version);
+        $object->setSerializeNulls($serializeNulls);
+        $object->setGroups($groups);
+        $object->setAttributes($attributes);
 
         $this->assertInstanceOf($expectedInterface, $object);
 

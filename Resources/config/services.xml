@@ -271,10 +271,6 @@
                  class="%jms_serializer.context_factory.class%"
                  abstract="true"
                  public="false">
-            <argument /> <!-- Version -->
-            <argument /> <!-- Serialize nulls -->
-            <argument type="collection"/> <!-- Custom attributes -->
-            <argument type="collection"/> <!-- Serialization groups -->
         </service>
 
         <service id="jms_serializer.serialization_context_factory"

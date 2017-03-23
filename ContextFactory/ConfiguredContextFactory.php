@@ -32,28 +32,44 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
      *
      * @var array
      */
-    private $attributes;
+    private $attributes = array();
 
     /**
      * Serialization groups
      *
      * @var string[]
      */
-    private $groups;
+    private $groups = array();
 
     /**
-     * ConfiguredContextFactory constructor.
-     *
-     * @param string|null $version        Application version
-     * @param bool        $serializeNulls Flag if we should serialize null values
-     * @param array       $attributes     Key-value pairs with custom attributes
-     * @param string[]    $groups         Serialization groups
+     * @param null|string $version
      */
-    public function __construct($version, $serializeNulls, array $attributes, array $groups)
+    public function setVersion($version)
     {
         $this->version = $version;
-        $this->serializeNulls = $serializeNulls;
+    }
+
+    /**
+     * @param bool $serializeNulls
+     */
+    public function setSerializeNulls($serializeNulls)
+    {
+        $this->serializeNulls = (bool)$serializeNulls;
+    }
+
+    /**
+     * @param array $attributes
+     */
+    public function setAttributes(array $attributes)
+    {
         $this->attributes = $attributes;
+    }
+
+    /**
+     * @param string[] $groups
+     */
+    public function setGroups(array $groups)
+    {
         $this->groups = $groups;
     }
 
@@ -85,9 +101,12 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         foreach ($this->attributes as $key => $value) {
             $context->setAttribute($key, $value);
         }
-
-        $context->setGroups($this->groups);
-        $context->setSerializeNull($this->serializeNulls);
+        if (!empty($this->groups)) {
+            $context->setGroups($this->groups);
+        }
+        if ($this->serializeNulls !== null) {
+            $context->setSerializeNull($this->serializeNulls);
+        }
         if ($this->version !== null) {
             $context->setVersion($this->version);
         }

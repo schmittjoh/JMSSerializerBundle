@@ -145,12 +145,20 @@ class JMSSerializerExtension extends ConfigurableExtension
             'deserialization' => 'jms_serializer.deserialization_context_factory',
         ];
         foreach ($services as $configKey => $serviceId) {
-            $container->getDefinition($serviceId)
-                      ->replaceArgument(0, $config['default_context'][$configKey]['version'])
-                      ->replaceArgument(1, $config['default_context'][$configKey]['serialize_null'])
-                      ->replaceArgument(2, $config['default_context'][$configKey]['attributes'])
-                      ->replaceArgument(3, $config['default_context'][$configKey]['groups'])
-            ;
+            $contextFactory = $container->getDefinition($serviceId);
+
+            if (isset($config['default_context'][$configKey]['version'])) {
+                $contextFactory->addMethodCall('setVersion', [$config['default_context'][$configKey]['version']]);
+            }
+            if (isset($config['default_context'][$configKey]['serialize_null'])) {
+                $contextFactory->addMethodCall('setSerializeNulls', [$config['default_context'][$configKey]['serialize_null']]);
+            }
+            if (!empty($config['default_context'][$configKey]['attributes'])) {
+                $contextFactory->addMethodCall('setAttributes', [$config['default_context'][$configKey]['attributes']]);
+            }
+            if (!empty($config['default_context'][$configKey]['groups'])) {
+                $contextFactory->addMethodCall('setGroups', [$config['default_context'][$configKey]['groups']]);
+            }
         }
     }
 
