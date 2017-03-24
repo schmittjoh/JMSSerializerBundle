@@ -179,7 +179,6 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     * @expectedExceptionMessage The property v_prop_name on JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties requires the expression evaluator to be enabled
      */
     public function testExpressionLanguageDisabledVirtualProperties()
     {
