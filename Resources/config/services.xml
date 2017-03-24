@@ -59,6 +59,9 @@
         <parameter key="jms_serializer.expression_evaluator.class">JMS\Serializer\Expression\ExpressionEvaluator</parameter>
         <parameter key="jms_serializer.expression_language.class">Symfony\Component\ExpressionLanguage\ExpressionLanguage</parameter>
         <parameter key="jms_serializer.expression_language.function_provider.class">JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider</parameter>
+
+        <parameter key="jms_serializer.accessor_strategy.default.class">JMS\Serializer\Accessor\DefaultAccessorStrategy</parameter>
+        <parameter key="jms_serializer.accessor_strategy.expression.class">JMS\Serializer\Accessor\ExpressionAccessorStrategy</parameter>
     </parameters>
 
     <services>
@@ -221,9 +224,19 @@
             <tag name="templating.helper" alias="jms_serializer" />
         </service>
 
+
+        <!-- accessor strategy -->
+        <service id="jms_serializer.accessor_strategy" public="false" alias="jms_serializer.accessor_strategy.default"/>
+        <service id="jms_serializer.accessor_strategy.default" public="false" class="%jms_serializer.accessor_strategy.default.class%"/>
+        <service id="jms_serializer.accessor_strategy.expression" public="false" class="%jms_serializer.accessor_strategy.expression.class%">
+            <argument type="service" id="jms_serializer.expression_evaluator"/>
+            <argument type="service" id="jms_serializer.accessor_strategy.default"/>
+        </service>
+
         <!-- Visitors -->
         <service id="jms_serializer.json_serialization_visitor" class="%jms_serializer.json_serialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
             <call method="setOptions">
                 <argument>%jms_serializer.json_serialization_visitor.options%</argument>
             </call>
@@ -235,6 +248,7 @@
         </service>
         <service id="jms_serializer.xml_serialization_visitor" class="%jms_serializer.xml_serialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
             <tag name="jms_serializer.serialization_visitor" format="xml" />
             <call method="setFormatOutput">
                 <argument>%jms_serializer.xml_serialization_visitor.format_output%</argument>
@@ -249,6 +263,7 @@
         </service>
         <service id="jms_serializer.yaml_serialization_visitor" class="%jms_serializer.yaml_serialization_visitor.class%">
             <argument type="service" id="jms_serializer.naming_strategy" />
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
             <tag name="jms_serializer.serialization_visitor" format="yml" />
         </service>
 
