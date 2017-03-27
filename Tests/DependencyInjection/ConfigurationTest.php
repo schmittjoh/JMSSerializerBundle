@@ -77,16 +77,94 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayHasKey($item, $config['default_context']);
 
             $defaultContext = $config['default_context'][$item];
-            $this->assertArrayHasKey('attributes', $defaultContext);
+
             $this->assertTrue(is_array($defaultContext['attributes']));
             $this->assertEmpty($defaultContext['attributes']);
-            $this->assertArrayHasKey('groups', $defaultContext);
-            $this->assertSame(['Default'], $defaultContext['groups']);
-            $this->assertArrayHasKey('version', $defaultContext);
-            $this->assertNull($defaultContext['version']);
-            $this->assertArrayHasKey('serialize_null', $defaultContext);
-            $this->assertFalse($defaultContext['serialize_null']);
-        }
 
+            $this->assertTrue(is_array($defaultContext['groups']));
+            $this->assertEmpty($defaultContext['groups']);
+
+            $this->assertArrayNotHasKey('version', $defaultContext);
+            $this->assertArrayNotHasKey('serialize_null', $defaultContext);
+        }
+    }
+
+    public function testContextValues()
+    {
+        $configArray = array(
+            'serialization' => array(
+                'version' => 3,
+                'serialize_null' => true,
+                'attributes' => ['foo' => 'bar'],
+                'groups' => ['Baz'],
+            ),
+            'deserialization' => array(
+                'version' => "5.5",
+                'serialize_null' => false,
+                'attributes' => ['foo' => 'bar'],
+                'groups' => ['Baz'],
+            )
+        );
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => [
+                'default_context' => $configArray
+            ]
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $configKey) {
+            $this->assertArrayHasKey($configKey, $config['default_context']);
+
+            $values = $config['default_context'][$configKey];
+            $confArray = $configArray[$configKey];
+
+            $this->assertSame($values['version'], $confArray['version']);
+            $this->assertSame($values['serialize_null'], $confArray['serialize_null']);
+            $this->assertSame($values['attributes'], $confArray['attributes']);
+            $this->assertSame($values['groups'], $confArray['groups']);
+        }
+    }
+
+    public function testContextNullValues()
+    {
+        $configArray = array(
+            'serialization' => array(
+                'version' => null,
+                'serialize_null' => null,
+                'attributes' => null,
+                'groups' => null,
+            ),
+            'deserialization' => array(
+                'version' => null,
+                'serialize_null' => null,
+                'attributes' => null,
+                'groups' => null,
+            )
+        );
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => [
+                'default_context' => $configArray
+            ]
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $configKey) {
+            $this->assertArrayHasKey($configKey, $config['default_context']);
+
+            $defaultContext = $config['default_context'][$configKey];
+
+            $this->assertTrue(is_array($defaultContext['attributes']));
+            $this->assertEmpty($defaultContext['attributes']);
+
+            $this->assertTrue(is_array($defaultContext['groups']));
+            $this->assertEmpty($defaultContext['groups']);
+
+            $this->assertArrayNotHasKey('version', $defaultContext);
+            $this->assertArrayNotHasKey('serialize_null', $defaultContext);
+        }
     }
 }
