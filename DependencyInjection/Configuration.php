@@ -19,7 +19,6 @@
 namespace JMS\SerializerBundle\DependencyInjection;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
-use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -80,6 +79,12 @@ class Configuration implements ConfigurationInterface
         $builder
             ->arrayNode('property_naming')
                 ->addDefaultsIfNotSet()
+                ->beforeNormalization()
+                    ->ifString()
+                    ->then(function ($id) {
+                        return array('id' => $id);
+                    })
+                ->end()
                 ->children()
                     ->scalarNode('id')->cannotBeEmpty()->end()
                     ->scalarNode('separator')->defaultValue('_')->end()
@@ -89,6 +94,12 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->arrayNode('expression_evaluator')
                 ->addDefaultsIfNotSet()
+                ->beforeNormalization()
+                    ->ifString()
+                    ->then(function ($id) {
+                        return array('id' => $id);
+                    })
+                ->end()
                 ->children()
                     ->scalarNode('id')
                         ->defaultValue(function () {
@@ -99,7 +110,7 @@ class Configuration implements ConfigurationInterface
                         })
                         ->validate()
                             ->always(function($v) {
-                                if (!empty($v) && !class_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
+                                if (!empty($v) && !interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
                                     throw new InvalidArgumentException('You need at least symfony/expression language v2.6 or v3.0 to use the expression evaluator features');
                                 }
                                 return $v;
@@ -226,13 +237,19 @@ class Configuration implements ConfigurationInterface
     {
         $builder
             ->arrayNode($name)
+                ->addDefaultsIfNotSet()
+                ->beforeNormalization()
+                    ->ifString()
+                    ->then(function ($id) {
+                        return array('id' => $id);
+                    })
+                ->end()
                 ->validate()->always(function ($v) {
                     if (!empty($v['id'])) {
                         return array('id' => $v['id']);
                     }
                     return $v;
                 })->end()
-                ->addDefaultsIfNotSet()
                 ->children()
                     ->scalarNode('id')->cannotBeEmpty()->end()
                     ->scalarNode('serialize_null')

@@ -127,6 +127,39 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testConfigNormalization()
+    {
+        $configArray = [
+            'default_context' => [
+                'serialization' => 'the.serialization.factory.context',
+                'deserialization' => 'the.deserialization.factory.context',
+            ],
+            'property_naming' => 'property.mapping.service',
+            'expression_evaluator' => 'expression_evaluator.service',
+        ];
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => $configArray
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        $this->assertArrayHasKey('serialization', $config['default_context']);
+        $this->assertArrayHasKey('deserialization', $config['default_context']);
+        $this->assertArrayHasKey('id', $config['default_context']['serialization']);
+        $this->assertArrayHasKey('id', $config['default_context']['deserialization']);
+
+        $this->assertSame($configArray['default_context']['serialization'], $config['default_context']['serialization']['id']);
+        $this->assertSame($configArray['default_context']['deserialization'], $config['default_context']['deserialization']['id']);
+
+        $this->assertArrayHasKey('property_naming', $config);
+        $this->assertArrayHasKey('expression_evaluator', $config);
+        $this->assertArrayHasKey('id', $config['property_naming']);
+        $this->assertArrayHasKey('id', $config['expression_evaluator']);
+        $this->assertSame($configArray['property_naming'], $config['property_naming']['id']);
+        $this->assertSame($configArray['expression_evaluator'], $config['expression_evaluator']['id']);
+    }
+
     public function testContextNullValues()
     {
         $configArray = array(

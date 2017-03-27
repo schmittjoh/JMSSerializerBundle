@@ -333,6 +333,9 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testExpressionInvalidEvaluator()
     {
+        if (is_dir(__DIR__ . '/../../vendor/symfony/expression-language')) {
+            $this->markTestSkipped('To pass this test the "symfony/expression-language" component should be removed');
+        }
         $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => 'foo'))));
     }
 
