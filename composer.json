@@ -37,9 +37,11 @@
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ~1.3"
     },
     "autoload": {
-        "psr-0": { "JMS\\SerializerBundle": "" }
+        "psr-4": { "JMS\\SerializerBundle\\": "src" }
     },
-    "target-dir": "JMS/SerializerBundle",
+    "autoload-dev": {
+        "psr-4": { "JMS\\SerializerBundle\\Tests\\": "tests" }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.3-dev"
