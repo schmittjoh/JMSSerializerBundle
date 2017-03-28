@@ -1,7 +1,36 @@
 # Change Log
 
-## [1.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.2.0) (2017-02-22)
+## [1.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.3.0)
 
+**Closed issues:**
+
+- Force uppermost level of output json as object [\#555](https://github.com/schmittjoh/JMSSerializerBundle/issues/555)
+- PreSerializationListener not being called anymore after updating [\#554](https://github.com/schmittjoh/JMSSerializerBundle/issues/554)
+- Are there any way to select entity fields dinamically? [\#496](https://github.com/schmittjoh/JMSSerializerBundle/issues/496)
+- Ability to add custom exclusion strategies and override existing one [\#489](https://github.com/schmittjoh/JMSSerializerBundle/issues/489)
+- On virtual properties would be great to be able to use symfony language expression [\#403](https://github.com/schmittjoh/JMSSerializerBundle/issues/403)
+- Get metadata from doctrine ORM when PHPCR-ODM is present not working [\#389](https://github.com/schmittjoh/JMSSerializerBundle/issues/389)
+- Symfony 2.3 Form serialization [\#309](https://github.com/schmittjoh/JMSSerializerBundle/issues/309)
+
+**Merged pull requests:**
+
+- Expression language tests [\#553](https://github.com/schmittjoh/JMSSerializerBundle/pull/553) ([goetas](https://github.com/goetas))
+- Added handler tests [\#552](https://github.com/schmittjoh/JMSSerializerBundle/pull/552) ([goetas](https://github.com/goetas))
+- Allow service parameters in listener class name [\#551](https://github.com/schmittjoh/JMSSerializerBundle/pull/551) ([goetas](https://github.com/goetas))
+- Fix metadata directories loading where path is just a bundle name [\#550](https://github.com/schmittjoh/JMSSerializerBundle/pull/550) ([goetas](https://github.com/goetas))
+- Expression language based virtual properties [\#545](https://github.com/schmittjoh/JMSSerializerBundle/pull/545) ([goetas](https://github.com/goetas))
+
+## [1.2.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.2.1) (2017-03-13)
+**Closed issues:**
+
+- After updating XmlList stop working  [\#548](https://github.com/schmittjoh/JMSSerializerBundle/issues/548)
+- serialize arrays \(instead of objects\) to json [\#426](https://github.com/schmittjoh/JMSSerializerBundle/issues/426)
+
+**Merged pull requests:**
+
+- Remove unused params in visitors [\#549](https://github.com/schmittjoh/JMSSerializerBundle/pull/549) ([goetas](https://github.com/goetas))
+
+## [1.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.2.0) (2017-02-22)
 **Implemented enhancements:**
 
 - Added expression language support [\#544](https://github.com/schmittjoh/JMSSerializerBundle/pull/544) ([goetas](https://github.com/goetas))
@@ -27,6 +56,7 @@
 - PHP7 compatibility [\#502](https://github.com/schmittjoh/JMSSerializerBundle/issues/502)
 - Float with no decimals are automatically converted to int [\#497](https://github.com/schmittjoh/JMSSerializerBundle/issues/497)
 - Default context for serialization [\#495](https://github.com/schmittjoh/JMSSerializerBundle/issues/495)
+- If no group is defined on SerializationContext all fields with exposed true for groups are exposed [\#491](https://github.com/schmittjoh/JMSSerializerBundle/issues/491)
 - Select attributes in a self referencing field [\#480](https://github.com/schmittjoh/JMSSerializerBundle/issues/480)
 - The document for yml configuration is confusing， why yml configuration is not working? [\#477](https://github.com/schmittjoh/JMSSerializerBundle/issues/477)
 - Fix PHP requirements inside composer.json [\#465](https://github.com/schmittjoh/JMSSerializerBundle/issues/465)
@@ -72,6 +102,7 @@
 
 **Merged pull requests:**
 
+- Release v1.2.0 preview [\#546](https://github.com/schmittjoh/JMSSerializerBundle/pull/546) ([goetas](https://github.com/goetas))
 - Improve build info and CI [\#542](https://github.com/schmittjoh/JMSSerializerBundle/pull/542) ([goetas](https://github.com/goetas))
 - Fix bad Tag name in error message [\#454](https://github.com/schmittjoh/JMSSerializerBundle/pull/454) ([lemoinem](https://github.com/lemoinem))
 
@@ -123,6 +154,7 @@
 - perform default deserialization in the custom handler [\#353](https://github.com/schmittjoh/JMSSerializerBundle/issues/353)
 - @Type resolve interfaces [\#352](https://github.com/schmittjoh/JMSSerializerBundle/issues/352)
 - Class 'DoctrinePHPCRTypeDriver' not found [\#346](https://github.com/schmittjoh/JMSSerializerBundle/issues/346)
+- YAML/XML Reference and class inheritance  [\#333](https://github.com/schmittjoh/JMSSerializerBundle/issues/333)
 - Can't define a virtual property in a xml config file [\#316](https://github.com/schmittjoh/JMSSerializerBundle/issues/316)
 - SerializeNull documentation [\#276](https://github.com/schmittjoh/JMSSerializerBundle/issues/276)
 - Detecting serializion groups in the serialize listeners [\#264](https://github.com/schmittjoh/JMSSerializerBundle/issues/264)
@@ -156,6 +188,7 @@
 - Can't install in Symfony 2.3.3 [\#319](https://github.com/schmittjoh/JMSSerializerBundle/issues/319)
 - Version 0.12 [\#318](https://github.com/schmittjoh/JMSSerializerBundle/issues/318)
 - Serializer doesn't serialize nested objects correctly [\#317](https://github.com/schmittjoh/JMSSerializerBundle/issues/317)
+- Annotation MaxDepth [\#315](https://github.com/schmittjoh/JMSSerializerBundle/issues/315)
 - How use the @Groups ? [\#314](https://github.com/schmittjoh/JMSSerializerBundle/issues/314)
 - remove JMSDiExtraBundle dependency [\#294](https://github.com/schmittjoh/JMSSerializerBundle/issues/294)
 - How can I force a property to serialize even if it's null? [\#293](https://github.com/schmittjoh/JMSSerializerBundle/issues/293)
@@ -313,7 +346,6 @@
 - Serialization to native PHP? [\#106](https://github.com/schmittjoh/JMSSerializerBundle/issues/106)
 - make it possible to combine exclusion strategies [\#105](https://github.com/schmittjoh/JMSSerializerBundle/issues/105)
 - Make use of Doctrine annotations [\#103](https://github.com/schmittjoh/JMSSerializerBundle/issues/103)
-- @ExclusionPolicy\("all"\) is not respected by the parent classes [\#100](https://github.com/schmittjoh/JMSSerializerBundle/issues/100)
 - Undefined offset: 14 in JMS/SerializerBundle/Metadata/PropertyMetadata.php line 110 [\#97](https://github.com/schmittjoh/JMSSerializerBundle/issues/97)
 - Undefined index error [\#95](https://github.com/schmittjoh/JMSSerializerBundle/issues/95)
 - Use array keys as xml tag [\#92](https://github.com/schmittjoh/JMSSerializerBundle/issues/92)
