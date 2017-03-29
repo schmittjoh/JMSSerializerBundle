@@ -72,12 +72,19 @@ default constructor uses the `unserialize` function to construct objects. Other
 constructors are configured as services. You can set the constructor by changing
 the service alias:
 
-.. code-block :: yaml
+.. configuration-block ::
 
-    services:
-        jms_serializer.object_constructor:
-            alias: jms_serializer.doctrine_object_constructor
-            public: false
+    .. code-block :: yaml
+        services:
+            jms_serializer.object_constructor:
+                alias: jms_serializer.doctrine_object_constructor
+                public: false
+
+    .. code-block :: xml
+        <services>
+            <service id="jms_serializer.object_constructor" alias="jms_serializer.doctrine_object_constructor" public="false">
+            </service>
+        </services>
 
 Extension Reference
 -------------------
