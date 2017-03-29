@@ -28,6 +28,14 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
+    /**
+     * @var array
+     */
+    private $propertyNameingStrategyShortcuts = array(
+        'camel_case' => 'jms_serializer.camel_case_naming_strategy',
+        'identical'  => 'jms_serializer.identical_property_naming_strategy',
+    );
+
     public function loadInternal(array $config, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(array(
@@ -41,19 +49,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->addArgument($config['handlers']['datetime']['cdata'])
         ;
 
-        // property naming
-        $container
-            ->getDefinition('jms_serializer.camel_case_naming_strategy')
-            ->addArgument($config['property_naming']['separator'])
-            ->addArgument($config['property_naming']['lower_case'])
-        ;
-        if ($config['property_naming']['enable_cache']) {
-            $container
-                ->getDefinition('jms_serializer.cache_naming_strategy')
-                ->addArgument(new Reference((string) $container->getAlias('jms_serializer.naming_strategy')))
-            ;
-            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
-        }
+        $this->loadPropertyNamingStrategy($config, $container);
 
         $bundles = $container->getParameter('kernel.bundles');
 
@@ -131,11 +127,11 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container->setParameter('jms_serializer.xml_serialization_visitor.format_output', $config['visitors']['xml']['format_output']);
         $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
 
-        if ( ! $config['enable_short_alias']) {
+        if (! $config['enable_short_alias']) {
             $container->removeAlias('serializer');
         }
 
-        if ( ! $container->getParameter('kernel.debug')) {
+        if (! $container->getParameter('kernel.debug')) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 
@@ -171,5 +167,37 @@ class JMSSerializerExtension extends ConfigurableExtension
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
+    }
+
+    /**
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    private function loadPropertyNamingStrategy(array $config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition('jms_serializer.camel_case_naming_strategy')
+            ->addArgument($config['property_naming']['camel_case']['separator'])
+            ->addArgument($config['property_naming']['camel_case']['lower_case']);
+
+        $strategy = $config['property_naming']['strategy'];
+        if (isset($this->propertyNameingStrategyShortcuts[$strategy])) {
+            $strategy = $this->propertyNameingStrategyShortcuts[$strategy];
+        }
+        $container->setAlias('jms_serializer.naming_strategy', $strategy);
+
+        if ($config['property_naming']['enable_annotation']) {
+            $container
+                ->getDefinition('jms_serializer.serialized_name_annotation_strategy')
+                ->addArgument(new Reference($strategy));
+            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.serialized_name_annotation_strategy');
+        }
+
+        if ($config['property_naming']['enable_cache']) {
+            $container
+                ->getDefinition('jms_serializer.cache_naming_strategy')
+                ->addArgument(new Reference((string)$container->getAlias('jms_serializer.naming_strategy')));
+            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
+        }
     }
 }

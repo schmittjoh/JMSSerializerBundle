@@ -86,10 +86,34 @@ class Configuration implements ConfigurationInterface
                     })
                 ->end()
                 ->children()
-                    ->scalarNode('id')->cannotBeEmpty()->end()
-                    ->scalarNode('separator')->defaultValue('_')->end()
-                    ->booleanNode('lower_case')->defaultTrue()->end()
+                    ->scalarNode('strategy')->defaultValue('camel_case')->end()
+                    ->arrayNode('camel_case')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('separator')->defaultValue('_')->end()
+                            ->booleanNode('lower_case')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                    ->booleanNode('enable_annotation')->defaultTrue()->end()
                     ->booleanNode('enable_cache')->defaultTrue()->end()
+                ->end()
+                ->beforeNormalization()
+                    ->ifTrue(function ($v) {
+                        return isset($v['separator']) || isset($v['lower_case']);
+                    })
+                    ->then(function ($v) {
+                        if (!isset($v['camel_case']) || empty($v['camel_case'])) {
+                            if (isset($v['separator'])) {
+                                $v['camel_case']['separator'] = $v['separator'];
+                            }
+                            if (isset($v['lower_case'])) {
+                                $v['camel_case']['lower_case'] = $v['lower_case'];
+                            }
+                        }
+                        unset($v['lower_case'], $v['separator']);
+
+                        return $v;
+                    })
                 ->end()
             ->end()
             ->arrayNode('expression_evaluator')
