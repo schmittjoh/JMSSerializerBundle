@@ -98,8 +98,10 @@ values:
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
 
             property_naming:
+                id: ~
                 separator:  _
                 lower_case: true
+                enable_cache: true
 
             metadata:
                 cache: file
