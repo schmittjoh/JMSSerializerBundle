@@ -18,7 +18,9 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use JMS\SerializerBundle\DependencyInjection\Configuration;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
@@ -63,5 +65,139 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($ref->getPath(), $directories['JMSSerializerBundleNs1']);
         $this->assertEquals($ref->getPath().'/Resources/config', $directories['JMSSerializerBundleNs2']);
+    }
+
+    public function testContextDefaults()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $item) {
+            $this->assertArrayHasKey($item, $config['default_context']);
+
+            $defaultContext = $config['default_context'][$item];
+
+            $this->assertTrue(is_array($defaultContext['attributes']));
+            $this->assertEmpty($defaultContext['attributes']);
+
+            $this->assertTrue(is_array($defaultContext['groups']));
+            $this->assertEmpty($defaultContext['groups']);
+
+            $this->assertArrayNotHasKey('version', $defaultContext);
+            $this->assertArrayNotHasKey('serialize_null', $defaultContext);
+        }
+    }
+
+    public function testContextValues()
+    {
+        $configArray = array(
+            'serialization' => array(
+                'version' => 3,
+                'serialize_null' => true,
+                'attributes' => ['foo' => 'bar'],
+                'groups' => ['Baz'],
+            ),
+            'deserialization' => array(
+                'version' => "5.5",
+                'serialize_null' => false,
+                'attributes' => ['foo' => 'bar'],
+                'groups' => ['Baz'],
+            )
+        );
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => [
+                'default_context' => $configArray
+            ]
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $configKey) {
+            $this->assertArrayHasKey($configKey, $config['default_context']);
+
+            $values = $config['default_context'][$configKey];
+            $confArray = $configArray[$configKey];
+
+            $this->assertSame($values['version'], $confArray['version']);
+            $this->assertSame($values['serialize_null'], $confArray['serialize_null']);
+            $this->assertSame($values['attributes'], $confArray['attributes']);
+            $this->assertSame($values['groups'], $confArray['groups']);
+        }
+    }
+
+    public function testConfigNormalization()
+    {
+        $configArray = [
+            'default_context' => [
+                'serialization' => 'the.serialization.factory.context',
+                'deserialization' => 'the.deserialization.factory.context',
+            ],
+            'property_naming' => 'property.mapping.service',
+            'expression_evaluator' => 'expression_evaluator.service',
+        ];
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => $configArray
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        $this->assertArrayHasKey('serialization', $config['default_context']);
+        $this->assertArrayHasKey('deserialization', $config['default_context']);
+        $this->assertArrayHasKey('id', $config['default_context']['serialization']);
+        $this->assertArrayHasKey('id', $config['default_context']['deserialization']);
+
+        $this->assertSame($configArray['default_context']['serialization'], $config['default_context']['serialization']['id']);
+        $this->assertSame($configArray['default_context']['deserialization'], $config['default_context']['deserialization']['id']);
+
+        $this->assertArrayHasKey('property_naming', $config);
+        $this->assertArrayHasKey('expression_evaluator', $config);
+        $this->assertArrayHasKey('id', $config['property_naming']);
+        $this->assertArrayHasKey('id', $config['expression_evaluator']);
+        $this->assertSame($configArray['property_naming'], $config['property_naming']['id']);
+        $this->assertSame($configArray['expression_evaluator'], $config['expression_evaluator']['id']);
+    }
+
+    public function testContextNullValues()
+    {
+        $configArray = array(
+            'serialization' => array(
+                'version' => null,
+                'serialize_null' => null,
+                'attributes' => null,
+                'groups' => null,
+            ),
+            'deserialization' => array(
+                'version' => null,
+                'serialize_null' => null,
+                'attributes' => null,
+                'groups' => null,
+            )
+        );
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => [
+                'default_context' => $configArray
+            ]
+        ]);
+
+        $this->assertArrayHasKey('default_context', $config);
+        foreach (['serialization', 'deserialization'] as $configKey) {
+            $this->assertArrayHasKey($configKey, $config['default_context']);
+
+            $defaultContext = $config['default_context'][$configKey];
+
+            $this->assertTrue(is_array($defaultContext['attributes']));
+            $this->assertEmpty($defaultContext['attributes']);
+
+            $this->assertTrue(is_array($defaultContext['groups']));
+            $this->assertEmpty($defaultContext['groups']);
+
+            $this->assertArrayNotHasKey('version', $defaultContext);
+            $this->assertArrayNotHasKey('serialize_null', $defaultContext);
+        }
     }
 }

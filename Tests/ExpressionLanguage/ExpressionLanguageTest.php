@@ -42,7 +42,7 @@ class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
         $exp = new ExpressionLanguage();
         $exp->registerProvider($provider);
 
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
             ->method('get')->with('foo', 1)
@@ -50,7 +50,7 @@ class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('bar', $exp->evaluate("service('foo')", ['container' => $container]));
 
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
             ->method('getParameter')->with('foo')
@@ -58,14 +58,14 @@ class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('bar', $exp->evaluate("parameter('foo')", ['container' => $container]));
 
-        $authChecker = $this->getMock('JMS\SerializerBundle\Tests\ExpressionLanguage\AuthCheckerMock');
+        $authChecker = $this->getMockBuilder('JMS\SerializerBundle\Tests\ExpressionLanguage\AuthCheckerMock')->getMock();
         $authChecker
             ->expects($this->once())
             ->method('isGranted')->with('foo')
             ->will($this->returnValue('bar'));
 
 
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
             ->method('get')->with('security.authorization_checker')
