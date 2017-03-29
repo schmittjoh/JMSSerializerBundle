@@ -47,6 +47,11 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->addArgument($config['property_naming']['separator'])
             ->addArgument($config['property_naming']['lower_case'])
         ;
+
+        if (!empty($config['property_naming']['id'])) {
+            $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
+        }
+
         if ($config['property_naming']['enable_cache']) {
             $container
                 ->getDefinition('jms_serializer.cache_naming_strategy')
