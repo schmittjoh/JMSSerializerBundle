@@ -1,5 +1,13 @@
 # Change Log
 
+
+## [1.3.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.3.1)
+
+**Closed issues:**
+
+- Alias not working any more with 1.3 [\#559](https://github.com/schmittjoh/JMSSerializerBundle/issues/559)
+
+
 ## [1.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.3.0)
 
 **Closed issues:**
