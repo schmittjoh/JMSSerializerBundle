@@ -5,7 +5,7 @@ Upgrading From 1.x to 2.0
 ==========================
 
 - Removed `serializer` alias, to access the serializer use the alias `jms_serializer` [#558](https://github.com/schmittjoh/JMSSerializerBundle/issues/558)
-- Changed the default datetime format from `ISO8601` (`Y-m-d\TH:i:sO`) to `ATOM` (`Y-m-d\TH:i:sP`) [#494](https://github.com/schmittjoh/JMSSerializerBundle/issues/494)
+- Changed the default datetime format from `ISO8601` (`Y-m-d\TH:i:sO`) to `RFC3339` (`Y-m-d\TH:i:sP`) [#494](https://github.com/schmittjoh/JMSSerializerBundle/issues/494)
 - Defining not-existing metadata directories will trigger an exception [#517](https://github.com/schmittjoh/JMSSerializerBundle/issues/517)
 - The "key" (or `name` attribute) for the metadata directories definition is mandatory now [#531](https://github.com/schmittjoh/JMSSerializerBundle/pull/531)
 
