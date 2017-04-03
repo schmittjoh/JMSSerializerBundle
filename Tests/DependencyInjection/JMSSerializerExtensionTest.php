@@ -274,6 +274,42 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
     }
 
+    public function testLoadExistentMetadataDir()
+    {
+        $container = $this->getContainerForConfig(array(array(
+            'metadata' => [
+                'directories' => [
+                    'foo' => [
+                        'namespace_prefix' => 'foo_ns',
+                        'path' => __DIR__,
+                    ]
+                ]
+            ]
+        )));
+
+        $fileLocatorDef = $container->getDefinition('jms_serializer.metadata.file_locator');
+        $directories = $fileLocatorDef->getArgument(0);
+        $this->assertEquals(['foo_ns' => __DIR__], $directories);
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\RuntimeException
+     * @expectedExceptionMessage  The metadata directory "foo_dir" does not exist for the namespace "foo_ns"
+     */
+    public function testLoadNotExistentMetadataDir()
+    {
+        $this->getContainerForConfig(array(array(
+            'metadata' => [
+                'directories' => [
+                    'foo' => [
+                        'namespace_prefix' => 'foo_ns',
+                        'path' => 'foo_dir',
+                    ]
+                ]
+            ]
+        )));
+    }
+
     /**
      * @dataProvider getJsonVisitorConfigs
      */

@@ -137,7 +137,7 @@ class JMSSerializerExtension extends ConfigurableExtension
 
             $dir = rtrim($directory['path'], '\\/');
             if (!file_exists($dir)) {
-                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist', $dir));
+                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist for the namespace "%s"', $dir, $directory['namespace_prefix']));
             }
 
             $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
