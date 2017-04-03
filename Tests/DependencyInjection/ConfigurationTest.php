@@ -220,4 +220,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayNotHasKey('serialize_null', $defaultContext);
         }
     }
+
+    public function testDefaultDateFormat()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertEquals(\DateTime::ATOM, $config['handlers']['datetime']['default_format']);
+    }
 }

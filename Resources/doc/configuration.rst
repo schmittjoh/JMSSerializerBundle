@@ -101,7 +101,7 @@ values:
             enable_short_alias: true # controls if "serializer" service is aliased to jms_serializer.serializer service
             handlers:
                 datetime:
-                    default_format: "c" # ISO8601
+                    default_format: "Y-m-d\TH:i:sP" # ATOM
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
                 array_collection:
                     initialize_excluded: true # suggested false for better performance
