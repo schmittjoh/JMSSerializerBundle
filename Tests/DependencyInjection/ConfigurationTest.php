@@ -48,11 +48,11 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             [
                 'metadata' => [
                     'directories' => [
-                        [
+                        'foo' => [
                             'namespace_prefix' => 'JMSSerializerBundleNs1',
                             'path' => '@JMSSerializerBundle',
                         ],
-                        [
+                        'bar' => [
                             'namespace_prefix' => 'JMSSerializerBundleNs2',
                             'path' => '@JMSSerializerBundle/Resources/config',
                         ],
@@ -82,6 +82,39 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ]);
+    }
+
+    public function testConfigComposed()
+    {
+        $ref = new JMSSerializerBundle();
+        $container = $this->getContainer([
+            [
+                'metadata' => [
+                    'directories' => [
+                        'foo' => [
+                            'namespace_prefix' => 'JMSSerializerBundleNs1',
+                            'path' => '@JMSSerializerBundle',
+                        ],
+                    ]
+                ]
+            ],
+            [
+                'metadata' => [
+                    'directories' => [
+                        [
+                            'name' => 'foo',
+                            'namespace_prefix' => 'JMSSerializerBundleNs2',
+                            'path' => '@JMSSerializerBundle/Resources/config',
+                        ],
+                    ]
+                ]
+            ],
+        ]);
+
+        $directories = $container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
+
+        $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
+        $this->assertEquals($ref->getPath().'/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
     public function testContextDefaults()
