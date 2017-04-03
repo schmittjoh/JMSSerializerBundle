@@ -98,7 +98,6 @@ values:
 
         # config.yml
         jms_serializer:
-            enable_short_alias: true # controls if "serializer" service is aliased to jms_serializer.serializer service
             handlers:
                 datetime:
                     default_format: "Y-m-d\TH:i:sP" # ATOM

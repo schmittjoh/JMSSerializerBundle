@@ -150,11 +150,9 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container->setParameter('jms_serializer.xml_serialization_visitor.format_output', $config['visitors']['xml']['format_output']);
         $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
 
-        if (!$config['enable_short_alias']) {
-            $container->removeAlias('serializer');
-        }
 
-        if (!$container->getParameter('kernel.debug')) {
+
+        if ( ! $container->getParameter('kernel.debug')) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 

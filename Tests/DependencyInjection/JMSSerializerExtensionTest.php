@@ -221,7 +221,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject = new VersionedObject('foo', 'bar');
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
 
         $this->assertTrue($container->has('JMS\Serializer\SerializerInterface'), 'Alias should be defined to allow autowiring');
         $this->assertTrue($container->has('JMS\Serializer\ArrayTransformerInterface'), 'Alias should be defined to allow autowiring');
@@ -360,7 +360,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array()));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionLanguage('foo', true);
         $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
@@ -374,7 +374,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array()));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionProperties('foo');
         $this->assertEquals('{"v_prop_name":"foo"}', $serializer->serialize($object, 'json'));
@@ -389,7 +389,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionProperties('foo');
         $serializer->serialize($object, 'json');
@@ -402,7 +402,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     public function testExpressionLanguageNotLoaded()
     {
         $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionLanguage('foo', true);
         $serializer->serialize($object, 'json');

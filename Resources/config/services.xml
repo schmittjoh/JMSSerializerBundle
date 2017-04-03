@@ -208,7 +208,6 @@
         <service id="jms_serializer" alias="jms_serializer.serializer" /><!-- Preferred Alias -->
         <service id="JMS\Serializer\SerializerInterface" alias="jms_serializer.serializer" />
         <service id="JMS\Serializer\ArrayTransformerInterface" alias="jms_serializer.serializer" />
-        <service id="serializer" alias="jms_serializer.serializer" /><!-- Here for BC, may be disabled in the config -->
 
         <!-- expression language components -->
         <service id="jms_serializer.expression_evaluator" class="%jms_serializer.expression_evaluator.class%">
