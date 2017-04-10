@@ -137,6 +137,18 @@ values:
             expression_evaluator:
                 id: jms_serializer.expression_evaluator # auto detected
 
+            default_context:
+                serialization:
+                    serialize_null: false
+                    version: ~
+                    attributes: {}
+                    groups: ['Default']
+                deserialization:
+                    serialize_null: false
+                    version: ~
+                    attributes: {}
+                    groups: ['Default']
+
             visitors:
                 json:
                     options: 0 # json_encode options bitmask
