@@ -24,7 +24,7 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
 
     /**
      * A stopwatch object which exposes a start($name) and a stop($name) method.
-     * 
+     *
      * @var object
      */
     private $stopwatch;

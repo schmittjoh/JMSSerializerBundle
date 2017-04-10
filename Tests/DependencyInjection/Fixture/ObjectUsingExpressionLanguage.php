@@ -34,7 +34,7 @@ class ObjectUsingExpressionLanguage
 
     public function __construct($name, $isAllowed)
     {
-        $this->name  = $name;
+        $this->name = $name;
         $this->isAllowed = $isAllowed;
     }
 

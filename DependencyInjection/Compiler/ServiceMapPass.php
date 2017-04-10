@@ -40,14 +40,14 @@ class ServiceMapPass implements CompilerPassInterface, \Serializable
 
     public function process(ContainerBuilder $container)
     {
-        if ( ! is_callable($this->callable)) {
+        if (!is_callable($this->callable)) {
             throw new \RuntimeException('The callable is invalid. If you had serialized this pass, the original callable might not be available anymore.');
         }
 
         $serviceMap = array();
         foreach ($container->findTaggedServiceIds($this->tagName) as $id => $tags) {
             foreach ($tags as $tag) {
-                if ( ! isset($tag[$this->keyAttributeName])) {
+                if (!isset($tag[$this->keyAttributeName])) {
                     throw new \RuntimeException(sprintf('The attribute "%s" must be set for service "%s" and tag "%s".', $this->keyAttributeName, $id, $this->tagName));
                 }
 
