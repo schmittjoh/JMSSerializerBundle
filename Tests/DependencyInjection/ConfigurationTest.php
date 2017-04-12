@@ -97,12 +97,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'serialize_null' => true,
                 'attributes' => ['foo' => 'bar'],
                 'groups' => ['Baz'],
+                'enable_max_depth_checks' => false,
             ),
             'deserialization' => array(
                 'version' => "5.5",
                 'serialize_null' => false,
                 'attributes' => ['foo' => 'bar'],
                 'groups' => ['Baz'],
+                'enable_max_depth_checks' => true,
             )
         );
 
@@ -124,6 +126,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($values['serialize_null'], $confArray['serialize_null']);
             $this->assertSame($values['attributes'], $confArray['attributes']);
             $this->assertSame($values['groups'], $confArray['groups']);
+            $this->assertSame($values['enable_max_depth_checks'], $confArray['enable_max_depth_checks']);
         }
     }
 

@@ -28,6 +28,13 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
     private $serializeNulls;
 
     /**
+     * Flag if we should enable the max depth exclusion strategy
+     *
+     * @var bool
+     */
+    private $enableMaxDepthChecks = false;
+
+    /**
      * Key-value pairs with custom attributes
      *
      * @var array
@@ -55,6 +62,11 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
     public function setSerializeNulls($serializeNulls)
     {
         $this->serializeNulls = (bool)$serializeNulls;
+    }
+
+    public function enableMaxDepthChecks()
+    {
+        $this->enableMaxDepthChecks = true;
     }
 
     /**
@@ -107,6 +119,11 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         if ($this->serializeNulls !== null) {
             $context->setSerializeNull($this->serializeNulls);
         }
+
+        if ($this->enableMaxDepthChecks === true) {
+            $context->enableMaxDepthChecks();
+        }
+
         if ($this->version !== null) {
             $context->setVersion($this->version);
         }

@@ -143,11 +143,13 @@ values:
                     version: ~
                     attributes: {}
                     groups: ['Default']
+                    enable_max_depth_checks: false
                 deserialization:
                     serialize_null: false
                     version: ~
                     attributes: {}
                     groups: ['Default']
+                    enable_max_depth_checks: false
 
             visitors:
                 json:

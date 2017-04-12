@@ -144,13 +144,15 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
                     'version' => 1600,
                     'serialize_null' => true,
                     'attributes' => array('x' => 1720),
-                    'groups' => array('Default', 'Registration')
+                    'groups' => array('Default', 'Registration'),
+                    'enable_max_depth_checks' => true,
                 ),
                 'deserialization' => array(
                     'version' => 1640,
                     'serialize_null' => false,
                     'attributes' => array('x' => 1740),
-                    'groups' => array('Default', 'Profile')
+                    'groups' => array('Default', 'Profile'),
+                    'enable_max_depth_checks' => true,
                 )
             )
         );
@@ -164,10 +166,12 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $def = $container->getDefinition($serviceId);
             $values = $config['default_context'][$configKey];
 
-            $this->assertEquals($values['version'], $this->getDefinitionMethodCall($def, 'setVersion')[0]);
-            $this->assertEquals($values['serialize_null'], $this->getDefinitionMethodCall($def, 'setSerializeNulls')[0]);
-            $this->assertEquals($values['attributes'], $this->getDefinitionMethodCall($def, 'setAttributes')[0]);
-            $this->assertEquals($values['groups'], $this->getDefinitionMethodCall($def, 'setGroups')[0]);
+            $this->assertSame($values['version'], $this->getDefinitionMethodCall($def, 'setVersion')[0]);
+            $this->assertSame($values['serialize_null'], $this->getDefinitionMethodCall($def, 'setSerializeNulls')[0]);
+            $this->assertSame($values['attributes'], $this->getDefinitionMethodCall($def, 'setAttributes')[0]);
+            $this->assertSame($values['groups'], $this->getDefinitionMethodCall($def, 'setGroups')[0]);
+            $this->assertSame($values['groups'], $this->getDefinitionMethodCall($def, 'setGroups')[0]);
+            $this->assertSame(array(), $this->getDefinitionMethodCall($def, 'enableMaxDepthChecks'));
         }
     }
 

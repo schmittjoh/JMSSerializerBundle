@@ -164,6 +164,9 @@ class JMSSerializerExtension extends ConfigurableExtension
             if (!empty($config['default_context'][$configKey]['groups'])) {
                 $contextFactory->addMethodCall('setGroups', [$config['default_context'][$configKey]['groups']]);
             }
+            if (!empty($config['default_context'][$configKey]['enable_max_depth_checks'])) {
+                $contextFactory->addMethodCall('enableMaxDepthChecks');
+            }
         }
     }
 

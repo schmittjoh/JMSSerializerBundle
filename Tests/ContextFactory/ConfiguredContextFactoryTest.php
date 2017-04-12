@@ -55,6 +55,19 @@ class ConfiguredContextFactoryTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testMaxDepthExclusionStrategy()
+    {
+        $object = new ConfiguredContextFactory();
+
+        $object->enableMaxDepthChecks();
+
+        $context = $object->createDeserializationContext();
+        $this->assertInstanceOf('JMS\Serializer\Exclusion\DepthExclusionStrategy', $context->getExclusionStrategy());
+
+        $context = $object->createDeserializationContext();
+        $this->assertInstanceOf('JMS\Serializer\Exclusion\DepthExclusionStrategy', $context->getExclusionStrategy());
+    }
+
     public function contextConfigDataProvider()
     {
         return [
