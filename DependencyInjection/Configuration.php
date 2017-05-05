@@ -47,6 +47,8 @@ class Configuration implements ConfigurationInterface
         ;
 
         $this->addHandlersSection($root);
+        $this->addSubscribersSection($root);
+        $this->addObjectConstructorsSection($root);
         $this->addSerializersSection($root);
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
@@ -68,7 +70,51 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
                             ->scalarNode('cdata')->defaultTrue()->end()
                         ->end()
-                   ->end()
+                    ->end()
+                    ->arrayNode('array_collection')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('initialize_excluded')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addSubscribersSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('subscribers')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('doctrine_proxy')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('initialize_excluded')->defaultTrue()->end()
+                            ->booleanNode('initialize_virtual_types')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addObjectConstructorsSection(NodeBuilder $builder)
+    {
+        $builder
+            ->arrayNode('object_constructors')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('doctrine')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->enumNode('fallback_strategy')
+                                ->defaultValue("null")
+                                ->values(["null", "exception", "fallback"])
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end()
         ;

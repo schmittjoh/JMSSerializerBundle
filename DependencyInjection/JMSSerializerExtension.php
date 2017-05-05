@@ -40,6 +40,18 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->addArgument($config['handlers']['datetime']['default_timezone'])
             ->addArgument($config['handlers']['datetime']['cdata']);
 
+        $container->getDefinition('jms_serializer.array_collection_handler')
+            ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);
+
+        // Built-in subscribers.
+        $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')
+            ->replaceArgument(0, !$config['subscribers']['doctrine_proxy']['initialize_virtual_types'])
+            ->replaceArgument(1, $config['subscribers']['doctrine_proxy']['initialize_excluded']);
+
+        // Built-in object constructor.
+        $container->getDefinition('jms_serializer.doctrine_object_constructor')
+            ->replaceArgument(2, $config['object_constructors']['doctrine']['fallback_strategy']);
+
         // property naming
         $container
             ->getDefinition('jms_serializer.camel_case_naming_strategy')

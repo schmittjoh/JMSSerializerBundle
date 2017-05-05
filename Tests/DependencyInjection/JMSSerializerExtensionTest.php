@@ -225,6 +225,15 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->has('JMS\Serializer\SerializerInterface'), 'Alias should be defined to allow autowiring');
         $this->assertTrue($container->has('JMS\Serializer\ArrayTransformerInterface'), 'Alias should be defined to allow autowiring');
+
+        $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
+
+        // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
+        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
+        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
+
+        $this->assertEquals("null", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
+
         // test that all components have been wired correctly
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
         $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'json'), get_class($simpleObject), 'json'));
@@ -233,6 +242,36 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('0.0.1')));
 
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('1.1.1')));
+    }
+
+    public function testLoadWithOptions()
+    {
+        $container = $this->getContainerForConfig(array(array(
+            'subscribers' => [
+                'doctrine_proxy' => [
+                    'initialize_virtual_types' => false,
+                    'initialize_excluded' => false,
+                ],
+            ],
+            'object_constructors' => [
+                'doctrine' => [
+                    'fallback_strategy' => "exception",
+                ],
+            ],
+            'handlers' => [
+                'array_collection' => [
+                    'initialize_excluded' => false,
+                ],
+            ],
+        )));
+
+        $this->assertFalse($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
+
+        // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
+        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
+        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
+
+        $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
     }
 
     /**

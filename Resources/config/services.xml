@@ -72,6 +72,8 @@
             <argument type="service" id="service_container" />
         </service>
         <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
+            <argument type="constant">false</argument>
+            <argument type="constant">true</argument>
             <tag name="jms_serializer.event_subscriber" />
         </service>
         <service id="jms_serializer.stopwatch_subscriber" class="%jms_serializer.stopwatch_subscriber.class%">
@@ -87,6 +89,7 @@
             <tag name="jms_serializer.subscribing_handler" />
         </service>
         <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%">
+            <argument type="constant">true</argument>
             <tag name="jms_serializer.subscribing_handler" />
         </service>
         <service id="jms_serializer.php_collection_handler" class="%jms_serializer.php_collection_handler.class%">
@@ -171,6 +174,7 @@
         <service id="jms_serializer.doctrine_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
+            <argument type="string">null</argument>
         </service>
         <service id="jms_serializer.doctrine_phpcr_object_constructor" class="%jms_serializer.doctrine_object_constructor.class%" public="false">
             <argument type="service" id="doctrine_phpcr"/>

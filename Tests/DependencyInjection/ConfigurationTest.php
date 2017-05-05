@@ -67,6 +67,23 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testWrongObjectConstructorFallbackStrategyTriggersException()
+    {
+        $processor = new Processor();
+        $processor->processConfiguration(new Configuration(true), [
+            'jms_serializer' => [
+                'object_constructors' => [
+                    'doctrine' => [
+                        'fallback_strategy' => "foo",
+                    ],
+                ]
+            ]
+        ]);
+    }
+
     public function testContextDefaults()
     {
         $processor = new Processor();
