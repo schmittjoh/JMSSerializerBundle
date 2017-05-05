@@ -103,6 +103,17 @@ values:
                 datetime:
                     default_format: "c" # ISO8601
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
+                array_collection:
+                    initialize_excluded: true # suggested false for better performance
+
+            subscribers:
+                doctrine_proxy:
+                    initialize_virtual_types: true # suggested false for better performance
+                    initialize_excluded: true # suggested false for better performance
+
+            object_constructors:
+                doctrine:
+                    fallback_strategy: "null" # possible values ("null" | "exception" | "fallback")
 
             property_naming:
                 id: ~
@@ -153,11 +164,11 @@ values:
 
             visitors:
                 json:
-                    options: 0 # json_encode options bitmask
+                    options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
                 xml:
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
-                    format_output: true
+                    format_output: true # suggested false in production
 
     .. code-block :: xml
 
