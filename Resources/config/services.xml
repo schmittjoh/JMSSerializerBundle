@@ -33,6 +33,8 @@
         <parameter key="jms_serializer.serializer.class">JMS\Serializer\Serializer</parameter>
 
         <parameter key="jms_serializer.twig_extension.class">JMS\Serializer\Twig\SerializerExtension</parameter>
+        <parameter key="jms_serializer.twig_runtime_extension.class">JMS\Serializer\Twig\SerializerRuntimeExtension</parameter>
+        <parameter key="jms_serializer.twig_runtime_extension_helper.class">JMS\Serializer\Twig\SerializerRuntimeHelper</parameter>
         <parameter key="jms_serializer.templating.helper.class">JMS\SerializerBundle\Templating\SerializerHelper</parameter>
 
         <parameter key="jms_serializer.json_serialization_visitor.class">JMS\Serializer\JsonSerializationVisitor</parameter>
@@ -222,6 +224,11 @@
         <service id="jms_serializer.twig_extension.serializer" class="%jms_serializer.twig_extension.class%" public="false">
             <argument type="service" id="jms_serializer" />
             <tag name="twig.extension" />
+        </service>
+
+        <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="%jms_serializer.twig_runtime_extension_helper.class%" public="true">
+            <argument type="service" id="jms_serializer" />
+            <tag name="twig.runtime" />
         </service>
 
         <!-- PHP templating helper -->
