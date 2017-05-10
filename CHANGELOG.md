@@ -1,7 +1,35 @@
 # Change Log
 
-## [1.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.4.0)
+## [1.5.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.5.0) (2017-05-10)
+**Implemented enhancements:**
 
+- Added configuration options for recent doctrine improvements [\#570](https://github.com/schmittjoh/JMSSerializerBundle/pull/570) ([goetas](https://github.com/goetas))
+- Allow autowiring serializer [\#568](https://github.com/schmittjoh/JMSSerializerBundle/pull/568) ([Tobion](https://github.com/Tobion))
+- Added runtime twig extension support \(significant performance improvements\) [\#563](https://github.com/schmittjoh/JMSSerializerBundle/pull/563) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Arrays beginning with index 1 are parsed as an object  [\#375](https://github.com/schmittjoh/JMSSerializerBundle/issues/375)
+- serializing a json array using {} instead of \[\] [\#373](https://github.com/schmittjoh/JMSSerializerBundle/issues/373)
+
+**Closed issues:**
+
+- \[BUG\] Metadata PhpDriver always beats AnnotationDriver in DriverChain [\#567](https://github.com/schmittjoh/JMSSerializerBundle/issues/567)
+-  requirements could not be resolved to an installable set of packages [\#566](https://github.com/schmittjoh/JMSSerializerBundle/issues/566)
+- Missing configuration for doctrine object constructor [\#565](https://github.com/schmittjoh/JMSSerializerBundle/issues/565)
+- Performance issue [\#562](https://github.com/schmittjoh/JMSSerializerBundle/issues/562)
+- Missing configuration option for lazy virtual proxy initialization [\#539](https://github.com/schmittjoh/JMSSerializerBundle/issues/539)
+- SerializationListener not being called for sub entities after upgrading to 1.1.0 [\#514](https://github.com/schmittjoh/JMSSerializerBundle/issues/514)
+- Can't override third party serializer config file [\#511](https://github.com/schmittjoh/JMSSerializerBundle/issues/511)
+- registering callback with a specific class name doesn't work . [\#508](https://github.com/schmittjoh/JMSSerializerBundle/issues/508)
+- change serialized name of a property when it is in a specific group [\#457](https://github.com/schmittjoh/JMSSerializerBundle/issues/457)
+- Serializing stdClass with arbitrary depth [\#414](https://github.com/schmittjoh/JMSSerializerBundle/issues/414)
+- Usage of @Groups [\#382](https://github.com/schmittjoh/JMSSerializerBundle/issues/382)
+- Serializing a stdClass [\#158](https://github.com/schmittjoh/JMSSerializerBundle/issues/158)
+- Add support for Traits \(PHP 5.4\) [\#102](https://github.com/schmittjoh/JMSSerializerBundle/issues/102)
+- @ExclusionPolicy\("all"\) is not respected by the parent classes [\#100](https://github.com/schmittjoh/JMSSerializerBundle/issues/100)
+
+## [1.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.4.0) (2017-04-10)
 **Closed issues:**
 
 - Document how to prevent JMS serializer from overriding Symfony serializer [\#513](https://github.com/schmittjoh/JMSSerializerBundle/issues/513)
@@ -36,10 +64,11 @@
 **Merged pull requests:**
 
 - Use svg build badge [\#560](https://github.com/schmittjoh/JMSSerializerBundle/pull/560) ([hanneskaeufler](https://github.com/hanneskaeufler))
-- Added configuration for default context [\#556](https://github.com/schmittjoh/JMSSerializerBundle/pull/556) ([edefimov](https://github.com/edefimov))
 
 ## [1.3.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.3.1) (2017-03-29)
 **Implemented enhancements:**
+
+- Added configuration for default context [\#556](https://github.com/schmittjoh/JMSSerializerBundle/pull/556) ([edefimov](https://github.com/edefimov))
 
 **Fixed bugs:**
 
