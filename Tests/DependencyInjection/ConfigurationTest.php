@@ -48,11 +48,11 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             [
                 'metadata' => [
                     'directories' => [
-                        [
+                        'foo' => [
                             'namespace_prefix' => 'JMSSerializerBundleNs1',
                             'path' => '@JMSSerializerBundle',
                         ],
-                        [
+                        'bar' => [
                             'namespace_prefix' => 'JMSSerializerBundleNs2',
                             'path' => '@JMSSerializerBundle/Resources/config',
                         ],
@@ -82,6 +82,39 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ]);
+    }
+
+    public function testConfigComposed()
+    {
+        $ref = new JMSSerializerBundle();
+        $container = $this->getContainer([
+            [
+                'metadata' => [
+                    'directories' => [
+                        'foo' => [
+                            'namespace_prefix' => 'JMSSerializerBundleNs1',
+                            'path' => '@JMSSerializerBundle',
+                        ],
+                    ]
+                ]
+            ],
+            [
+                'metadata' => [
+                    'directories' => [
+                        [
+                            'name' => 'foo',
+                            'namespace_prefix' => 'JMSSerializerBundleNs2',
+                            'path' => '@JMSSerializerBundle/Resources/config',
+                        ],
+                    ]
+                ]
+            ],
+        ]);
+
+        $directories = $container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
+
+        $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
+        $this->assertEquals($ref->getPath().'/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
     public function testContextDefaults()
@@ -219,5 +252,13 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayNotHasKey('version', $defaultContext);
             $this->assertArrayNotHasKey('serialize_null', $defaultContext);
         }
+    }
+
+    public function testDefaultDateFormat()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertEquals(\DateTime::ATOM, $config['handlers']['datetime']['default_format']);
     }
 }

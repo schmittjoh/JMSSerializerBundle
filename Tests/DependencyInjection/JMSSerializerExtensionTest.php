@@ -221,16 +221,16 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
 
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject = new VersionedObject('foo', 'bar');
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
 
         $this->assertTrue($container->has('JMS\Serializer\SerializerInterface'), 'Alias should be defined to allow autowiring');
         $this->assertTrue($container->has('JMS\Serializer\ArrayTransformerInterface'), 'Alias should be defined to allow autowiring');
 
-        $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
+        $this->assertFalse($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
 
         // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
-        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
-        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
+        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
+        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
 
         $this->assertEquals("null", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
 
@@ -249,8 +249,8 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainerForConfig(array(array(
             'subscribers' => [
                 'doctrine_proxy' => [
-                    'initialize_virtual_types' => false,
-                    'initialize_excluded' => false,
+                    'initialize_virtual_types' => true,
+                    'initialize_excluded' => true,
                 ],
             ],
             'object_constructors' => [
@@ -260,18 +260,54 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             ],
             'handlers' => [
                 'array_collection' => [
-                    'initialize_excluded' => false,
+                    'initialize_excluded' => true,
                 ],
             ],
         )));
 
-        $this->assertFalse($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
+        $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
 
         // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
-        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
-        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
+        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
+        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
 
         $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
+    }
+
+    public function testLoadExistentMetadataDir()
+    {
+        $container = $this->getContainerForConfig(array(array(
+            'metadata' => [
+                'directories' => [
+                    'foo' => [
+                        'namespace_prefix' => 'foo_ns',
+                        'path' => __DIR__,
+                    ]
+                ]
+            ]
+        )));
+
+        $fileLocatorDef = $container->getDefinition('jms_serializer.metadata.file_locator');
+        $directories = $fileLocatorDef->getArgument(0);
+        $this->assertEquals(['foo_ns' => __DIR__], $directories);
+    }
+
+    /**
+     * @expectedException \JMS\Serializer\Exception\RuntimeException
+     * @expectedExceptionMessage  The metadata directory "foo_dir" does not exist for the namespace "foo_ns"
+     */
+    public function testLoadNotExistentMetadataDir()
+    {
+        $this->getContainerForConfig(array(array(
+            'metadata' => [
+                'directories' => [
+                    'foo' => [
+                        'namespace_prefix' => 'foo_ns',
+                        'path' => 'foo_dir',
+                    ]
+                ]
+            ]
+        )));
     }
 
     /**
@@ -324,7 +360,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array()));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionLanguage('foo', true);
         $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
@@ -338,7 +374,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array()));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionProperties('foo');
         $this->assertEquals('{"v_prop_name":"foo"}', $serializer->serialize($object, 'json'));
@@ -353,7 +389,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
         $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionProperties('foo');
         $serializer->serialize($object, 'json');
@@ -366,7 +402,7 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
     public function testExpressionLanguageNotLoaded()
     {
         $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
-        $serializer = $container->get('serializer');
+        $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionLanguage('foo', true);
         $serializer->serialize($object, 'json');

@@ -43,7 +43,6 @@ class Configuration implements ConfigurationInterface
         $root = $tb
             ->root('jms_serializer', 'array')
                 ->children()
-                    ->booleanNode('enable_short_alias')->defaultTrue()->end()
         ;
 
         $this->addHandlersSection($root);
@@ -66,7 +65,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('datetime')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('default_format')->defaultValue(\DateTime::ISO8601)->end()
+                            ->scalarNode('default_format')->defaultValue(\DateTime::RFC3339)->end()
                             ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
                             ->scalarNode('cdata')->defaultTrue()->end()
                         ->end()
@@ -74,7 +73,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('array_collection')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->booleanNode('initialize_excluded')->defaultTrue()->end()
+                            ->booleanNode('initialize_excluded')->defaultFalse()->end()
                         ->end()
                     ->end()
                 ->end()
@@ -91,8 +90,8 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('doctrine_proxy')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->booleanNode('initialize_excluded')->defaultTrue()->end()
-                            ->booleanNode('initialize_virtual_types')->defaultTrue()->end()
+                            ->booleanNode('initialize_excluded')->defaultFalse()->end()
+                            ->booleanNode('initialize_virtual_types')->defaultFalse()->end()
                         ->end()
                     ->end()
                 ->end()
@@ -188,6 +187,7 @@ class Configuration implements ConfigurationInterface
                         ->defaultTrue()
                     ->end()
                     ->arrayNode('directories')
+                        ->useAttributeAsKey('name')
                         ->prototype('array')
                             ->children()
                                 ->scalarNode('path')->isRequired()->end()
