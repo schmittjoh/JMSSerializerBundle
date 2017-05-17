@@ -114,7 +114,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $directories = $container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
 
         $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
-        $this->assertEquals($ref->getPath().'/Resources/config', $directories['JMSSerializerBundleNs2']);
+        $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
     public function testContextDefaults()

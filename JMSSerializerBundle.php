@@ -18,28 +18,28 @@
 
 namespace JMS\SerializerBundle;
 
-use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
-use JMS\SerializerBundle\DependencyInjection\Compiler\TwigExtensionPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\ServiceMapPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\TwigExtensionPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSSerializerBundle extends Bundle
 {
     public function build(ContainerBuilder $builder)
     {
         $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.serialization_visitor', 'format',
-            function(ContainerBuilder $container, Definition $def) {
+            function (ContainerBuilder $container, Definition $def) {
                 $container->getDefinition('jms_serializer.serializer')->replaceArgument(3, $def);
             }
         ));
         $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.deserialization_visitor', 'format',
-            function(ContainerBuilder $container, Definition $def) {
+            function (ContainerBuilder $container, Definition $def) {
                 $container->getDefinition('jms_serializer.serializer')->replaceArgument(4, $def);
             }
         ));
