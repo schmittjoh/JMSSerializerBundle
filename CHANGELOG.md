@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.0.0) (2017-05-17)
+**Closed issues:**
+
+- Remove short "serializer" alias [\#558](https://github.com/schmittjoh/JMSSerializerBundle/issues/558)
+- Check for broken serialization metadata mappings [\#534](https://github.com/schmittjoh/JMSSerializerBundle/issues/534)
+- Serializing traits with JMSSerializer and YAML [\#424](https://github.com/schmittjoh/JMSSerializerBundle/issues/424)
+- Add kernel.cache\_clearer and/or kernel.cache\_warmer support [\#415](https://github.com/schmittjoh/JMSSerializerBundle/issues/415)
+
 ## [1.5.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.5.0) (2017-05-10)
 **Implemented enhancements:**
 
@@ -28,6 +36,10 @@
 - Serializing a stdClass [\#158](https://github.com/schmittjoh/JMSSerializerBundle/issues/158)
 - Add support for Traits \(PHP 5.4\) [\#102](https://github.com/schmittjoh/JMSSerializerBundle/issues/102)
 - @ExclusionPolicy\("all"\) is not respected by the parent classes [\#100](https://github.com/schmittjoh/JMSSerializerBundle/issues/100)
+
+**Merged pull requests:**
+
+- Preparing 2.0 [\#571](https://github.com/schmittjoh/JMSSerializerBundle/pull/571) ([goetas](https://github.com/goetas))
 
 ## [1.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.4.0) (2017-04-10)
 **Closed issues:**
