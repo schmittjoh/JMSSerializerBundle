@@ -135,6 +135,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('separator')->defaultValue('_')->end()
                     ->booleanNode('lower_case')->defaultTrue()->end()
                     ->booleanNode('enable_cache')->defaultTrue()->end()
+                    ->booleanNode('identical')->defaultFalse()->end()
                 ->end()
             ->end()
             ->arrayNode('expression_evaluator')

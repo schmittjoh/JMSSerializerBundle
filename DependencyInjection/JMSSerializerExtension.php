@@ -69,6 +69,10 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
         }
 
+        if ($config['property_naming']['identical']) {
+            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.identical_property_naming_strategy');
+        }
+
         $bundles = $container->getParameter('kernel.bundles');
 
         if (!empty($config['expression_evaluator']['id'])) {

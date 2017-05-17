@@ -310,6 +310,20 @@ class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
         )));
     }
 
+    public function testIdenticalPropertyNamingStrategy()
+    {
+        $config = array(
+            'property_naming' => array(
+                'identical' => true
+            )
+        );
+
+        $container = $this->getContainerForConfig(array($config));
+        $simpleObject = new SimpleObject('foo', 'bar');
+        $serializer = $container->get('serializer');
+        $this->assertEquals(json_encode(array('foo' => 'foo', 'bar' => 'bar', 'camelCase' => 'boo')), $serializer->serialize($simpleObject, 'json'));
+    }
+
     /**
      * @dataProvider getJsonVisitorConfigs
      */
