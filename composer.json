@@ -35,7 +35,8 @@
         "doctrine/orm": "*",
         "symfony/form": "*",
         "symfony/validator": "*",
-        "symfony/stopwatch": "*"
+        "symfony/stopwatch": "*",
+        "symfony/translator": "*"
     },
     "suggest": {
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ~1.3"
