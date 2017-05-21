@@ -25,13 +25,14 @@ use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpression
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class JMSSerializerExtensionTest extends \PHPUnit_Framework_TestCase
+class JMSSerializerExtensionTest extends TestCase
 {
     protected function setUp()
     {

@@ -21,13 +21,14 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-class CustomHandlerPassTest extends \PHPUnit_Framework_TestCase
+class CustomHandlerPassTest extends TestCase
 {
     /**
      * @param array $configs

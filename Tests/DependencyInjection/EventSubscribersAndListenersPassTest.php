@@ -20,13 +20,14 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-class EventSubscribersAndListenersPassTest extends \PHPUnit_Framework_TestCase
+class EventSubscribersAndListenersPassTest extends TestCase
 {
     /**
      * @param array $configs

@@ -4,11 +4,12 @@ namespace JMS\SerializerBundle\Tests\ContextFactory;
 
 use JMS\Serializer\Context;
 use JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ConfiguredContextFactoryTest
  */
-class ConfiguredContextFactoryTest extends \PHPUnit_Framework_TestCase
+class ConfiguredContextFactoryTest extends TestCase
 {
     /**
      * testCreateSerializationContext

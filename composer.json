@@ -19,11 +19,11 @@
         "php": ">=5.4.0",
         "jms/serializer": "^1.7",
         "phpoption/phpoption": "^1.1.0",
-        "symfony/framework-bundle": "~2.3|~3.0"
+        "symfony/framework-bundle": "~2.3|~3.0|~4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.2|^5.0",
-        "symfony/expression-language": "~2.6|~3.0",
+        "phpunit/phpunit": "^4.8.35|^5.4.3|^6.0",
+        "symfony/expression-language": "~2.6|~3.0|~4.0",
         "symfony/yaml": "*",
         "symfony/browser-kit": "*",
         "symfony/class-loader": "*",
@@ -37,6 +37,7 @@
         "symfony/validator": "*",
         "symfony/stopwatch": "*"
     },
+    "minimum-stability": "dev",
     "suggest": {
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ~1.3"
     },

@@ -20,12 +20,13 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class DoctrinePassTest extends \PHPUnit_Framework_TestCase
+class DoctrinePassTest extends TestCase
 {
     /**
      *
