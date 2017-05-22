@@ -104,6 +104,8 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
         }
 
+        $container->setParameter('jms_serializer.default_exclusion_policy', $config['metadata']['default_exclusion_policy']);
+
         $container
             ->getDefinition('jms_serializer.metadata_factory')
             ->replaceArgument(2, $config['metadata']['debug']);

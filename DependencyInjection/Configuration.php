@@ -174,6 +174,7 @@ class Configuration implements ConfigurationInterface
                 ->fixXmlConfig('directory', 'directories')
                 ->children()
                     ->scalarNode('cache')->defaultValue('file')->end()
+                    ->scalarNode('default_exclusion_policy')->defaultValue('NONE')->end()
                     ->booleanNode('debug')->defaultValue($this->debug)->end()
                     ->arrayNode('file_cache')
                         ->addDefaultsIfNotSet()
