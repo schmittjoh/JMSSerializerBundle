@@ -16,7 +16,7 @@
         }        
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": "^5.5|^7.0",
         "jms/serializer": "^1.7",
         "phpoption/phpoption": "^1.1.0",
         "symfony/framework-bundle": "~2.3|~3.0"
