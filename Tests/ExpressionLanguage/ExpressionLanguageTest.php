@@ -19,9 +19,10 @@
 namespace JMS\SerializerBundle\Tests\ExpressionLanguage;
 
 use JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
+class ExpressionLanguageTest extends TestCase
 {
     public function testFunctionProviderCompilation()
     {

@@ -21,6 +21,8 @@ matrix:
       env: SYMFONY_VERSION='2.8'
     - php: 5.6
       env: SYMFONY_VERSION='3.0'
+    - php: 7.1
+      env: SYMFONY_VERSION='~4.0@dev'
     - php: 5.5
       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 

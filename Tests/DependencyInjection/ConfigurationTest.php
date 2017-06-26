@@ -20,10 +20,11 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Configuration;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     private function getContainer(array $configs = array())
     {

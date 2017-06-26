@@ -21,12 +21,13 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Naming\PropertyNamingStrategyInterface;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class NamingStrategyTest extends \PHPUnit_Framework_TestCase
+class NamingStrategyTest extends TestCase
 {
     /**
      *
