@@ -16,7 +16,7 @@
         }        
     ],
     "require": {
-        "php": "^5.5|^7.0",
+        "php": "^5.4|^7.0",
         "jms/serializer": "^1.7",
         "phpoption/phpoption": "^1.1.0",
         "symfony/framework-bundle": "~2.3|~3.0|~4.0"
@@ -37,7 +37,6 @@
         "symfony/validator": "*",
         "symfony/stopwatch": "*"
     },
-    "minimum-stability": "dev",
     "suggest": {
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ~1.3"
     },
