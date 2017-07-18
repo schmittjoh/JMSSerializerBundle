@@ -84,10 +84,7 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass->process($container);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testEventListenerMustBePublic()
+    public function testEventListenerCanBePrivate()
     {
         $container = $this->getContainer();
 
@@ -231,10 +228,7 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass->process($container);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testEventSubscriberMustBePublic()
+    public function testEventSubscriberCanBePrivate()
     {
         $container = $this->getContainer();
 
