@@ -27,7 +27,11 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $method = isset($attributes['method']) ? $attributes['method'] : EventDispatcher::getDefaultMethodName($attributes['event']);
                 $priority = isset($attributes['priority']) ? (integer)$attributes['priority'] : 0;
 
-                $listeners[$attributes['event']][$priority][] = array(array(new Reference($id), $method), $class, $format);
+                if ($container->getDefinition($id)->isPublic()) {
+                    $listeners[$attributes['event']][$priority][] = array(array($id, $method), $class, $format);
+                } else {
+                    $listeners[$attributes['event']][$priority][] = array(array(new Reference($id), $method), $class, $format);
+                }
             }
         }
 
@@ -50,7 +54,11 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $method = isset($eventData['method']) ? $eventData['method'] : EventDispatcher::getDefaultMethodName($eventData['event']);
                 $priority = isset($eventData['priority']) ? (integer)$eventData['priority'] : 0;
 
-                $listeners[$eventData['event']][$priority][] = array(array(new Reference($id), $method), $class, $format);
+                if ($container->getDefinition($id)->isPublic()) {
+                    $listeners[$eventData['event']][$priority][] = array(array($id, $method), $class, $format);
+                } else {
+                    $listeners[$eventData['event']][$priority][] = array(array(new Reference($id), $method), $class, $format);
+                }
             }
         }
 
