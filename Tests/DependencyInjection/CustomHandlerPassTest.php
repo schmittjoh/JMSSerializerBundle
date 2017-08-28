@@ -27,6 +27,7 @@ use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPas
 use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class CustomHandlerPassTest extends TestCase
 {
@@ -79,9 +80,32 @@ class CustomHandlerPassTest extends TestCase
 
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
-        $this->assertEquals([
+        $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_service', 'deserializeDateTimeFromjson']]],
             1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]]
+        ], $args[1]);
+    }
+
+    public function testHandlerCanBePrivate()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('Foo');
+        $def->setPublic(false);
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+        ]);
+        $container->setDefinition('my_service', $def);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertEquals([
+            2 => ['DateTime' => ['json' => [new Reference('my_service'), 'deserializeDateTimeFromjson']]],
+            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'serializeDateTimeTojson']]]
         ], $args[1]);
     }
 
@@ -102,7 +126,7 @@ class CustomHandlerPassTest extends TestCase
 
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
-        $this->assertEquals([
+        $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]]
         ], $args[1]);
     }
@@ -156,8 +180,27 @@ class CustomHandlerPassTest extends TestCase
 
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
-        $this->assertEquals([
+        $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_service', 'onDateTime']]]
+        ], $args[1]);
+    }
+
+    public function testSubscribingHandlerCanBePrivate()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SubscribingHandler');
+        $def->addTag('jms_serializer.subscribing_handler');
+        $def->setPublic(false);
+        $container->setDefinition('my_service', $def);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertEquals([
+            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'onDateTime']]]
         ], $args[1]);
     }
 

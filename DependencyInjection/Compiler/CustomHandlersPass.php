@@ -6,6 +6,7 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class CustomHandlersPass implements CompilerPassInterface
 {
@@ -29,7 +30,11 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($attrs['method']) ? $attrs['method'] : HandlerRegistry::getDefaultMethod($direction, $attrs['type'], $attrs['format']);
-                    $handlers[$direction][$attrs['type']][$attrs['format']] = array($id, $method);
+                    if ($container->getDefinition($id)->isPublic()) {
+                        $handlers[$direction][$attrs['type']][$attrs['format']] = array($id, $method);
+                    } else {
+                        $handlers[$direction][$attrs['type']][$attrs['format']] = array(new Reference($id), $method);
+                    }
                 }
             }
         }
@@ -53,7 +58,11 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($methodData['method']) ? $methodData['method'] : HandlerRegistry::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
-                    $handlers[$direction][$methodData['type']][$methodData['format']] = array($id, $method);
+                    if ($container->getDefinition($id)->isPublic()) {
+                        $handlers[$direction][$methodData['type']][$methodData['format']] = array($id, $method);
+                    } else {
+                        $handlers[$direction][$methodData['type']][$methodData['format']] = array(new Reference($id), $method);
+                    }
                 }
             }
         }
