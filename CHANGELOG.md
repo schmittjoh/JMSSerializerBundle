@@ -1,5 +1,39 @@
 # Change Log
 
+## [2.1.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.1.0) (2017-08-31)
+
+**Implemented enhancements:**
+
+- Allow event listener/susbcriber services to be private [\#593](https://github.com/schmittjoh/JMSSerializerBundle/issues/593)
+- Date deserialization \(DateTime object\) [\#582](https://github.com/schmittjoh/JMSSerializerBundle/issues/582)
+- Allow listeners and event subscribers to be private [\#594](https://github.com/schmittjoh/JMSSerializerBundle/pull/594) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Handler DI [\#598](https://github.com/schmittjoh/JMSSerializerBundle/issues/598)
+- Allow subscribing handlers to be private [\#602](https://github.com/schmittjoh/JMSSerializerBundle/pull/602) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Gedmo Unrecognized field: createdAt - Error! [\#599](https://github.com/schmittjoh/JMSSerializerBundle/issues/599)
+- Array deserialization problem [\#597](https://github.com/schmittjoh/JMSSerializerBundle/issues/597)
+- Integrate JMSSerializer into Symfony PropertyInfo? [\#591](https://github.com/schmittjoh/JMSSerializerBundle/issues/591)
+- Yml config should allow to configure the default accessType and readOnly options [\#586](https://github.com/schmittjoh/JMSSerializerBundle/issues/586)
+- Can't use symfony serializer when requesting the id "serializer" [\#583](https://github.com/schmittjoh/JMSSerializerBundle/issues/583)
+- XML Collection names and null values [\#581](https://github.com/schmittjoh/JMSSerializerBundle/issues/581)
+- Not work for Symfony 3.3? [\#579](https://github.com/schmittjoh/JMSSerializerBundle/issues/579)
+- possible to register a handler that will compare against abstract classes [\#577](https://github.com/schmittjoh/JMSSerializerBundle/issues/577)
+
+**Merged pull requests:**
+
+- Added assertions to private services tests [\#595](https://github.com/schmittjoh/JMSSerializerBundle/pull/595) ([bgaleotti](https://github.com/bgaleotti))
+- Change min stability [\#592](https://github.com/schmittjoh/JMSSerializerBundle/pull/592) ([goetas](https://github.com/goetas))
+- install stable dependencies when possible [\#588](https://github.com/schmittjoh/JMSSerializerBundle/pull/588) ([xabbuh](https://github.com/xabbuh))
+- \[Composer\] Upgrade required php version [\#587](https://github.com/schmittjoh/JMSSerializerBundle/pull/587) ([lchrusciel](https://github.com/lchrusciel))
+- Run tests on ubuntu trusty [\#585](https://github.com/schmittjoh/JMSSerializerBundle/pull/585) ([goetas](https://github.com/goetas))
+- Improve the autowiring configuration [\#584](https://github.com/schmittjoh/JMSSerializerBundle/pull/584) ([stof](https://github.com/stof))
+- compatibility with Symfony 4 [\#576](https://github.com/schmittjoh/JMSSerializerBundle/pull/576) ([xabbuh](https://github.com/xabbuh))
+
 ## [2.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.0.0) (2017-05-17)
 **Closed issues:**
 
