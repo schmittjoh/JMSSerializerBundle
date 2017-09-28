@@ -21,8 +21,9 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\SerializerBundle\DependencyInjection\Compiler\FormErrorHandlerTranslationDomainPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use use PHPUnit\Framework\TestCase;
 
-class FormErrorHandlerTranslationDomainPassTest extends \PHPUnit_Framework_TestCase
+class FormErrorHandlerTranslationDomainPassTest extends TestCase
 {
     /**
      * @param array $configs
