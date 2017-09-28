@@ -22,9 +22,6 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -39,12 +36,6 @@ class CustomHandlerPassTest extends TestCase
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(
-            new ResolveParameterPlaceHoldersPass(),
-            new ResolveDefinitionTemplatesPass(),
-        ));
-        $container->getCompilerPassConfig()->setRemovingPasses(array(new RemoveUnusedDefinitionsPass()));
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');

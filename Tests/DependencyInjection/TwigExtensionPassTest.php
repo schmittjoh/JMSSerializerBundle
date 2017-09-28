@@ -21,9 +21,6 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\SerializerBundle\DependencyInjection\Compiler\TwigExtensionPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TwigExtensionPassTest extends TestCase
@@ -35,12 +32,6 @@ class TwigExtensionPassTest extends TestCase
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(
-            new ResolveParameterPlaceHoldersPass(),
-            new ResolveDefinitionTemplatesPass(),
-        ));
-        $container->getCompilerPassConfig()->setRemovingPasses(array(new RemoveUnusedDefinitionsPass()));
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');

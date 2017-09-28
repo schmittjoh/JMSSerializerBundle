@@ -22,9 +22,6 @@ use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndS
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleHandler;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -38,12 +35,6 @@ class EventSubscribersAndListenersPassTest extends TestCase
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
-
-        $container->getCompilerPassConfig()->setOptimizationPasses(array(
-            new ResolveParameterPlaceHoldersPass(),
-            new ResolveDefinitionTemplatesPass(),
-        ));
-        $container->getCompilerPassConfig()->setRemovingPasses(array(new RemoveUnusedDefinitionsPass()));
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
