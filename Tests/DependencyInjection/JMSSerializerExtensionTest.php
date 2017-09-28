@@ -123,6 +123,16 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('foo', (string)$container->getAlias('jms_serializer.serialization_context_factory'));
     }
 
+    public function testLoadWithoutTranslator()
+    {
+        $container = $this->getContainerForConfig(array(array()), function(ContainerBuilder $containerBuilder){
+            $containerBuilder->set('translator', null);
+        });
+
+        $def = $container->getDefinition('jms_serializer.form_error_handler');
+        $this->assertSame(null, $def->getArgument(0));
+    }
+
     public function testConfiguringContextFactories()
     {
         $container = $this->getContainerForConfig(array(array()));
