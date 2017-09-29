@@ -1,7 +1,21 @@
 # Change Log
 
-## [2.1.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.1.0) (2017-08-31)
+## [2.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.2.0)
 
+**Implemented enhancements:**
+
+- Injected validator.translation\_domain to FormErrorHandler [\#580](https://github.com/schmittjoh/JMSSerializerBundle/pull/580) ([prosalov](https://github.com/prosalov))
+
+**Closed issues:**
+
+- The FormErrorHandler forces the translation domain to 'validators' [\#501](https://github.com/schmittjoh/JMSSerializerBundle/issues/501)
+- Documentation incorrectly states that a handler service can be private [\#260](https://github.com/schmittjoh/JMSSerializerBundle/issues/260)
+
+**Merged pull requests:**
+
+- Remove dependencies from translator and form handler [\#604](https://github.com/schmittjoh/JMSSerializerBundle/pull/604) ([goetas](https://github.com/goetas))
+
+## [2.1.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.1.0) (2017-08-31)
 **Implemented enhancements:**
 
 - Allow event listener/susbcriber services to be private [\#593](https://github.com/schmittjoh/JMSSerializerBundle/issues/593)
