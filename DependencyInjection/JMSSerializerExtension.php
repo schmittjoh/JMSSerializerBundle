@@ -30,6 +30,12 @@ class JMSSerializerExtension extends ConfigurableExtension
 {
     public function loadInternal(array $config, ContainerBuilder $container)
     {
+        if (method_exists($container, 'registerForAutoconfiguration')) {
+            $container
+                ->registerForAutoconfiguration(EventSubscriberInterface::class)
+                ->addTag('jms_serializer.event_subscriber');
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(array(
             __DIR__ . '/../Resources/config/')));
         $loader->load('services.xml');
