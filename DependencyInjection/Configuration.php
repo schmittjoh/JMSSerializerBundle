@@ -178,7 +178,7 @@ class Configuration implements ConfigurationInterface
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->arrayNode('directories')
-                                ->scalarPrototype()->end()
+                                ->prototype('scalar')->end()
                             ->end()
                         ->end()
                     ->end()
