@@ -108,6 +108,15 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->getDefinition('jms_serializer.metadata_factory')
             ->replaceArgument(2, $config['metadata']['debug']);
 
+        // warmup
+        if ($config['metadata']['warmup']['directories']) {
+            $container
+                ->getDefinition('jms_serializer.cache.cache_warmer')
+                ->replaceArgument(0, $config['metadata']['warmup']['directories']);
+        } else {
+            $container->removeDefinition('jms_serializer.cache.cache_warmer');
+        }
+
         // directories
         $directories = array();
         if ($config['metadata']['auto_detection']) {

@@ -173,6 +173,16 @@ class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                 ->fixXmlConfig('directory', 'directories')
                 ->children()
+
+                    ->arrayNode('warmup')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->arrayNode('directories')
+                                ->scalarPrototype()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+
                     ->scalarNode('cache')->defaultValue('file')->end()
                     ->booleanNode('debug')->defaultValue($this->debug)->end()
                     ->arrayNode('file_cache')
@@ -195,7 +205,6 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                ->end()
             ->end()
         ;
     }
