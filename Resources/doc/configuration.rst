@@ -145,7 +145,9 @@ values:
                         path: "@MyBarBundle/Resources/config/serializer"
                 warmup:
                     # list of directories to scan searching for php classes to use when warming up the cache
-                    directories: []
+                    paths:
+                        included: []
+                        excluded: []
 
             expression_evaluator:
                 id: jms_serializer.expression_evaluator # auto detected

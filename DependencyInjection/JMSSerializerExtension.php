@@ -109,10 +109,11 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->replaceArgument(2, $config['metadata']['debug']);
 
         // warmup
-        if ($config['metadata']['warmup']['directories']) {
+        if ($config['metadata']['warmup']['paths']['included']) {
             $container
                 ->getDefinition('jms_serializer.cache.cache_warmer')
-                ->replaceArgument(0, $config['metadata']['warmup']['directories']);
+                ->replaceArgument(0, $config['metadata']['warmup']['paths']['included'])
+                ->replaceArgument(2, $config['metadata']['warmup']['paths']['excluded']);
         } else {
             $container->removeDefinition('jms_serializer.cache.cache_warmer');
         }

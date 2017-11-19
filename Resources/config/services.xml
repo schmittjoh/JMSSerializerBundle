@@ -291,8 +291,9 @@
 
 
         <service id="jms_serializer.cache.cache_warmer" class="%jms_serializer.cache.cache_warmer.class%" public="false">
-            <argument/>
+            <argument/> <!-- included dirs -->
             <argument type="service" id="jms_serializer.metadata_factory"/>
+            <argument/> <!-- excluded dirs -->
             <tag name="kernel.cache_warmer" />
         </service>
 

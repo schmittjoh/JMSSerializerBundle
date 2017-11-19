@@ -318,6 +318,37 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals(['foo_ns' => __DIR__], $directories);
     }
 
+    public function testWarmUpWithDirs()
+    {
+        $container = $this->getContainerForConfig([[
+            'metadata' => [
+                'warmup' => [
+                    'paths' => [
+                        'included' => ['a'],
+                        'excluded' => ['b']
+                    ]
+                ]
+            ]
+        ]], function ($container){
+            $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
+        });
+
+        $this->assertTrue($container->hasDefinition('jms_serializer.cache.cache_warmer'));
+
+        $def = $container->getDefinition('jms_serializer.cache.cache_warmer');
+
+        $this->assertEquals(['a'], $def->getArgument(0));
+        $this->assertEquals(['b'], $def->getArgument(2));
+    }
+
+    public function testWarmUpWithDirsWithNoPaths()
+    {
+        $this->getContainerForConfig([[]], function ($container) {
+            $this->assertFalse($container->hasDefinition('jms_serializer.cache.cache_warmer'));
+        });
+    }
+
+
     /**
      * @expectedException \JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage  The metadata directory "foo_dir" does not exist for the namespace "foo_ns"
