@@ -348,7 +348,6 @@ class JMSSerializerExtensionTest extends TestCase
         });
     }
 
-
     /**
      * @expectedException \JMS\Serializer\Exception\RuntimeException
      * @expectedExceptionMessage  The metadata directory "foo_dir" does not exist for the namespace "foo_ns"
