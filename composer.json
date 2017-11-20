@@ -27,7 +27,7 @@
         "symfony/yaml": "*",
         "symfony/browser-kit": "*",
         "symfony/class-loader": "*",
-        "symfony/finder": "*",
+        "symfony/finder": "^2.3|^3.0|^4.0",
         "symfony/css-selector": "*",
         "symfony/process": "*",
         "doctrine/doctrine-bundle": "*",
