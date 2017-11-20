@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class JMSSerializerExtension extends ConfigurableExtension
@@ -109,7 +110,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->replaceArgument(2, $config['metadata']['debug']);
 
         // warmup
-        if (!empty($config['metadata']['warmup']['paths']['included'])) {
+        if (!empty($config['metadata']['warmup']['paths']['included']) && class_exists(Finder::class)) {
             $container
                 ->getDefinition('jms_serializer.cache.cache_warmer')
                 ->replaceArgument(0, $config['metadata']['warmup']['paths']['included'])
