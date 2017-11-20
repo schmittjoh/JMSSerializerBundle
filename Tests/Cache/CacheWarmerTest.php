@@ -25,33 +25,40 @@ use PHPUnit\Framework\TestCase;
 
 class CacheWarmerTest extends TestCase
 {
+    private $metadataFactory;
+
+    public function setUp()
+    {
+        $this->metadataFactory = $this->getMockBuilder(MetadataFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     public function testWarmUpRecursive()
     {
-        $metadataFactory = $this->createMock(MetadataFactoryInterface::class);
-        $metadataFactory->expects($this->exactly(3))
+
+        $this->metadataFactory->expects($this->exactly(3))
             ->method('getMetadataForClass');
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files"], $metadataFactory);
+        $warmer = new CacheWarmer([__DIR__ . "/Files"], $this->metadataFactory);
         $warmer->warmUp("foo");
     }
 
     public function testWarmUpRecursiveWithInclusion()
     {
-        $metadataFactory = $this->createMock(MetadataFactoryInterface::class);
-        $metadataFactory->expects($this->exactly(1))
+        $this->metadataFactory->expects($this->exactly(1))
             ->method('getMetadataForClass')->with(BarBar::class);
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files/Ba*"], $metadataFactory);
+        $warmer = new CacheWarmer([__DIR__ . "/Files/Ba*"], $this->metadataFactory);
         $warmer->warmUp("foo");
     }
 
     public function testWarmUpRecursiveWithExclusion()
     {
-        $metadataFactory = $this->createMock(MetadataFactoryInterface::class);
-        $metadataFactory->expects($this->exactly(2))
+        $this->metadataFactory->expects($this->exactly(2))
             ->method('getMetadataForClass');
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files"], $metadataFactory, ["Bar"]);
+        $warmer = new CacheWarmer([__DIR__ . "/Files"], $this->metadataFactory, ["Bar"]);
         $warmer->warmUp("foo");
     }
 }
