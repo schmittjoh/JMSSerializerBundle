@@ -53,7 +53,10 @@ class DoctrinePassTest extends TestCase
         $pass = new DoctrinePass();
         $pass->process($container);
 
-        $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$container->getAlias('jms_serializer.object_constructor'));
+        $alias = $container->getAlias('jms_serializer.object_constructor');
+        $this->assertTrue($alias->isPublic());
+
+        $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$alias);
     }
 
     public function testOrm()
@@ -64,7 +67,10 @@ class DoctrinePassTest extends TestCase
         $pass = new DoctrinePass();
         $pass->process($container);
 
-        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$container->getAlias('jms_serializer.object_constructor'));
+        $alias = $container->getAlias('jms_serializer.object_constructor');
+        $this->assertTrue($alias->isPublic());
+
+        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$alias);
     }
 
     public function testOdm()
@@ -75,7 +81,10 @@ class DoctrinePassTest extends TestCase
         $pass = new DoctrinePass();
         $pass->process($container);
 
-        $this->assertEquals('jms_serializer.doctrine_phpcr_object_constructor', (string)$container->getAlias('jms_serializer.object_constructor'));
+        $alias = $container->getAlias('jms_serializer.object_constructor');
+        $this->assertTrue($alias->isPublic());
+
+        $this->assertEquals('jms_serializer.doctrine_phpcr_object_constructor', (string)$alias);
 
         $def = $container->getDefinition('jms_serializer.doctrine_phpcr_object_constructor');
         $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$def->getArgument(1));
@@ -91,7 +100,11 @@ class DoctrinePassTest extends TestCase
         $pass = new DoctrinePass();
         $pass->process($container);
 
-        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$container->getAlias('jms_serializer.object_constructor'));
+
+        $alias = $container->getAlias('jms_serializer.object_constructor');
+        $this->assertTrue($alias->isPublic());
+
+        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$alias);
 
         $def = $container->getDefinition('jms_serializer.doctrine_object_constructor');
         $this->assertEquals('jms_serializer.doctrine_phpcr_object_constructor', (string)$def->getArgument(1));

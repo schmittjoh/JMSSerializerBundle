@@ -186,7 +186,7 @@
             <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
         </service>
         <service id="jms_serializer.unserialize_object_constructor" class="%jms_serializer.unserialize_object_constructor.class%" public="false" />
-        <service id="jms_serializer.object_constructor" alias="jms_serializer.unserialize_object_constructor" public="false" />
+        <service id="jms_serializer.object_constructor" alias="jms_serializer.unserialize_object_constructor" public="true" />
 
         <!-- Serializer -->
         <service id="jms_serializer.serializer" class="%jms_serializer.serializer.class%" public="false">
