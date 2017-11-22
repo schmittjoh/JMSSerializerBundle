@@ -78,7 +78,8 @@
             <argument type="constant">false</argument>
             <tag name="jms_serializer.event_subscriber" />
         </service>
-        <service id="jms_serializer.stopwatch_subscriber" class="%jms_serializer.stopwatch_subscriber.class%">
+
+        <service id="jms_serializer.stopwatch_subscriber" class="%jms_serializer.stopwatch_subscriber.class%" public="true">
             <tag name="jms_serializer.event_subscriber" />
             <argument type="service" id="debug.stopwatch" />
         </service>
