@@ -64,6 +64,8 @@
 
         <parameter key="jms_serializer.accessor_strategy.default.class">JMS\Serializer\Accessor\DefaultAccessorStrategy</parameter>
         <parameter key="jms_serializer.accessor_strategy.expression.class">JMS\Serializer\Accessor\ExpressionAccessorStrategy</parameter>
+
+        <parameter key="jms_serializer.cache.cache_warmer.class">JMS\SerializerBundle\Cache\CacheWarmer</parameter>
     </parameters>
 
     <services>
@@ -285,6 +287,14 @@
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.accessor_strategy"/>
             <tag name="jms_serializer.serialization_visitor" format="yml" />
+        </service>
+
+
+        <service id="jms_serializer.cache.cache_warmer" class="%jms_serializer.cache.cache_warmer.class%" public="false">
+            <argument/> <!-- included dirs -->
+            <argument type="service" id="jms_serializer.metadata_factory"/>
+            <argument/> <!-- excluded dirs -->
+            <tag name="kernel.cache_warmer" />
         </service>
 
         <!-- context factories -->
