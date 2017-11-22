@@ -37,6 +37,7 @@
         "symfony/validator": "*",
         "symfony/stopwatch": "*"
     },
+    "minimum-stability":"rc",
     "suggest": {
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ~1.3"
     },

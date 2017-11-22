@@ -163,7 +163,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             $contextFactory = $container->getDefinition($serviceId);
 
             if (isset($config['default_context'][$configKey]['id'])) {
-                $container->setAlias('jms_serializer.' . $configKey . '_context_factory', $config['default_context'][$configKey]['id']);
+                $container->setAlias('jms_serializer.' . $configKey . '_context_factory', new Alias($config['default_context'][$configKey]['id'], true));
                 $container->removeDefinition($serviceId);
                 continue;
             }

@@ -101,9 +101,14 @@ class JMSSerializerExtensionTest extends TestCase
             )
         );
 
-        $container = $this->getContainerForConfig(array($config), function(ContainerBuilder $containerBuilder){
-            $containerBuilder->setDefinition('foo', new Definition('stdClass'));
-            $containerBuilder->setDefinition('bar', new Definition('stdClass'));
+        $foo = new Definition('stdClass');
+        $foo->setPublic(true);
+        $bar = new Definition('stdClass');
+        $bar->setPublic(true);
+
+        $container = $this->getContainerForConfig(array($config), function (ContainerBuilder $containerBuilder) use ($foo, $bar) {
+            $containerBuilder->setDefinition('foo', $foo);
+            $containerBuilder->setDefinition('bar', $bar);
         });
 
         $def = $container->getDefinition('jms_serializer');
@@ -125,8 +130,9 @@ class JMSSerializerExtensionTest extends TestCase
 
     public function testLoadWithoutTranslator()
     {
-        $container = $this->getContainerForConfig(array(array()), function(ContainerBuilder $containerBuilder){
+        $container = $this->getContainerForConfig(array(array()), function (ContainerBuilder $containerBuilder) {
             $containerBuilder->set('translator', null);
+            $containerBuilder->getDefinition('jms_serializer.form_error_handler')->setPublic(true);
         });
 
         $def = $container->getDefinition('jms_serializer.form_error_handler');
@@ -225,8 +231,10 @@ class JMSSerializerExtensionTest extends TestCase
 
     public function testLoad()
     {
-        $container = $this->getContainerForConfig(array(array()), function(ContainerBuilder $container) {
+        $container = $this->getContainerForConfig(array(array()), function (ContainerBuilder $container) {
             $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
+            $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
             $container->getAlias('JMS\Serializer\SerializerInterface')->setPublic(true);
             $container->getAlias('JMS\Serializer\ArrayTransformerInterface')->setPublic(true);
         });
@@ -275,8 +283,10 @@ class JMSSerializerExtensionTest extends TestCase
                     'initialize_excluded' => true,
                 ],
             ],
-        )), function($container){
+        )), function ($container) {
             $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
+            $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
         });
 
         $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
@@ -299,7 +309,7 @@ class JMSSerializerExtensionTest extends TestCase
                     ]
                 ]
             ]
-        )), function ($container){
+        )), function ($container) {
             $container->getDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
@@ -331,7 +341,9 @@ class JMSSerializerExtensionTest extends TestCase
      */
     public function testJsonVisitorOptions($expectedOptions, $config)
     {
-        $container = $this->getContainerForConfig(array($config));
+        $container = $this->getContainerForConfig(array($config), function ($container) {
+            $container->getDefinition('jms_serializer.json_serialization_visitor')->setPublic(true);
+        });
         $this->assertSame($expectedOptions, $container->get('jms_serializer.json_serialization_visitor')->getOptions());
     }
 
@@ -441,7 +453,9 @@ class JMSSerializerExtensionTest extends TestCase
      */
     public function testXmlVisitorOptions($expectedOptions, $config)
     {
-        $container = $this->getContainerForConfig(array($config));
+        $container = $this->getContainerForConfig(array($config), function ($container) {
+            $container->getDefinition('jms_serializer.xml_deserialization_visitor')->setPublic(true);
+        });
         $this->assertSame($expectedOptions, $container->get('jms_serializer.xml_deserialization_visitor')->getDoctypeWhitelist());
     }
 
@@ -471,14 +485,18 @@ class JMSSerializerExtensionTest extends TestCase
                 )
             )
         );
-        $container = $this->getContainerForConfig(array($config));
+        $container = $this->getContainerForConfig(array($config), function ($container) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')->setPublic(true);
+        });
 
         $this->assertFalse($container->get('jms_serializer.xml_serialization_visitor')->isFormatOutput());
     }
 
     public function testXmlVisitorDefaultValueToFormatOutput()
     {
-        $container = $this->getContainerForConfig(array());
+        $container = $this->getContainerForConfig(array(), function ($container) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')->setPublic(true);
+        });
         $this->assertTrue($container->get('jms_serializer.xml_serialization_visitor')->isFormatOutput());
     }
 
