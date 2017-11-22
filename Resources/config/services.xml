@@ -71,7 +71,9 @@
         <service id="jms_serializer.event_dispatcher" class="%jms_serializer.event_dispatcher.class%" public="false">
             <argument type="service" id="service_container" />
         </service>
-        <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%">
+
+        <!-- some services are intentionally public="true" for performance reasons, lazy initialization -->
+        <service id="jms_serializer.doctrine_proxy_subscriber" class="%jms_serializer.doctrine_proxy_subscriber.class%" public="true">
             <argument type="constant">true</argument>
             <argument type="constant">false</argument>
             <tag name="jms_serializer.event_subscriber" />
@@ -85,21 +87,21 @@
         <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%">
             <argument type="service" id="service_container" />
         </service>
-        <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%">
+        <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="true">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%">
+        <service id="jms_serializer.array_collection_handler" class="%jms_serializer.array_collection_handler.class%" public="true">
             <argument type="constant">false</argument>
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.php_collection_handler" class="%jms_serializer.php_collection_handler.class%">
+        <service id="jms_serializer.php_collection_handler" class="%jms_serializer.php_collection_handler.class%" public="true">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%">
+        <service id="jms_serializer.form_error_handler" class="%jms_serializer.form_error_handler.class%" public="true">
             <argument type="service" id="translator" on-invalid="null" />
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%">
+        <service id="jms_serializer.constraint_violation_handler" class="%jms_serializer.constraint_violation_handler.class%" public="true">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
             
