@@ -1,7 +1,30 @@
 # Change Log
 
-## [2.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.2.0)
+## [2.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.0)
 
+**Implemented enhancements:**
+
+- Cache warmup feature [\#615](https://github.com/schmittjoh/JMSSerializerBundle/pull/615) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Exclude property on serialization, but not on deserialization [\#619](https://github.com/schmittjoh/JMSSerializerBundle/issues/619)
+- Stopwatch Subscriber not found \(SF4\) [\#617](https://github.com/schmittjoh/JMSSerializerBundle/issues/617)
+- Problem deserialize xml with namespace: xmlns="http://www.w3.org/2000/09/xmldsig\#" in tag root [\#613](https://github.com/schmittjoh/JMSSerializerBundle/issues/613)
+- Add support for kernel.cache\_warmer [\#611](https://github.com/schmittjoh/JMSSerializerBundle/issues/611)
+- Symfony 4 - Class 'jms\_serializer.stopwatch\_subscriber' not found [\#610](https://github.com/schmittjoh/JMSSerializerBundle/issues/610)
+- v2.0.0: The "name" property of directories must be given - but must we specify directories? [\#607](https://github.com/schmittjoh/JMSSerializerBundle/issues/607)
+- Add symfony/translation to required bundles [\#606](https://github.com/schmittjoh/JMSSerializerBundle/issues/606)
+- Integrate schmittjoh/serializer\#22 [\#603](https://github.com/schmittjoh/JMSSerializerBundle/issues/603)
+
+**Merged pull requests:**
+
+- make it possible to decorate services [\#620](https://github.com/schmittjoh/JMSSerializerBundle/pull/620) ([xabbuh](https://github.com/xabbuh))
+- support lazily loaded event listeners and handlers [\#618](https://github.com/schmittjoh/JMSSerializerBundle/pull/618) ([xabbuh](https://github.com/xabbuh))
+- Symfony 4 issues with private aliases [\#616](https://github.com/schmittjoh/JMSSerializerBundle/pull/616) ([goetas](https://github.com/goetas))
+- Full Symfony 4 compatibility [\#605](https://github.com/schmittjoh/JMSSerializerBundle/pull/605) ([goetas](https://github.com/goetas))
+
+## [2.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.2.0) (2017-09-29)
 **Implemented enhancements:**
 
 - Injected validator.translation\_domain to FormErrorHandler [\#580](https://github.com/schmittjoh/JMSSerializerBundle/pull/580) ([prosalov](https://github.com/prosalov))
