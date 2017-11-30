@@ -18,7 +18,7 @@ class TwigExtensionPass implements CompilerPassInterface
             return;
         }
 
-        $def = $container->getDefinition('jms_serializer.twig_extension.serializer');
+        $def = $container->findDefinition('jms_serializer.twig_extension.serializer');
         $def->setClass('%jms_serializer.twig_runtime_extension.class%');
         $def->setArguments(array());
     }

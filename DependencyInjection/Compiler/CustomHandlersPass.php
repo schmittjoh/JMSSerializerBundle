@@ -67,7 +67,7 @@ class CustomHandlersPass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('jms_serializer.handler_registry')
+        $container->findDefinition('jms_serializer.handler_registry')
             ->addArgument($handlers);
     }
 }

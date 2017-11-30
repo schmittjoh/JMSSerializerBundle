@@ -48,7 +48,7 @@ class DoctrinePass implements CompilerPassInterface
             foreach ($serviceTemplates as $serviceName => $service) {
                 $id = sprintf($service['template'], $registry);
                 $container
-                    ->getDefinition($id)
+                    ->findDefinition($id)
                     ->replaceArgument($service['position'], new Reference($previousId[$serviceName]));
                 $previousId[$serviceName] = $id;
                 $container->setAlias($serviceName, new Alias($previousId[$serviceName], true));

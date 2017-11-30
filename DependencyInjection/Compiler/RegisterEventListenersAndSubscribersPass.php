@@ -71,7 +71,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $events = call_user_func_array('array_merge', $events);
             }
 
-            $container->getDefinition('jms_serializer.event_dispatcher')
+            $container->findDefinition('jms_serializer.event_dispatcher')
                 ->addMethodCall('setListeners', array($listeners));
         }
     }
