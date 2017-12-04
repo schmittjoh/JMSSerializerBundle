@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -161,7 +162,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container->setParameter('jms_serializer.xml_serialization_visitor.format_output', $config['visitors']['xml']['format_output']);
         $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
 
-        if (!$container->getParameter('kernel.debug')) {
+        if (!$container->getParameter('kernel.debug') || !class_exists(Stopwatch::class)) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 
