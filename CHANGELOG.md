@@ -1,7 +1,17 @@
 # Change Log
 
-## [2.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.0)
+## [2.3.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.1)
 
+**Closed issues:**
+
+- Move `symfony/stopwatch` to `require` instead of `require-dev` [\#624](https://github.com/schmittjoh/JMSSerializerBundle/issues/624)
+- Packagist Issue [\#623](https://github.com/schmittjoh/JMSSerializerBundle/issues/623)
+
+**Merged pull requests:**
+
+- Extension \> Remove stopwatch subscriber when Stopwatch class is not found [\#625](https://github.com/schmittjoh/JMSSerializerBundle/pull/625) ([ruudk](https://github.com/ruudk))
+
+## [2.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.0) (2017-12-01)
 **Implemented enhancements:**
 
 - Cache warmup feature [\#615](https://github.com/schmittjoh/JMSSerializerBundle/pull/615) ([goetas](https://github.com/goetas))
@@ -19,6 +29,8 @@
 
 **Merged pull requests:**
 
+- Update Packagist link [\#622](https://github.com/schmittjoh/JMSSerializerBundle/pull/622) ([thePanz](https://github.com/thePanz))
+- Use stable symfony [\#621](https://github.com/schmittjoh/JMSSerializerBundle/pull/621) ([goetas](https://github.com/goetas))
 - make it possible to decorate services [\#620](https://github.com/schmittjoh/JMSSerializerBundle/pull/620) ([xabbuh](https://github.com/xabbuh))
 - support lazily loaded event listeners and handlers [\#618](https://github.com/schmittjoh/JMSSerializerBundle/pull/618) ([xabbuh](https://github.com/xabbuh))
 - Symfony 4 issues with private aliases [\#616](https://github.com/schmittjoh/JMSSerializerBundle/pull/616) ([goetas](https://github.com/goetas))
