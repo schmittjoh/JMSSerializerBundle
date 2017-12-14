@@ -76,7 +76,7 @@ class CustomHandlersPass implements CompilerPassInterface
 
         if (class_exists(ServiceLocatorTagPass::class)) {
             $serviceLocator = ServiceLocatorTagPass::register($container, $handlerServices);
-            $container->getDefinition('jms_serializer.handler_registry')->replaceArgument(0, $serviceLocator);
+            $container->findDefinition('jms_serializer.handler_registry')->replaceArgument(0, $serviceLocator);
         }
     }
 }
