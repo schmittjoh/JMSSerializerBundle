@@ -87,7 +87,7 @@
         </service>
         
         <!-- Handlers -->
-        <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%">
+        <service id="jms_serializer.handler_registry" class="%jms_serializer.handler_registry.class%" public="true">
             <argument type="service" id="service_container" />
         </service>
         <service id="jms_serializer.datetime_handler" class="%jms_serializer.datetime_handler.class%" public="true">
