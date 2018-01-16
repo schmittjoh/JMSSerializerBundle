@@ -20,6 +20,7 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
@@ -528,6 +529,22 @@ class JMSSerializerExtensionTest extends TestCase
             $container->getDefinition('jms_serializer.xml_serialization_visitor')->setPublic(true);
         });
         $this->assertTrue($container->get('jms_serializer.xml_serialization_visitor')->isFormatOutput());
+    }
+
+    public function testAutoconfigureSubscribers()
+    {
+        $container = $this->getContainerForConfig(array());
+
+        if (!method_exists($container, 'registerForAutoconfiguration')) {
+            $this->markTestSkipped(
+                'registerForAutoconfiguration method is not available in the container'
+            );
+        }
+
+        $autoconfigureInstance = $container->getAutoconfiguredInstanceof();
+
+        $this->assertTrue(array_key_exists(EventSubscriberInterface::class, $autoconfigureInstance));
+        $this->assertTrue($autoconfigureInstance[EventSubscriberInterface::class]->hasTag('jms_serializer.event_subscriber'));
     }
 
     private function getContainerForConfig(array $configs, callable $configurator = null)
