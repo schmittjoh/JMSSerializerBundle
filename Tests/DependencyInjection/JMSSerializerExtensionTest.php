@@ -89,6 +89,23 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$serializationCall[1][0]);
     }
 
+    public function testSerializerIsNotShared()
+    {
+        $unsharedServices = array(
+            'jms_serializer',
+            'jms_serializer.json_serialization_visitor',
+            'jms_serializer.xml_serialization_visitor',
+            'jms_serializer.yaml_serialization_visitor',
+            'jms_serializer.json_deserialization_visitor',
+            'jms_serializer.xml_deserialization_visitor',
+        );
+
+        $container = $this->getContainerForConfig(array(array()));
+        foreach ($unsharedServices as $serviceId) {
+            $this->assertFalse($container->getDefinition($serviceId)->isShared(), $serviceId . ' is not shared');
+        }
+    }
+
     public function testSerializerContextFactoriesWithId()
     {
         $config = array(
