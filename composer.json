@@ -43,7 +43,10 @@
         ]
     },
     "autoload-dev": {
-        "psr-4": { "JMS\\SerializerBundle\\Tests\\": "Tests" }
+        "psr-4": {
+            "JMS\\SerializerBundle\\Tests\\": "Tests",
+            "UserDefined\\Foo\\": "Tests/DependencyInjection/Fixture/UserDefined"
+        }
     },
     "extra": {
         "branch-alias": {
