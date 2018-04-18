@@ -55,10 +55,7 @@ class ServiceMapPass implements CompilerPassInterface, \Serializable
             }
         }
 
-        $def = new Definition('PhpCollection\Map');
-        $def->addArgument($serviceMap);
-
-        call_user_func($this->callable, $container, $def);
+        call_user_func($this->callable, $container, $serviceMap);
     }
 
     public function serialize()

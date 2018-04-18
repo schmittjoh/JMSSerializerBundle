@@ -369,7 +369,7 @@ class JMSSerializerExtensionTest extends TestCase
         if (version_compare(PHP_VERSION, '5.4', '>=')) {
             $configs[] = array(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, array(
                 'visitors' => array(
-                    'json' => array(
+                    'json_serialization' => array(
                         'options' => array('JSON_UNESCAPED_UNICODE', 'JSON_PRETTY_PRINT')
                     )
                 )
@@ -377,7 +377,7 @@ class JMSSerializerExtensionTest extends TestCase
 
             $configs[] = array(JSON_UNESCAPED_UNICODE, array(
                 'visitors' => array(
-                    'json' => array(
+                    'json_serialization' => array(
                         'options' => 'JSON_UNESCAPED_UNICODE'
                     )
                 )
@@ -386,7 +386,7 @@ class JMSSerializerExtensionTest extends TestCase
 
         $configs[] = array(128, array(
             'visitors' => array(
-                'json' => array(
+                'json_serialization' => array(
                     'options' => 128
                 )
             )
@@ -480,7 +480,7 @@ class JMSSerializerExtensionTest extends TestCase
 
         $configs[] = array(array('good document', 'other good document'), array(
             'visitors' => array(
-                'xml' => array(
+                'xml_deserialization' => array(
                     'doctype_whitelist' => array('good document', 'other good document'),
                 )
             )
@@ -495,7 +495,7 @@ class JMSSerializerExtensionTest extends TestCase
     {
         $config = array(
             'visitors' => array(
-                'xml' => array(
+                'xml_serialization' => array(
                     'format_output' => false,
                 )
             )

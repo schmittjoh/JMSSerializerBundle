@@ -1,15 +1,7 @@
 language: php
 
 php:
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
   - 7.2
-
-env:
-  global:
-    - COMPOSER_ROOT_VERSION=2.0.0
 
 sudo: false
 dist: trusty
@@ -21,22 +13,14 @@ cache:
 matrix:
   fast_finish: true
   include:
-    - php: 5.6
-      env: SYMFONY_VERSION='~2.8.0'
-    - php: 5.6
-      env: SYMFONY_VERSION='~3.0.0'
-    - php: 5.6
-      env: SYMFONY_VERSION='~3.4.0'
-    - php: 7.1
-      env: SYMFONY_VERSION='~3.4.0'
-    - php: 7.1
+    - php: 7.2
+      env: SYMFONY_VERSION='~3.4'
+    - php: 7.2
       env: SYMFONY_VERSION='~4.0'
-    - php: 5.5
+    - php: 7.2
       env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
 
 before_script:
-  - if [ "$SYMFONY_VERSION" = "~4.0" ]; then composer config minimum-stability dev; composer config prefer-stable true; fi
-  - echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
   - composer update ${COMPOSER_FLAGS} --no-interaction
 
@@ -44,8 +28,8 @@ script:
   - vendor/bin/phpunit --coverage-clover clover
 
 after_success:
-    - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-    - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then php ocular.phar code-coverage:upload --format=php-clover clover; fi
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover clover
 
 
 
