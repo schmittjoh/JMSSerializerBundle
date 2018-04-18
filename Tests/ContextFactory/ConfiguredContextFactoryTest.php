@@ -49,10 +49,10 @@ class ConfiguredContextFactoryTest extends TestCase
         $this->assertInstanceOf($expectedContextClass, $context);
         $this->assertSame($serializeNulls, $context->shouldSerializeNull());
 
-        $this->assertSame($version, $context->attributes->get('version')->get());
-        $this->assertSame($groups, $context->attributes->get('groups')->get());
+        $this->assertSame($version, $context->getAttribute('version'));
+        $this->assertSame($groups, $context->getAttribute('groups'));
         foreach ($attributes as $k => $v) {
-            $this->assertSame($v, $context->attributes->get($k)->get());
+            $this->assertSame($v, $context->getAttribute($k));
         }
     }
 
