@@ -206,17 +206,17 @@ class JMSSerializerExtension extends ConfigurableExtension
         // json (serialization)
         if (!empty($config['visitors']['json_serialization']['options'])) {
             $container->getDefinition('jms_serializer.json_serialization_visitor')
-                ->addMethodCall('setOptions', [$config['visitors']['json']['options']]);
+                ->addMethodCall('setOptions', [$config['visitors']['json_serialization']['options']]);
         }
         if (!empty($config['visitors']['json_serialization']['depth'])) {
             $container->getDefinition('jms_serializer.json_serialization_visitor')
-                ->addMethodCall('setDepth', [$config['visitors']['json']['depth']]);
+                ->addMethodCall('setDepth', [$config['visitors']['json_serialization']['depth']]);
         }
 
         // json (serialization)
         if (!empty($config['visitors']['json_deserialization']['options'])) {
             $container->getDefinition('jms_serializer.json_deserialization_visitor')
-                ->addMethodCall('setOptions', [$config['visitors']['json']['options']]);
+                ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
         }
 
 
@@ -236,9 +236,9 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
                 ->addMethodCall('setDefaultEncoding', [$config['visitors']['xml_deserialization']['encoding']]);
         }
-        if (!empty($config['visitors']['xml_serialization']['version'])) {
+        if (!empty($config['visitors']['xml_serialization']['format_output'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
-                ->addMethodCall('setFormatOutput', [$config['visitors']['xml_deserialization']['format_output']]);
+                ->addMethodCall('setFormatOutput', [$config['visitors']['xml_serialization']['format_output']]);
         }
 
         // xml (deserialization)
