@@ -54,7 +54,7 @@ class DoctrinePassTest extends TestCase
         $pass->process($container);
 
         $alias = $container->getAlias('jms_serializer.object_constructor');
-        $this->assertTrue($alias->isPublic());
+        $this->assertFalse($alias->isPublic());
 
         $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$alias);
     }
