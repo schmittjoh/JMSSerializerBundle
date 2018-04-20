@@ -9,7 +9,7 @@ following command to download the latest stable version of this bundle:
 
 .. code-block:: bash
 
-    $ composer require jms/serializer-bundle "~0.13"
+    $ composer require jms/serializer-bundle
 
 This command requires you to have Composer installed globally, as explained
 in the `installation chapter <https://getcomposer.org/doc/00-intro.md>`_
