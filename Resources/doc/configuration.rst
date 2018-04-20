@@ -167,54 +167,18 @@ values:
                     enable_max_depth_checks: false
 
             visitors:
-                json:
+                json_serialization:
                     options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
-                xml:
+                    depth: 512
+                json_deserialization:
+                    options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
+                json_serialization:
+                    format_output: false
+                    version: "1.0"
+                    encoding: "UTF-8"
+                    default_root_name: "result"
+                    default_root_ns: null
+                json_deserialization:
+                    external_entities: false
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
-                    format_output: true # suggested false in production
-
-    .. code-block :: xml
-
-        <!-- config.xml -->
-        <jms-serializer>
-            <handlers>
-                <object-based />
-                <datetime
-                    format="Y-mdTH:i:s"
-                    default-timezone="UTC" />
-                <array-collection />
-                <form-error />
-                <constraint-violation />
-            </handlers>
-
-            <property-naming
-                seperator="_"
-                lower-case="true" />
-
-            <metadata
-                cache="file"
-                debug="%kernel.debug%"
-                auto-detection="true">
-
-                <file-cache dir="%kernel.cache_dir%/serializer" />
-
-                <!-- If auto-detection is enabled, mapping files for each bundle will
-                     be expected in the Resources/config/serializer directory.
-
-                     Example:
-                     class: My\FooBundle\Entity\User
-                     expected path: @MyFooBundle/Resources/config/serializer/Entity.User.(yml|xml|php)
-                -->
-                <directory
-                    namespace-prefix="My\FooBundle"
-                    path="@MyFooBundle/Resources/config/serializer" />
-            </metadata>
-
-            <visitors>
-                <xml>
-                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
-                    <whitelisted-doctype><![CDATA[<!DOCTYPE...>]]></whitelisted-doctype>
-                </xml>
-            </visitors>
-        </jms-serializer>
