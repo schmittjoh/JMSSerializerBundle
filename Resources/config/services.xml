@@ -81,7 +81,7 @@
             <argument>jms_serializer.metadata_driver</argument>
         </service>
 
-        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.chain_driver" public="true"/>
+        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.chain_driver" public="false"/>
 
         <!-- Metadata Factory -->
         <service id="jms_serializer.metadata.cache.file_cache" class="Metadata\Cache\FileCache" public="false">
