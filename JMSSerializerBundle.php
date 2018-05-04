@@ -36,12 +36,12 @@ class JMSSerializerBundle extends Bundle
     {
         $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.serialization_visitor', 'format',
             function (ContainerBuilder $container, $def) {
-                $container->getDefinition('jms_serializer.serializer')->replaceArgument(3, $def);
+                $container->getDefinition('jms_serializer.serializer')->replaceArgument(2, $def);
             }
         ));
         $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.deserialization_visitor', 'format',
             function (ContainerBuilder $container, $def) {
-                $container->getDefinition('jms_serializer.serializer')->replaceArgument(4, $def);
+                $container->getDefinition('jms_serializer.serializer')->replaceArgument(3, $def);
             }
         ));
 

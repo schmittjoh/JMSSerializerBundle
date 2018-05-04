@@ -213,7 +213,8 @@ class EventSubscribersAndListenersPassTest extends TestCase
                         [
                             ['my_listener', 'onserializerpreserialize'],
                             'bar',
-                            'json'
+                            'json',
+                            null
                         ]
                     ]], $call[1][0]);
             }
@@ -266,7 +267,8 @@ class EventSubscribersAndListenersPassTest extends TestCase
                         [
                             ['my_subscriber', 'onEventName'],
                             'some-class',
-                            'json'
+                            'json',
+                            null
                         ]
                     ]], $call[1][0]);
             }

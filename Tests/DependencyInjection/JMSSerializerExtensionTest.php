@@ -76,8 +76,8 @@ class JMSSerializerExtensionTest extends TestCase
         $container = $this->getContainerForConfig(array(array()));
 
         $def = $container->getDefinition('jms_serializer');
-        $serializationFactoryArg = $def->getArgument(9);
-        $deSerializationFactoryArg = $def->getArgument(10);
+        $serializationFactoryArg = $def->getArgument(4);
+        $deSerializationFactoryArg = $def->getArgument(5);
 
         $this->assertEquals('jms_serializer.serialization_context_factory', (string)$serializationFactoryArg);
         $this->assertEquals('jms_serializer.deserialization_context_factory', (string)$deSerializationFactoryArg);
@@ -108,8 +108,8 @@ class JMSSerializerExtensionTest extends TestCase
 
         $def = $container->getDefinition('jms_serializer');
 
-        $serializationFactoryArg = $def->getArgument(9);
-        $deSerializationFactoryArg = $def->getArgument(10);
+        $serializationFactoryArg = $def->getArgument(4);
+        $deSerializationFactoryArg = $def->getArgument(5);
 
         $this->assertEquals('foo', (string)$serializationFactoryArg);
         $this->assertEquals('bar', (string)$deSerializationFactoryArg);

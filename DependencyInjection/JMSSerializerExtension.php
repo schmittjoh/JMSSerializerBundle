@@ -75,15 +75,19 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         if (!empty($config['expression_evaluator']['id'])) {
             $container
-                ->getDefinition('jms_serializer.serializer')
-                ->replaceArgument(8, new Reference($config['expression_evaluator']['id']));
+                ->getDefinition('jms_serializer.deserialization_graph_navigator_factory')
+                ->replaceArgument(5, new Reference($config['expression_evaluator']['id']));
 
             $container
-                ->setAlias('jms_serializer.accessor_strategy', 'jms_serializer.accessor_strategy.expression');
+                ->getDefinition('jms_serializer.serialization_graph_navigator_factory')
+                ->replaceArgument(4, new Reference($config['expression_evaluator']['id']));
+
+            $container
+                ->getDefinition('jms_serializer.accessor_strategy.default')
+                ->setArgument(0, new Reference($config['expression_evaluator']['id']));
 
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
-            $container->removeDefinition('jms_serializer.accessor_strategy.expression');
         }
 
         // metadata
