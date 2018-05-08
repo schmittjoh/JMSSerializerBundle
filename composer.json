@@ -43,7 +43,9 @@
         ]
     },
     "autoload-dev": {
-        "psr-4": { "JMS\\SerializerBundle\\Tests\\": "Tests" }
+        "psr-4": {
+            "JMS\\SerializerBundle\\Tests\\": "Tests"
+        }
     },
     "extra": {
         "branch-alias": {

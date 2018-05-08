@@ -158,6 +158,72 @@ class CustomHandlerPassTest extends TestCase
         $pass->process($container);
     }
 
+    public function testHandlerMustPrioritizeUserDefined()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\Serializer\Foo');
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+        ]);
+        $container->setDefinition('my_service', $def);
+
+        $userDef = new Definition('Bar');
+        $userDef->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+        ]);
+        $container->setDefinition('my_custom_service', $userDef);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertSame([
+            2 => ['DateTime' => ['json' => ['my_custom_service', 'deserializeDateTimeFromjson']]],
+            1 => ['DateTime' => ['json' => ['my_custom_service', 'serializeDateTimeTojson']]]
+        ], $args[1]);
+    }
+
+    public function testHandlerMustRespectPriorities()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\Serializer\Foo');
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+        ]);
+        $container->setDefinition('my_service', $def);
+
+        $userDef = new Definition('Bar');
+        $userDef->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+        ]);
+        $container->setDefinition('my_custom_service', $userDef);
+
+        $userExplicitDef = new Definition('Baz');
+        $userExplicitDef->addTag('jms_serializer.handler', [
+            'type' => 'DateTime',
+            'format' => 'json',
+            'priority' => -100
+        ]);
+        $container->setDefinition('my_custom_explicit_service', $userExplicitDef);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertSame([
+          2 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'deserializeDateTimeFromjson']]],
+          1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'serializeDateTimeTojson']]]
+        ], $args[1]);
+    }
+
     public function testSubscribingHandler()
     {
         $container = $this->getContainer();
@@ -210,4 +276,53 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
     }
+
+    public function testSubscribingHandlerMustPrioritizeUserDefined()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SubscribingHandler');
+        $def->addTag('jms_serializer.subscribing_handler');
+        $container->setDefinition('my_service', $def);
+
+        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userDef->addTag('jms_serializer.subscribing_handler');
+        $container->setDefinition('my_custom_service', $userDef);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertSame([
+            1 => ['DateTime' => ['json' => ['my_custom_service', 'onDateTime']]]
+        ], $args[1]);
+    }
+
+    public function testSubscribingHandlerMustRespectPriorities()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SubscribingHandler');
+        $def->addTag('jms_serializer.subscribing_handler');
+        $container->setDefinition('my_service', $def);
+
+        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userDef->addTag('jms_serializer.subscribing_handler');
+        $container->setDefinition('my_custom_service', $userDef);
+
+        $userExplicitDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userExplicitDef->addTag('jms_serializer.subscribing_handler', ['priority' => -100]);
+        $container->setDefinition('my_custom_explicit_service', $userExplicitDef);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertSame([
+            1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'onDateTime']]]
+        ], $args[1]);
+    }
+
 }

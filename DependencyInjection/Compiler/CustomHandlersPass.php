@@ -15,8 +15,11 @@ class CustomHandlersPass implements CompilerPassInterface
     {
         $handlers = array();
         $handlerServices = array();
-        foreach ($container->findTaggedServiceIds('jms_serializer.handler') as $id => $tags) {
-            foreach ($tags as $attrs) {
+        foreach ($this->findAndSortTaggedServices('jms_serializer.handler', $container) as $reference) {
+            $id = (string)$reference;
+            $definition = $container->getDefinition($id);
+            foreach ($definition->getTags() as $serviceTags) {
+                $attrs = $serviceTags[0];
                 if (!isset($attrs['type'], $attrs['format'])) {
                     throw new \RuntimeException(sprintf('Each tag named "jms_serializer.handler" of service "%s" must have at least two attributes: "type" and "format".', $id));
                 }
@@ -32,18 +35,20 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($attrs['method']) ? $attrs['method'] : HandlerRegistry::getDefaultMethod($direction, $attrs['type'], $attrs['format']);
-                    if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
-                        $handlerServices[$id] = new Reference($id);
+                    if (class_exists(ServiceLocatorTagPass::class) || $definition->isPublic()) {
+                        $handlerServices[$id] = $reference;
                         $handlers[$direction][$attrs['type']][$attrs['format']] = array($id, $method);
                     } else {
-                        $handlers[$direction][$attrs['type']][$attrs['format']] = array(new Reference($id), $method);
+                        $handlers[$direction][$attrs['type']][$attrs['format']] = array($reference, $method);
                     }
                 }
             }
         }
 
-        foreach ($container->findTaggedServiceIds('jms_serializer.subscribing_handler') as $id => $tags) {
-            $class = $container->getDefinition($id)->getClass();
+        foreach ($this->findAndSortTaggedServices('jms_serializer.subscribing_handler', $container) as $reference) {
+            $id = (string)$reference;
+            $definition = $container->getDefinition($id);
+            $class = $definition->getClass();
             $ref = new \ReflectionClass($class);
             if (!$ref->implementsInterface('JMS\Serializer\Handler\SubscribingHandlerInterface')) {
                 throw new \RuntimeException(sprintf('The service "%s" must implement the SubscribingHandlerInterface.', $id));
@@ -61,22 +66,47 @@ class CustomHandlersPass implements CompilerPassInterface
 
                 foreach ($directions as $direction) {
                     $method = isset($methodData['method']) ? $methodData['method'] : HandlerRegistry::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
-                    if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
-                        $handlerServices[$id] = new Reference($id);
+                    if (class_exists(ServiceLocatorTagPass::class) || $definition->isPublic()) {
+                        $handlerServices[$id] = $reference;
                         $handlers[$direction][$methodData['type']][$methodData['format']] = array($id, $method);
                     } else {
-                        $handlers[$direction][$methodData['type']][$methodData['format']] = array(new Reference($id), $method);
+                        $handlers[$direction][$methodData['type']][$methodData['format']] = array($reference, $method);
                     }
                 }
             }
         }
 
-        $container->findDefinition('jms_serializer.handler_registry')
-            ->addArgument($handlers);
+        $container->findDefinition('jms_serializer.handler_registry')->addArgument($handlers);
 
         if (class_exists(ServiceLocatorTagPass::class)) {
             $serviceLocator = ServiceLocatorTagPass::register($container, $handlerServices);
             $container->findDefinition('jms_serializer.handler_registry')->replaceArgument(0, $serviceLocator);
         }
+    }
+
+    /**
+     * Finds all services with the given tag name and order them by their priority.
+     *
+     * @param string           $tagName
+     * @param ContainerBuilder $container
+     *
+     * @return Reference[]
+     */
+    private function findAndSortTaggedServices($tagName, ContainerBuilder $container)
+    {
+        $services = array();
+
+        foreach ($container->findTaggedServiceIds($tagName, true) as $serviceId => $attributes) {
+            $priority = isset($attributes[0]['priority']) ? intval($attributes[0]['priority']) : 0;
+
+            $services[$priority][] = new Reference($serviceId);
+        }
+
+        if ($services) {
+            krsort($services);
+            $services = call_user_func_array('array_merge', $services);
+        }
+
+        return $services;
     }
 }
