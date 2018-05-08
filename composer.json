@@ -44,8 +44,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "JMS\\SerializerBundle\\Tests\\": "Tests",
-            "UserDefined\\Foo\\": "Tests/DependencyInjection/Fixture/UserDefined"
+            "JMS\\SerializerBundle\\Tests\\": "Tests"
         }
     },
     "extra": {

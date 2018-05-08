@@ -285,7 +285,7 @@ class CustomHandlerPassTest extends TestCase
         $def->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_service', $def);
 
-        $userDef = new Definition('UserDefined\Foo\UserDefinedSubscribingHandler');
+        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
         $userDef->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_custom_service', $userDef);
 
@@ -307,11 +307,11 @@ class CustomHandlerPassTest extends TestCase
         $def->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_service', $def);
 
-        $userDef = new Definition('UserDefined\Foo\UserDefinedSubscribingHandler');
+        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
         $userDef->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_custom_service', $userDef);
 
-        $userExplicitDef = new Definition('UserDefined\Foo\UserDefinedSubscribingHandler');
+        $userExplicitDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
         $userExplicitDef->addTag('jms_serializer.subscribing_handler', ['priority' => -100]);
         $container->setDefinition('my_custom_explicit_service', $userExplicitDef);
 

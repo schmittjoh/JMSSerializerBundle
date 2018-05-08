@@ -87,15 +87,6 @@ class CustomHandlersPass implements CompilerPassInterface
     /**
      * Finds all services with the given tag name and order them by their priority.
      *
-     * The order of additions must be respected for services having the same priority,
-     * and knowing that the \SplPriorityQueue class does not respect the FIFO method,
-     * we should not use that class.
-     *
-     * Original author is Iltar van der Berg <kjarli@gmail.com>
-     *
-     * @see https://bugs.php.net/bug.php?id=53710
-     * @see https://bugs.php.net/bug.php?id=60926
-     *
      * @param string           $tagName
      * @param ContainerBuilder $container
      *
@@ -106,14 +97,7 @@ class CustomHandlersPass implements CompilerPassInterface
         $services = array();
 
         foreach ($container->findTaggedServiceIds($tagName, true) as $serviceId => $attributes) {
-            $definition = $container->getDefinition($serviceId);
-
-            if (!isset($attributes[0]['priority'])) {
-                $class = $definition->getClass();
-                $priority = strpos($class, 'JMS\Serializer') === 0 ? 100 : 0;
-            } else {
-                $priority = $attributes[0]['priority'];
-            }
+            $priority = isset($attributes[0]['priority']) ? intval($attributes[0]['priority']) : 0;
 
             $services[$priority][] = new Reference($serviceId);
         }
