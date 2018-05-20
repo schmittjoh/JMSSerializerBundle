@@ -1,7 +1,40 @@
 # Change Log
 
-## [2.3.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.1)
+## [2.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.0)  (2018-05-20)
 
+**Implemented enhancements:**
+
+- Proposal: Add priorities feature to handlers [\#645](https://github.com/schmittjoh/JMSSerializerBundle/pull/645) ([adiq](https://github.com/adiq))
+
+**Closed issues:**
+
+- Adding incrementing counter to each item in collection [\#653](https://github.com/schmittjoh/JMSSerializerBundle/issues/653)
+- JMSSerializerBundle configuration Metadata \(2\) [\#650](https://github.com/schmittjoh/JMSSerializerBundle/issues/650)
+- Without CDATA and without escaping [\#649](https://github.com/schmittjoh/JMSSerializerBundle/issues/649)
+- JMS Serializer add groups by some condition [\#646](https://github.com/schmittjoh/JMSSerializerBundle/issues/646)
+- Serializer ignores criteria query [\#643](https://github.com/schmittjoh/JMSSerializerBundle/issues/643)
+- Unable to override default handlers in Symfony 4 [\#642](https://github.com/schmittjoh/JMSSerializerBundle/issues/642)
+- Custom handle registration not compatible with Symfony 3.3+ [\#641](https://github.com/schmittjoh/JMSSerializerBundle/issues/641)
+- jms\_serializer directory in cache is not writable [\#640](https://github.com/schmittjoh/JMSSerializerBundle/issues/640)
+- Inheritance overriding ? [\#639](https://github.com/schmittjoh/JMSSerializerBundle/issues/639)
+- Problem with version 1.2.0 and library JMS\Serializer [\#636](https://github.com/schmittjoh/JMSSerializerBundle/issues/636)
+- Symfony 3.4 - jms\_serializer.json\_deserialization\_visitor service is private [\#632](https://github.com/schmittjoh/JMSSerializerBundle/issues/632)
+- DateTime custom handler not working [\#631](https://github.com/schmittjoh/JMSSerializerBundle/issues/631)
+- readOnly annotation with groups [\#628](https://github.com/schmittjoh/JMSSerializerBundle/issues/628)
+- Tag v2.3.1 [\#627](https://github.com/schmittjoh/JMSSerializerBundle/issues/627)
+- Subscribing Handler not used \(FOSRestBundle: ExceptionHandler\) [\#626](https://github.com/schmittjoh/JMSSerializerBundle/issues/626)
+- XML mapping doesn't map XmlKeyValuePairs but works for JSON [\#521](https://github.com/schmittjoh/JMSSerializerBundle/issues/521)
+- Mapping random key-value pair of XML payload in Symfony2 [\#470](https://github.com/schmittjoh/JMSSerializerBundle/issues/470)
+- Overwrite FormHandler [\#466](https://github.com/schmittjoh/JMSSerializerBundle/issues/466)
+
+**Merged pull requests:**
+
+- Update .travis.yml [\#637](https://github.com/schmittjoh/JMSSerializerBundle/pull/637) ([andreybolonin](https://github.com/andreybolonin))
+- make serializer/deserializer visitor services public [\#635](https://github.com/schmittjoh/JMSSerializerBundle/pull/635) ([bgarel](https://github.com/bgarel))
+- Add autoconfigure feature for sf =\> 3.3 [\#633](https://github.com/schmittjoh/JMSSerializerBundle/pull/633) ([juntereiner](https://github.com/juntereiner))
+- drop getDefinition\(\) in favor of findDefinition\(\) [\#630](https://github.com/schmittjoh/JMSSerializerBundle/pull/630) ([xabbuh](https://github.com/xabbuh))
+
+## [2.3.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.3.1) (2017-12-08)
 **Closed issues:**
 
 - Move `symfony/stopwatch` to `require` instead of `require-dev` [\#624](https://github.com/schmittjoh/JMSSerializerBundle/issues/624)
@@ -23,6 +56,7 @@
 - Problem deserialize xml with namespace: xmlns="http://www.w3.org/2000/09/xmldsig\#" in tag root [\#613](https://github.com/schmittjoh/JMSSerializerBundle/issues/613)
 - Add support for kernel.cache\_warmer [\#611](https://github.com/schmittjoh/JMSSerializerBundle/issues/611)
 - Symfony 4 - Class 'jms\_serializer.stopwatch\_subscriber' not found [\#610](https://github.com/schmittjoh/JMSSerializerBundle/issues/610)
+- Error You must define a type for  [\#609](https://github.com/schmittjoh/JMSSerializerBundle/issues/609)
 - v2.0.0: The "name" property of directories must be given - but must we specify directories? [\#607](https://github.com/schmittjoh/JMSSerializerBundle/issues/607)
 - Add symfony/translation to required bundles [\#606](https://github.com/schmittjoh/JMSSerializerBundle/issues/606)
 - Integrate schmittjoh/serializer\#22 [\#603](https://github.com/schmittjoh/JMSSerializerBundle/issues/603)
@@ -64,6 +98,7 @@
 
 **Closed issues:**
 
+- Parent Class Exclude Problem [\#600](https://github.com/schmittjoh/JMSSerializerBundle/issues/600)
 - Gedmo Unrecognized field: createdAt - Error! [\#599](https://github.com/schmittjoh/JMSSerializerBundle/issues/599)
 - Array deserialization problem [\#597](https://github.com/schmittjoh/JMSSerializerBundle/issues/597)
 - Integrate JMSSerializer into Symfony PropertyInfo? [\#591](https://github.com/schmittjoh/JMSSerializerBundle/issues/591)
@@ -71,7 +106,11 @@
 - Can't use symfony serializer when requesting the id "serializer" [\#583](https://github.com/schmittjoh/JMSSerializerBundle/issues/583)
 - XML Collection names and null values [\#581](https://github.com/schmittjoh/JMSSerializerBundle/issues/581)
 - Not work for Symfony 3.3? [\#579](https://github.com/schmittjoh/JMSSerializerBundle/issues/579)
+- What are the 2.0 options default values changes about? [\#578](https://github.com/schmittjoh/JMSSerializerBundle/issues/578)
 - possible to register a handler that will compare against abstract classes [\#577](https://github.com/schmittjoh/JMSSerializerBundle/issues/577)
+- DoctrineObjectConstructor when load an existing entity [\#575](https://github.com/schmittjoh/JMSSerializerBundle/issues/575)
+- \[Question\] Is serialize\(\) use adders ? [\#574](https://github.com/schmittjoh/JMSSerializerBundle/issues/574)
+- Pagerfanta and Groups possible bug [\#485](https://github.com/schmittjoh/JMSSerializerBundle/issues/485)
 
 **Merged pull requests:**
 
@@ -86,6 +125,9 @@
 ## [2.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.0.0) (2017-05-17)
 **Closed issues:**
 
+- Serialize to xml : nested objects in single class [\#573](https://github.com/schmittjoh/JMSSerializerBundle/issues/573)
+- \[Question\] DeserializedName ? [\#572](https://github.com/schmittjoh/JMSSerializerBundle/issues/572)
+- JMSSerializerBundle 2.0 minimum requirements [\#561](https://github.com/schmittjoh/JMSSerializerBundle/issues/561)
 - Remove short "serializer" alias [\#558](https://github.com/schmittjoh/JMSSerializerBundle/issues/558)
 - Check for broken serialization metadata mappings [\#534](https://github.com/schmittjoh/JMSSerializerBundle/issues/534)
 - Serializing traits with JMSSerializer and YAML [\#424](https://github.com/schmittjoh/JMSSerializerBundle/issues/424)
@@ -114,6 +156,7 @@
 - Can't override third party serializer config file [\#511](https://github.com/schmittjoh/JMSSerializerBundle/issues/511)
 - registering callback with a specific class name doesn't work . [\#508](https://github.com/schmittjoh/JMSSerializerBundle/issues/508)
 - change serialized name of a property when it is in a specific group [\#457](https://github.com/schmittjoh/JMSSerializerBundle/issues/457)
+- Is it possible to prevent type casting of deserialize method? [\#448](https://github.com/schmittjoh/JMSSerializerBundle/issues/448)
 - Serializing stdClass with arbitrary depth [\#414](https://github.com/schmittjoh/JMSSerializerBundle/issues/414)
 - Usage of @Groups [\#382](https://github.com/schmittjoh/JMSSerializerBundle/issues/382)
 - Serializing a stdClass [\#158](https://github.com/schmittjoh/JMSSerializerBundle/issues/158)
@@ -127,6 +170,7 @@
 ## [1.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/1.4.0) (2017-04-10)
 **Closed issues:**
 
+- Serialize one to many relationship object [\#528](https://github.com/schmittjoh/JMSSerializerBundle/issues/528)
 - Document how to prevent JMS serializer from overriding Symfony serializer [\#513](https://github.com/schmittjoh/JMSSerializerBundle/issues/513)
 - AccessorOrder : properties vs virtualProperty [\#512](https://github.com/schmittjoh/JMSSerializerBundle/issues/512)
 - Specify @Serializer/Group for @Discriminator field  [\#506](https://github.com/schmittjoh/JMSSerializerBundle/issues/506)
