@@ -92,9 +92,15 @@ class CustomHandlersPass implements CompilerPassInterface
 
     private function sortAndFlattenHandlersList(array $allHandlers)
     {
-        uasort($allHandlers, function ($a, $b) {
-            return $b[3] ==  $a[3] ? 0 : ($b[3] >  $a[3] ? 1 : -1);
-        });
+        $sorter = function ($a, $b) {
+            return $b[3] == $a[3] ? 0 : ($b[3] > $a[3] ? 1 : -1);
+        };
+        // php 7 sorting is stable, while php 5 is not, and we need it stable to have consistent tests
+        if (PHP_MAJOR_VERSION < 7) {
+            self::stable_uasort($allHandlers, $sorter);
+        } else {
+            uasort($allHandlers, $sorter);
+        }
         $handlers = [];
         foreach ($allHandlers as $handler) {
             list ($direction, $type, $format, $priority, $service, $method) = $handler;
@@ -102,5 +108,28 @@ class CustomHandlersPass implements CompilerPassInterface
         }
 
         return $handlers;
+    }
+
+    /**
+     * Performs stable sorting. Copied from http://php.net/manual/en/function.uasort.php#121283
+     *
+     * @param array $array
+     * @param $value_compare_func
+     * @return bool
+     */
+    private static function stable_uasort(array &$array, $value_compare_func)
+    {
+        $index = 0;
+        foreach ($array as &$item) {
+            $item = array($index++, $item);
+        }
+        $result = uasort($array, function ($a, $b) use ($value_compare_func) {
+            $result = call_user_func($value_compare_func, $a[1], $b[1]);
+            return $result == 0 ? $a[0] - $b[0] : $result;
+        });
+        foreach ($array as &$item) {
+            $item = $item[1];
+        }
+        return $result;
     }
 }
