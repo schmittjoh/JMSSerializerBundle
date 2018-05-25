@@ -1,7 +1,21 @@
 # Change Log
 
-## [2.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.0)  (2018-05-20)
+## [2.4.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.1) (2018-05-25)
 
+**Fixed bugs:**
+
+- Can not register custom handler for multiple types since \#645 [\#656](https://github.com/schmittjoh/JMSSerializerBundle/issues/656)
+- Fix serialization handler registration by priority [\#658](https://github.com/schmittjoh/JMSSerializerBundle/pull/658) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- JMSSerializerBundle and propel [\#537](https://github.com/schmittjoh/JMSSerializerBundle/issues/537)
+
+**Merged pull requests:**
+
+- Fix serialization handler registration by priority [\#657](https://github.com/schmittjoh/JMSSerializerBundle/pull/657) ([discordier](https://github.com/discordier))
+
+## [2.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.0) (2018-05-20)
 **Implemented enhancements:**
 
 - Proposal: Add priorities feature to handlers [\#645](https://github.com/schmittjoh/JMSSerializerBundle/pull/645) ([adiq](https://github.com/adiq))
