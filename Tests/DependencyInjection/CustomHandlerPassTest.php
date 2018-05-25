@@ -224,6 +224,54 @@ class CustomHandlerPassTest extends TestCase
         ], $args[1]);
     }
 
+    public function testHandlerCanBeRegisteredForMultipleTypesOrDirections()
+    {
+        $container = $this->getContainer();
+
+        $def = new Definition('JMS\Serializer\Foo');
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'Custom',
+            'direction' => 'serialization',
+            'format' => 'json',
+            'method' => 'serialize',
+        ]);
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'Custom',
+            'direction' => 'deserialization',
+            'format' => 'json',
+            'method' => 'deserialize',
+        ]);
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'Custom<?>',
+            'direction' => 'serialization',
+            'format' => 'json',
+            'method' => 'serialize',
+        ]);
+        $def->addTag('jms_serializer.handler', [
+            'type' => 'Custom<?>',
+            'direction' => 'deserialization',
+            'format' => 'json',
+            'method' => 'deserialize',
+        ]);
+        $container->setDefinition('my_service', $def);
+
+        $pass = new CustomHandlersPass();
+        $pass->process($container);
+
+        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+
+        $this->assertSame([
+            1 => [
+                'Custom' => ['json' => ['my_service', 'serialize']],
+                'Custom<?>' => ['json' => ['my_service', 'serialize']],
+            ],
+            2 => [
+                'Custom' => ['json' => ['my_service', 'deserialize']],
+                'Custom<?>' => ['json' => ['my_service', 'deserialize']],
+            ]
+        ], $args[1]);
+    }
+
     public function testSubscribingHandler()
     {
         $container = $this->getContainer();
