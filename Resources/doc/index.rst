@@ -54,11 +54,11 @@ Learn more in the `documentation for the dedicated library <http://jmsyst.com/li
 License
 -------
 
-The code is released under the business-friendly `Apache2 license`_. 
+The code is released under the `MIT license`_.
 
 Documentation is subject to the `Attribution-NonCommercial-NoDerivs 3.0 Unported
 license`_.
 
-.. _Apache2 license: http://www.apache.org/licenses/LICENSE-2.0.html
+.. _MIT license: https://opensource.org/licenses/MIT
 .. _Attribution-NonCommercial-NoDerivs 3.0 Unported license: http://creativecommons.org/licenses/by-nc-nd/3.0/
 
