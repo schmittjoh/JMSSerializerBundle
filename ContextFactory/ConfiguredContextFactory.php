@@ -88,7 +88,7 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
     /**
      * @inheritDoc
      */
-    public function createDeserializationContext()
+    public function createDeserializationContext(): DeserializationContext
     {
         return $this->configureContext(new DeserializationContext());
     }
@@ -96,7 +96,7 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
     /**
      * @inheritDoc
      */
-    public function createSerializationContext()
+    public function createSerializationContext(): SerializationContext
     {
         return $this->configureContext(new SerializationContext());
     }

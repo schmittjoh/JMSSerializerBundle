@@ -56,12 +56,13 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $format = isset($eventData['format']) ? $eventData['format'] : null;
                 $method = isset($eventData['method']) ? $eventData['method'] : EventDispatcher::getDefaultMethodName($eventData['event']);
                 $priority = isset($eventData['priority']) ? (integer)$eventData['priority'] : 0;
+                $interface = isset($eventData['interface']) ? $eventData['interface'] : null;
 
                 if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
                     $listenerServices[$id] = new Reference($id);
-                    $listeners[$eventData['event']][$priority][] = array(array($id, $method), $class, $format);
+                    $listeners[$eventData['event']][$priority][] = array(array($id, $method), $class, $format, $interface);
                 } else {
-                    $listeners[$eventData['event']][$priority][] = array(array(new Reference($id), $method), $class, $format);
+                    $listeners[$eventData['event']][$priority][] = array(array(new Reference($id), $method), $class, $format, $interface);
                 }
             }
         }

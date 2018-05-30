@@ -55,26 +55,23 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
         }
 
-        if ($config['property_naming']['enable_cache']) {
-            $container
-                ->getDefinition('jms_serializer.cache_naming_strategy')
-                ->addArgument(new Reference((string)$container->getAlias('jms_serializer.naming_strategy')));
-            $container->setAlias('jms_serializer.naming_strategy', 'jms_serializer.cache_naming_strategy');
-        }
-
         $bundles = $container->getParameter('kernel.bundles');
 
         if (!empty($config['expression_evaluator']['id'])) {
             $container
-                ->getDefinition('jms_serializer.serializer')
-                ->replaceArgument(7, new Reference($config['expression_evaluator']['id']));
+                ->getDefinition('jms_serializer.deserialization_graph_navigator_factory')
+                ->replaceArgument(5, new Reference($config['expression_evaluator']['id']));
 
             $container
-                ->setAlias('jms_serializer.accessor_strategy', 'jms_serializer.accessor_strategy.expression');
+                ->getDefinition('jms_serializer.serialization_graph_navigator_factory')
+                ->replaceArgument(4, new Reference($config['expression_evaluator']['id']));
+
+            $container
+                ->getDefinition('jms_serializer.accessor_strategy.default')
+                ->setArgument(0, new Reference($config['expression_evaluator']['id']));
 
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
-            $container->removeDefinition('jms_serializer.accessor_strategy.expression');
         }
 
         // metadata
@@ -149,9 +146,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
 
-        $container->setParameter('jms_serializer.xml_deserialization_visitor.doctype_whitelist', $config['visitors']['xml']['doctype_whitelist']);
-        $container->setParameter('jms_serializer.xml_serialization_visitor.format_output', $config['visitors']['xml']['format_output']);
-        $container->setParameter('jms_serializer.json_serialization_visitor.options', $config['visitors']['json']['options']);
+        $this->setVisitorOptions($config, $container);
 
         if (!$container->getParameter('kernel.debug') || !class_exists(Stopwatch::class)) {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
@@ -192,5 +187,56 @@ class JMSSerializerExtension extends ConfigurableExtension
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
+    }
+
+    private function setVisitorOptions(array $config, ContainerBuilder $container): void
+    {
+        // json (serialization)
+        if (!empty($config['visitors']['json_serialization']['options'])) {
+            $container->getDefinition('jms_serializer.json_serialization_visitor')
+                ->addMethodCall('setOptions', [$config['visitors']['json_serialization']['options']]);
+        }
+        if (!empty($config['visitors']['json_serialization']['depth'])) {
+            $container->getDefinition('jms_serializer.json_serialization_visitor')
+                ->addMethodCall('setDepth', [$config['visitors']['json_serialization']['depth']]);
+        }
+
+        // json (serialization)
+        if (!empty($config['visitors']['json_deserialization']['options'])) {
+            $container->getDefinition('jms_serializer.json_deserialization_visitor')
+                ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
+        }
+
+
+        // xml (serialization)
+        if (!empty($config['visitors']['xml_serialization']['default_root_name'])) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')
+                ->addMethodCall('setDefaultRootName', [
+                    $config['visitors']['xml_serialization']['default_root_name'],
+                    $config['visitors']['xml_serialization']['default_root_ns'],
+                ]);
+        }
+        if (!empty($config['visitors']['xml_serialization']['version'])) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')
+                ->addMethodCall('setDefaultVersion', [$config['visitors']['xml_serialization']['version']]);
+        }
+        if (!empty($config['visitors']['xml_serialization']['encoding'])) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')
+                ->addMethodCall('setDefaultEncoding', [$config['visitors']['xml_deserialization']['encoding']]);
+        }
+        if (!empty($config['visitors']['xml_serialization']['format_output'])) {
+            $container->getDefinition('jms_serializer.xml_serialization_visitor')
+                ->addMethodCall('setFormatOutput', [$config['visitors']['xml_serialization']['format_output']]);
+        }
+
+        // xml (deserialization)
+        if (!empty($config['visitors']['xml_deserialization']['doctype_whitelist'])) {
+            $container->getDefinition('jms_serializer.xml_deserialization_visitor')
+                ->addMethodCall('setDoctypeWhitelist', [$config['visitors']['xml_deserialization']['doctype_whitelist']]);
+        }
+        if (!empty($config['visitors']['xml_deserialization']['external_entities'])) {
+            $container->getDefinition('jms_serializer.xml_deserialization_visitor')
+                ->addMethodCall('enableExternalEntities', [$config['visitors']['xml_deserialization']['external_entities']]);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
@@ -21,9 +21,9 @@ class CustomHandlersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('Each tag named "jms_serializer.handler" of service "%s" must have at least two attributes: "type" and "format".', $id));
                 }
 
-                $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
+                $directions = array(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION);
                 if (isset($attrs['direction'])) {
-                    if (!defined($directionConstant = 'JMS\Serializer\GraphNavigator::DIRECTION_' . strtoupper($attrs['direction']))) {
+                    if (!defined($directionConstant = 'JMS\Serializer\GraphNavigatorInterface::DIRECTION_' . strtoupper($attrs['direction']))) {
                         throw new \RuntimeException(sprintf('The direction "%s" of tag "jms_serializer.handler" of service "%s" does not exist.', $attrs['direction'], $id));
                     }
 
@@ -59,7 +59,7 @@ class CustomHandlersPass implements CompilerPassInterface
                     throw new \RuntimeException(sprintf('Each method returned from getSubscribingMethods of service "%s" must have a "type", and "format" attribute.', $id));
                 }
 
-                $directions = array(GraphNavigator::DIRECTION_DESERIALIZATION, GraphNavigator::DIRECTION_SERIALIZATION);
+                $directions = array(GraphNavigatorInterface::DIRECTION_DESERIALIZATION, GraphNavigatorInterface::DIRECTION_SERIALIZATION);
                 if (isset($methodData['direction'])) {
                     $directions = array($methodData['direction']);
                 }
