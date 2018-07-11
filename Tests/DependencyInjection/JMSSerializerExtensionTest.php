@@ -3,6 +3,7 @@
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\SerializerBundle\JMSSerializerBundle;
@@ -529,6 +530,22 @@ class JMSSerializerExtensionTest extends TestCase
 
         $this->assertTrue(array_key_exists(EventSubscriberInterface::class, $autoconfigureInstance));
         $this->assertTrue($autoconfigureInstance[EventSubscriberInterface::class]->hasTag('jms_serializer.event_subscriber'));
+    }
+
+    public function testAutoconfigureHandlers()
+    {
+        $container = $this->getContainerForConfig(array());
+
+        if (!method_exists($container, 'registerForAutoconfiguration')) {
+            $this->markTestSkipped(
+                'registerForAutoconfiguration method is not available in the container'
+            );
+        }
+
+        $autoconfigureInstance = $container->getAutoconfiguredInstanceof();
+
+        $this->assertTrue(array_key_exists(SubscribingHandlerInterface::class, $autoconfigureInstance));
+        $this->assertTrue($autoconfigureInstance[SubscribingHandlerInterface::class]->hasTag('jms_serializer.subscribing_handler'));
     }
 
     private function getContainerForConfig(array $configs, callable $configurator = null)

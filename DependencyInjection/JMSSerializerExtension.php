@@ -4,6 +4,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,6 +22,10 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container
                 ->registerForAutoconfiguration(EventSubscriberInterface::class)
                 ->addTag('jms_serializer.event_subscriber');
+
+            $container
+                ->registerForAutoconfiguration(SubscribingHandlerInterface::class)
+                ->addTag('jms_serializer.subscribing_handler');
         }
 
         $loader = new XmlFileLoader($container, new FileLocator(array(
