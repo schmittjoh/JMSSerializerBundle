@@ -75,12 +75,14 @@ the service alias:
 .. configuration-block ::
 
     .. code-block :: yaml
+
         services:
             jms_serializer.object_constructor:
                 alias: jms_serializer.doctrine_object_constructor
                 public: false
 
     .. code-block :: xml
+
         <services>
             <service id="jms_serializer.object_constructor" alias="jms_serializer.doctrine_object_constructor" public="false">
             </service>
