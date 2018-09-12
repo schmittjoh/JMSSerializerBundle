@@ -95,12 +95,7 @@ class CustomHandlersPass implements CompilerPassInterface
         $sorter = function ($a, $b) {
             return $b[3] == $a[3] ? 0 : ($b[3] > $a[3] ? 1 : -1);
         };
-        // php 7 sorting is stable, while php 5 is not, and we need it stable to have consistent tests
-        if (PHP_MAJOR_VERSION < 7) {
-            self::stable_uasort($allHandlers, $sorter);
-        } else {
-            uasort($allHandlers, $sorter);
-        }
+        self::stable_uasort($allHandlers, $sorter);
         $handlers = [];
         foreach ($allHandlers as $handler) {
             list ($direction, $type, $format, $priority, $service, $method) = $handler;
