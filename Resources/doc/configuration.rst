@@ -38,12 +38,9 @@ except that you can specify some additional attributes:
     you cannot register listeners with the ``kernel.event_listener`` tag,
     or the ``@DI\Observe`` annotation. Please see above.
 
-Overriding Third-Party Metadata
--------------------------------
-Sometimes you want to serialize objects which are shipped by a third-party bundle.
-Such a third-party bundle might not ship with metadata that suits your needs, or
-possibly none, at all. In such a case, you can override the default location that
-is searched for metadata with a path that is under your control.
+Defining Metadata
+-----------------
+To define the metadata using YAML or XML, you need to specify their location and to which PHP namespace prefix they refer.
 
 .. configuration-block ::
 
@@ -52,6 +49,9 @@ is searched for metadata with a path that is under your control.
         jms_serializer:
             metadata:
                 directories:
+                    App:
+                        namespace_prefix: "App\\Entity"
+                        path: "%kernel.root_dir%/serializer/app"
                     FOSUB:
                         namespace_prefix: "FOS\\UserBundle"
                         path: "%kernel.root_dir%/serializer/FOSUB"
@@ -60,10 +60,30 @@ is searched for metadata with a path that is under your control.
 
         <jms-serializer>
             <metadata>
+                <directory namespace_prefix="App\Entity"
+                           path="%kernel.root_dir%/serializer/app" />
                 <directory namespace_prefix="FOS\UserBundle"
                            path="%kernel.root_dir%/serializer/FOSUB" />
             </metadata>
         </jms-serializer>
+
+.. note ::
+
+    - ``path`` must not contain trailing slashes
+    - If you are using YAML files as metadata format, the file extension to use is ``.yml``
+
+
+Suppose you want to define the metadata using YAML for the classes in the ``App\\Entity`` namespace prefix
+and the configured path is ``%kernel.root_dir%/serializer/app``, then your metadata file should be named:
+``%kernel.root_dir%/serializer/app/Product.yml``.
+
+
+This feature is also useful for **Overriding Third-Party Metadata**.
+Sometimes you want to serialize objects which are shipped by a third-party bundle.
+Such a third-party bundle might not ship with metadata that suits your needs, or
+possibly none, at all. In such a case, you can override the default location that
+is searched for metadata with a path that is under your control.
+
 
 Changing the Object Constructor
 ----------------------------------
