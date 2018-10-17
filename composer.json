@@ -22,8 +22,8 @@
     ],
     "require": {
         "php": "^7.2",
-        "jms/metadata": "^2.0@dev",
-        "jms/serializer": "^2.0@dev",
+        "jms/metadata": "^2.0@RC",
+        "jms/serializer": "^2.0@RC",
         "symfony/dependency-injection": "^3.3 || ^4.0",
         "symfony/framework-bundle": "^3.0 || ^4.0"
     },
