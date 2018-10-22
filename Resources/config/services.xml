@@ -10,7 +10,7 @@
             <argument type="service" id="service_container" />
         </service>
 
-        <service id="jms_serializer.doctrine_proxy_subscriber" class="JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber" public="false" lazy="true">
+        <service id="jms_serializer.doctrine_proxy_subscriber" class="JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber" public="false">
             <argument type="constant">true</argument>
             <argument type="constant">false</argument>
             <tag name="jms_serializer.event_subscriber" />
@@ -25,18 +25,18 @@
         <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
             <argument type="service" id="service_container" />
         </service>
-        <service id="jms_serializer.datetime_handler" class="JMS\Serializer\Handler\DateHandler" public="false" lazy="true">
+        <service id="jms_serializer.datetime_handler" class="JMS\Serializer\Handler\DateHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false" lazy="true">
+        <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
             <argument type="constant">false</argument>
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.form_error_handler" class="JMS\Serializer\Handler\FormErrorHandler" public="false" lazy="true">
+        <service id="jms_serializer.form_error_handler" class="JMS\Serializer\Handler\FormErrorHandler" public="false">
             <argument type="service" id="translator" on-invalid="null" />
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.constraint_violation_handler" class="JMS\Serializer\Handler\ConstraintViolationHandler" public="false" lazy="true">
+        <service id="jms_serializer.constraint_violation_handler" class="JMS\Serializer\Handler\ConstraintViolationHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
             
