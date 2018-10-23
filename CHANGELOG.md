@@ -1,5 +1,21 @@
 # Change Log
 
+## [3.0.0-RC2](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0-RC2) (2018-10-23)
+
+**Fixed bugs:**
+
+- Lazy services - Final classes cannot be proxied by ProxyManager [\#690](https://github.com/schmittjoh/JMSSerializerBundle/issues/690)
+
+**Closed issues:**
+
+- Provided class "JMS\Serializer\Handler\ArrayCollectionHandler" is final and cannot be proxied [\#692](https://github.com/schmittjoh/JMSSerializerBundle/issues/692)
+
+**Merged pull requests:**
+
+- remove lazy services, they are already lazy in many contexts [\#691](https://github.com/schmittjoh/JMSSerializerBundle/pull/691) ([goetas](https://github.com/goetas))
+
+## [3.0.0-RC1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0-RC1) (2018-10-17)
+
 ## [3.0.0-beta1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0-beta1) (2018-09-12)
 
 **Implemented enhancements:**
