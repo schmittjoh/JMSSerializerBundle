@@ -3,6 +3,7 @@
 namespace JMS\SerializerBundle\Tests\ContextFactory;
 
 use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +48,9 @@ class ConfiguredContextFactoryTest extends TestCase
         $context = $object->$factoryMethod();
         /** @var Context $context */
         $this->assertInstanceOf($expectedContextClass, $context);
-        $this->assertSame($serializeNulls, $context->shouldSerializeNull());
+        if ($context instanceof SerializationContext) {
+            $this->assertSame($serializeNulls, $context->shouldSerializeNull());
+        }
 
         $this->assertSame($version, $context->getAttribute('version'));
         $this->assertSame($groups, $context->getAttribute('groups'));

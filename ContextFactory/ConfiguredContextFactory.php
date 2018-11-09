@@ -116,7 +116,8 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         if (!empty($this->groups)) {
             $context->setGroups($this->groups);
         }
-        if ($this->serializeNulls !== null) {
+
+        if (($context instanceof SerializationContext) && $this->serializeNulls !== null) {
             $context->setSerializeNull($this->serializeNulls);
         }
 
