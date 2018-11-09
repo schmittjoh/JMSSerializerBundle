@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0) (2018-11-09)
+**Closed issues:**
+
+- jms\_serializer directory in cache is not writable [\#640](https://github.com/schmittjoh/JMSSerializerBundle/issues/640)
+
+**Merged pull requests:**
+
+- setSerializeNull option is available only on the serialization context [\#694](https://github.com/schmittjoh/JMSSerializerBundle/pull/694) ([goetas](https://github.com/goetas))
+
 ## [3.0.0-RC2](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0-RC2) (2018-10-23)
 
 **Fixed bugs:**
