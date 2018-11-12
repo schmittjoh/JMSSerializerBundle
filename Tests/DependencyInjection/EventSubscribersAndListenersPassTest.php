@@ -121,7 +121,7 @@ class EventSubscribersAndListenersPassTest extends TestCase
                     'serializer.pre_serialize' => [
                         [
                             ['my_listener', 'onserializerpreserialize'],
-                            'bar',
+                            'Bar',
                             null
                         ]
                     ]], $call[1][0]);
@@ -161,7 +161,7 @@ class EventSubscribersAndListenersPassTest extends TestCase
                     'serializer.pre_serialize' => [
                         [
                             ['my_listener', 'onserializerpreserialize'],
-                            'bar',
+                            'Bar',
                             null
                         ]
                     ]], $call[1][0]);
@@ -196,7 +196,7 @@ class EventSubscribersAndListenersPassTest extends TestCase
                     'serializer.pre_serialize' => [
                         [
                             ['my_listener', 'onserializerpreserialize'],
-                            'bar',
+                            'Bar',
                             'json',
                             null
                         ]
