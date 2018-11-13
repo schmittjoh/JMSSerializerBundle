@@ -194,13 +194,13 @@ values:
                     depth: 512
                 json_deserialization:
                     options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
-                json_serialization:
+                xml_serialization:
                     format_output: false
                     version: "1.0"
                     encoding: "UTF-8"
                     default_root_name: "result"
                     default_root_ns: null
-                json_deserialization:
+                xml_deserialization:
                     external_entities: false
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
