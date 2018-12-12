@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.4.3](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.3) (2018-12-12)
+
+**Merged pull requests:**
+
+- fix compatibility with Symfony Config 4.2 [\#705](https://github.com/schmittjoh/JMSSerializerBundle/pull/705) ([xabbuh](https://github.com/xabbuh))
+
+## [2.4.2](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.2) (2018-06-19)
+
+**Fixed bugs:**
+
+- Ensure always stable sorting [#664](https://github.com/schmittjoh/JMSSerializerBundle/issues/664)
+
 ## [2.4.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.1) (2018-05-25)
 
 **Fixed bugs:**
