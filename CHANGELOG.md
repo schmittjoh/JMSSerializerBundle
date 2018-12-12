@@ -1,5 +1,23 @@
 # Change Log
 
+## [3.0.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.1) (2018-12-12)
+**Fixed bugs:**
+
+- EventDispatcher - use case sensitive event names; [\#695](https://github.com/schmittjoh/JMSSerializerBundle/pull/695) ([gam6itko](https://github.com/gam6itko))
+
+**Closed issues:**
+
+- Symfony 4.2 deprecation: A tree builder without a root node is deprecated [\#707](https://github.com/schmittjoh/JMSSerializerBundle/issues/707)
+- DateTime / DateTime Deserialize without timezone [\#706](https://github.com/schmittjoh/JMSSerializerBundle/issues/706)
+- Argument 1 passed to JMS\Serializer\Metadata\Driver\AbstractDoctrineTypeDriver::normalizeFieldType\(\) must be of the type string, null given [\#701](https://github.com/schmittjoh/JMSSerializerBundle/issues/701)
+
+**Merged pull requests:**
+
+- fix compatibility with Symfony Config 4.2 [\#705](https://github.com/schmittjoh/JMSSerializerBundle/pull/705) ([xabbuh](https://github.com/xabbuh))
+- Update services.xml [\#702](https://github.com/schmittjoh/JMSSerializerBundle/pull/702) ([enumag](https://github.com/enumag))
+- Xml keys were improperly named in config docs [\#696](https://github.com/schmittjoh/JMSSerializerBundle/pull/696) ([curiosity26](https://github.com/curiosity26))
+- Update .travis.yml [\#693](https://github.com/schmittjoh/JMSSerializerBundle/pull/693) ([andreybolonin](https://github.com/andreybolonin))
+
 ## [3.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.0) (2018-11-09)
 **Closed issues:**
 
