@@ -22,12 +22,13 @@ class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $tb = new TreeBuilder();
+        $tb = new TreeBuilder('jms_serializer');
 
-        $root = $tb
-            ->root('jms_serializer', 'array')
-                ->children()
-        ;
+        if (method_exists($tb, 'getRootNode')) {
+            $root = $tb->getRootNode()->children();
+        } else {
+            $root = $tb->root('jms_serializer')->children();
+        }
 
         $this->addHandlersSection($root);
         $this->addSubscribersSection($root);
