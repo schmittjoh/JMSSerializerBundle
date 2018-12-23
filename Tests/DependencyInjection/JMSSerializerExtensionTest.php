@@ -392,9 +392,9 @@ class JMSSerializerExtensionTest extends TestCase
         $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
         $object = new ObjectUsingExpressionLanguage('foo', true);
-        $this->assertEquals('{"name":"foo"}', $serializer->serialize($object, 'json'));
+        $this->assertEquals('{"virtual":"bar","name":"foo"}', $serializer->serialize($object, 'json'));
         $object = new ObjectUsingExpressionLanguage('foo', false);
-        $this->assertEquals('{}', $serializer->serialize($object, 'json'));
+        $this->assertEquals('{"virtual":"bar"}', $serializer->serialize($object, 'json'));
     }
 
     public function testExpressionLanguageVirtualProperties()
@@ -530,6 +530,7 @@ class JMSSerializerExtensionTest extends TestCase
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', array());
+        $container->setParameter('foo', 'bar');
         $container->set('annotation_reader', new AnnotationReader());
         $container->setDefinition('doctrine', new Definition(Registry::class));
         $container->set('translator', $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock());
