@@ -171,12 +171,11 @@
                 <argument type="service" key="container" id="service_container"/>
             </argument>
         </service>
-        <service id="jms_serializer.expression_language" class="Symfony\Component\ExpressionLanguage\ExpressionLanguage" public="false">
-            <call method="registerProvider">
-                <argument type="service" id="jms_serializer.expression_language.function_provider" />
-            </call>
+        <service id="jms_serializer.expression_language" class="Symfony\Component\ExpressionLanguage\ExpressionLanguage" public="false"/>
+
+        <service id="jms_serializer.expression_language.function_provider" class="JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider" public="false">
+            <tag name="jms.expression.function_provider"/>
         </service>
-        <service id="jms_serializer.expression_language.function_provider" class="JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider" public="false"/>
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="JMS\Serializer\Twig\SerializerExtension" public="false">
