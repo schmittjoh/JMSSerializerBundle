@@ -41,6 +41,8 @@
         </service>
             
         <!-- Metadata Drivers -->
+        <service id="jms_serializer.type_parser" class="JMS\Serializer\Type\Parser" public="false"/>
+
         <service id="jms_serializer.metadata.file_locator" class="Metadata\Driver\FileLocator" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
         </service>
