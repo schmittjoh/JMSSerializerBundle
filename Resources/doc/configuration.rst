@@ -140,7 +140,6 @@ values:
                 id: ~
                 separator:  _
                 lower_case: true
-                enable_cache: true
 
             metadata:
                 cache: file
