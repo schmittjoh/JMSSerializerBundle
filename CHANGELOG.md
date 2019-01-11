@@ -1,5 +1,20 @@
 # Change Log
 
+## [3.1.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.1.0)
+
+**Implemented enhancements:**
+
+- Allow to add expression function providers using DI tags [\#711](https://github.com/schmittjoh/JMSSerializerBundle/pull/711) ([goetas](https://github.com/goetas))
+
+**Closed issues:**
+
+- Symfony 4 - Service "jms\_serializer" not found [\#713](https://github.com/schmittjoh/JMSSerializerBundle/issues/713)
+- Configuration property enable\_cache is missing [\#712](https://github.com/schmittjoh/JMSSerializerBundle/issues/712)
+- IndexBy in OneToMany Annotation is ignored [\#710](https://github.com/schmittjoh/JMSSerializerBundle/issues/710)
+- why there is backslash ? [\#709](https://github.com/schmittjoh/JMSSerializerBundle/issues/709)
+- Declaration must be compatible [\#708](https://github.com/schmittjoh/JMSSerializerBundle/issues/708)
+- Unrecognized option "xml" under "jms\_serializer.visitors" [\#698](https://github.com/schmittjoh/JMSSerializerBundle/issues/698)
+
 ## [3.0.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.0.1) (2018-12-12)
 **Fixed bugs:**
 
