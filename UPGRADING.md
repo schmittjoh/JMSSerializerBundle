@@ -1,6 +1,14 @@
 This document details the changes that you need to make to your code
 when upgrading from one version to another.
 
+Upgrading From 2.x to 3.0
+==========================
+
+- The configuration optins under `jms_serializer.visitors` previously were `json` and `xml`, 
+  now the optins are direction specific as `json_serialization`, `json_deserialization` ,
+  `xml_serialization`, `xml_deserialization`. 
+   A complete list of options is available in the [configration reference](/Resources/doc/configuration.rst#extension-reference)
+
 Upgrading From 1.x to 2.0
 ==========================
 
@@ -10,6 +18,7 @@ Upgrading From 1.x to 2.0
 - Defining not-existing metadata directories will trigger an exception [#517](https://github.com/schmittjoh/JMSSerializerBundle/issues/517)
 - The "key" (or `name` attribute) for the metadata directories definition is mandatory now [#531](https://github.com/schmittjoh/JMSSerializerBundle/pull/531)
 - The options `subscribers.doctrine_proxy.initialize_virtual_types`, `subscribers.doctrine_proxy.initialize_excluded` and `handlers.array_collection.initialize_excluded` now as default are `false`
+
 
 Upgrading From 0.11 to 1.0
 ==========================
