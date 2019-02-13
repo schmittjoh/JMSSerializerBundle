@@ -39,7 +39,7 @@
             <argument type="service" id="translator" on-invalid="null" />
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.constraint_violation_handler" class="JMS\Serializer\Handler\ConstraintViolationHandler" public="false">
+        <service id="jms_serializer.iterator_handler" class="JMS\Serializer\Handler\IteratorHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
 
