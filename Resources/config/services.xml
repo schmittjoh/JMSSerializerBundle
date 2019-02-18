@@ -74,7 +74,7 @@
             <argument type="service" id="jms_serializer.metadata.chain_driver" />
             <argument type="service" id="doctrine" />
         </service>
-        <service id="jms_serializer.metadata.doctrine_phpcr_type_driver" class="JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDrive" public="false">
+        <service id="jms_serializer.metadata.doctrine_phpcr_type_driver" class="JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver" public="false">
             <argument type="service" id="jms_serializer.metadata.chain_driver" />
             <argument type="service" id="doctrine_phpcr" />
         </service>
