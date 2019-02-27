@@ -25,21 +25,24 @@
         <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
             <argument type="service" id="service_container" />
         </service>
-        <service id="jms_serializer.datetime_handler" class="JMS\Serializer\Handler\DateHandler" public="false">
-            <tag name="jms_serializer.subscribing_handler" />
-        </service>
         <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
             <argument type="constant">false</argument>
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+        <service id="jms_serializer.constraint_violation_handler" class="JMS\Serializer\Handler\ConstraintViolationHandler" public="false">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+        <service id="jms_serializer.datetime_handler" class="JMS\Serializer\Handler\DateHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
         <service id="jms_serializer.form_error_handler" class="JMS\Serializer\Handler\FormErrorHandler" public="false">
             <argument type="service" id="translator" on-invalid="null" />
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-        <service id="jms_serializer.constraint_violation_handler" class="JMS\Serializer\Handler\ConstraintViolationHandler" public="false">
+        <service id="jms_serializer.iterator_handler" class="JMS\Serializer\Handler\IteratorHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
         </service>
-            
+
         <!-- Metadata Drivers -->
         <service id="jms_serializer.type_parser" class="JMS\Serializer\Type\Parser" public="false"/>
 
