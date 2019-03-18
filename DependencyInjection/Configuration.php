@@ -140,7 +140,7 @@ class Configuration implements ConfigurationInterface
                         ->validate()
                             ->always(function($v) {
                                 if (!empty($v) && !interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
-                                    throw new InvalidArgumentException('You need at least symfony/expression language v2.6 or v3.0 to use the expression evaluator features');
+                                    throw new InvalidArgumentException('You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features');
                                 }
                                 return $v;
                             })
