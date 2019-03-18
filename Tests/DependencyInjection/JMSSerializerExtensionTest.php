@@ -439,7 +439,7 @@ class JMSSerializerExtensionTest extends TestCase
 
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression language v2.6 or v3.0 to use the expression evaluator features
+     * @expectedExceptionMessage Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features
      */
     public function testExpressionInvalidEvaluator()
     {
