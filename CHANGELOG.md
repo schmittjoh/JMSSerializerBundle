@@ -1,5 +1,31 @@
 # Change Log
 
+## [3.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.2.0) (2019-03-21)
+**Implemented enhancements:**
+
+- Iterator handler [\#720](https://github.com/schmittjoh/JMSSerializerBundle/pull/720) ([simPod](https://github.com/simPod))
+
+**Fixed bugs:**
+
+- DoctrinePHPCRTypeDrive is missing r [\#724](https://github.com/schmittjoh/JMSSerializerBundle/issues/724)
+
+**Closed issues:**
+
+- Deprecated error with Twig 2.7.2 [\#731](https://github.com/schmittjoh/JMSSerializerBundle/issues/731)
+- How to use "service" in Expose / Exclude [\#726](https://github.com/schmittjoh/JMSSerializerBundle/issues/726)
+- Event Subscriber not being fired [\#725](https://github.com/schmittjoh/JMSSerializerBundle/issues/725)
+- Expose / Exclude based on its ‘parent’ relationship in One to Many [\#723](https://github.com/schmittjoh/JMSSerializerBundle/issues/723)
+- Exclude / Expose based on value of its relationship [\#722](https://github.com/schmittjoh/JMSSerializerBundle/issues/722)
+- Deserializing don't work [\#721](https://github.com/schmittjoh/JMSSerializerBundle/issues/721)
+- Unrecognized option "xml" under "jms\_serializer.visitors". Available options are xml, json [\#719](https://github.com/schmittjoh/JMSSerializerBundle/issues/719)
+-  jms/serializer-bundle 3.1.0 requires jms/serializer ^2.0 conflict with minimum-stability [\#717](https://github.com/schmittjoh/JMSSerializerBundle/issues/717)
+
+**Merged pull requests:**
+
+- Fix deprecation with Twig 2.7 [\#733](https://github.com/schmittjoh/JMSSerializerBundle/pull/733) ([enumag](https://github.com/enumag))
+- Fix typo in package name [\#732](https://github.com/schmittjoh/JMSSerializerBundle/pull/732) ([szepczynski](https://github.com/szepczynski))
+- Document expression language providers [\#714](https://github.com/schmittjoh/JMSSerializerBundle/pull/714) ([goetas](https://github.com/goetas))
+
 ## [3.1.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.1.0)
 
 **Implemented enhancements:**
