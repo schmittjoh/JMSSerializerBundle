@@ -1,5 +1,11 @@
 # Change Log
 
+## [[2.4.4](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.4) (2019-03-30)
+
+**Merged pull requests:**
+
+- Fix deprecation with Twig 2.7 \(2.x branch\) [\#736](https://github.com/schmittjoh/JMSSerializerBundle/pull/736) ([JustBlackBird](https://github.com/JustBlackBird))
+
 ## [2.4.3](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.3) (2018-12-12)
 
 **Merged pull requests:**
