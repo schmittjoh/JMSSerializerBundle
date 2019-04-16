@@ -225,7 +225,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
         if (!empty($config['visitors']['xml_serialization']['encoding'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
-                ->addMethodCall('setDefaultEncoding', [$config['visitors']['xml_deserialization']['encoding']]);
+                ->addMethodCall('setDefaultEncoding', [$config['visitors']['xml_serialization']['encoding']]);
         }
         if (!empty($config['visitors']['xml_serialization']['format_output'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
