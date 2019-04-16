@@ -281,7 +281,6 @@ class Configuration implements ConfigurationInterface
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('version')
-                                ->defaultValue('1.0')
                             ->end()
                             ->scalarNode('encoding')
                             ->end()
