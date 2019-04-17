@@ -209,6 +209,8 @@ class JMSSerializerExtensionTest extends TestCase
             $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
             $container->getAlias('JMS\Serializer\SerializerInterface')->setPublic(true);
             $container->getAlias('JMS\Serializer\ArrayTransformerInterface')->setPublic(true);
+            $container->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')->setPublic(true);
+            $container->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface')->setPublic(true);
         });
 
         $simpleObject = new SimpleObject('foo', 'bar');
@@ -217,6 +219,8 @@ class JMSSerializerExtensionTest extends TestCase
 
         $this->assertTrue($container->has('JMS\Serializer\SerializerInterface'), 'Alias should be defined to allow autowiring');
         $this->assertTrue($container->has('JMS\Serializer\ArrayTransformerInterface'), 'Alias should be defined to allow autowiring');
+        $this->assertTrue($container->has('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface'), 'Alias should be defined to allow autowiring');
+        $this->assertTrue($container->has('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface'), 'Alias should be defined to allow autowiring');
 
         $this->assertFalse($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
 
@@ -234,6 +238,8 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('0.0.1')));
 
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('1.1.1')));
+
+        $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', $container->get('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')->createSerializationContext()->setVersion('0.0.1')));
     }
 
     public function testLoadWithOptions()

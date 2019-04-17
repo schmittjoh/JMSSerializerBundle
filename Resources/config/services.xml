@@ -20,7 +20,7 @@
             <tag name="jms_serializer.event_subscriber" />
             <argument type="service" id="debug.stopwatch" />
         </service>
-        
+
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
             <argument type="service" id="service_container" />
@@ -232,5 +232,8 @@
         <service id="jms_serializer.configured_deserialization_context_factory"
                  class="JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory"
                  public="false" />
+
+        <service id="JMS\Serializer\ContextFactory\SerializationContextFactoryInterface" alias="jms_serializer.configured_serialization_context_factory" public="false"/>
+        <service id="JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface" alias="jms_serializer.configured_deserialization_context_factory" public="false"/>
     </services>
 </container>
