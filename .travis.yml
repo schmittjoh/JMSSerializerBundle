@@ -1,28 +1,30 @@
 language: php
-
-php:
-  - 7.2
-  - 7.3
-
 sudo: false
-dist: trusty
-
 cache:
   directories:
-    - $HOME/.composer/cache/files
+    - $HOME/.composer/cache
+
+php:
+  - '7.2'
+  - '7.3'
+
+env:
+  - SYMFONY_VERSION=^3.4 JMS_VERSION=^2.2
+  - SYMFONY_VERSION=^4.0 JMS_VERSION=^2.2
+
+  - SYMFONY_VERSION=^3.4 JMS_VERSION=^3.0
+  - SYMFONY_VERSION=^4.0 JMS_VERSION=^3.0
+
 
 matrix:
   fast_finish: true
   include:
-    - php: 7.2
-      env: SYMFONY_VERSION='~3.4'
-    - php: 7.2
-      env: SYMFONY_VERSION='~4.0'
-    - php: 7.2
+    - php: '7.2'
       env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
 
 before_script:
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
+  - if [[ "$JMS_VERSION" != "" ]]; then composer require --dev --no-update jms/serializer=$JMS_VERSION; fi
+  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
   - composer update ${COMPOSER_FLAGS} --no-interaction
 
 script:
