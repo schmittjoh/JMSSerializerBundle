@@ -1,5 +1,24 @@
 # Change Log
 
+## [3.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.3.0) (2019-04-23)
+**Implemented enhancements:**
+
+- Allow jms/serializer 3.0 [\#742](https://github.com/schmittjoh/JMSSerializerBundle/pull/742) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Visitor Configuration XML - Serialization references to Deserialization Configuration node [\#738](https://github.com/schmittjoh/JMSSerializerBundle/issues/738)
+
+**Merged pull requests:**
+
+- Add service aliases in order to enable autowiring for "configured\_serialization\_context\_factory" and "configured\_deserialization\_context\_factory" [\#741](https://github.com/schmittjoh/JMSSerializerBundle/pull/741) ([phansys](https://github.com/phansys))
+- fixed XML Configuration - fixes schmittjoh/JMSSerializerBundle\#738 [\#740](https://github.com/schmittjoh/JMSSerializerBundle/pull/740) ([dennzo](https://github.com/dennzo))
+
+## [2.4.4](https://github.com/schmittjoh/JMSSerializerBundle/tree/2.4.4) (2019-03-30)
+**Merged pull requests:**
+
+- Fix deprecation with Twig 2.7 \(2.x branch\) [\#736](https://github.com/schmittjoh/JMSSerializerBundle/pull/736) ([JustBlackBird](https://github.com/JustBlackBird))
+
 ## [3.2.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.2.0) (2019-03-21)
 **Implemented enhancements:**
 
