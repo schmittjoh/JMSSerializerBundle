@@ -245,6 +245,7 @@ values:
                     default_root_name: "result"
                     default_root_ns: null
                 xml_deserialization:
+                    options: 0 # simplexml_load_string options bitmask
                     external_entities: false
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization

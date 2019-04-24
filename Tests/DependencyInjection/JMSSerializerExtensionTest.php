@@ -458,7 +458,7 @@ class JMSSerializerExtensionTest extends TestCase
     /**
      * @dataProvider getXmlVisitorWhitelists
      */
-    public function testXmlVisitorOptions($expectedOptions, $config)
+    public function testXmlVisitorDoctypeWhitelist($expectedOptions, $config)
     {
         $container = $this->getContainerForConfigLoad(array($config));
         $visitor = $container->getDefinition('jms_serializer.xml_deserialization_visitor');
@@ -482,6 +482,22 @@ class JMSSerializerExtensionTest extends TestCase
         ));
 
         return $configs;
+    }
+
+    public function testXmlDeserializationVisitorOptions(){
+        $container = $this->getContainerForConfigLoad([[
+            'visitors' => [
+                'xml_deserialization' => [
+                    'options' => LIBXML_BIGLINES | LIBXML_NOBLANKS
+                ]
+            ]
+        ]]);
+        $visitor = $container->getDefinition('jms_serializer.xml_deserialization_visitor');
+
+        $calls = $visitor->getMethodCalls();
+
+        $this->assertEquals("setOptions", $calls[0][0]);
+        $this->assertEquals(LIBXML_BIGLINES | LIBXML_NOBLANKS, $calls[0][1][0]);
     }
 
     public function testXmlVisitorFormatOutput()
