@@ -241,5 +241,9 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
                 ->addMethodCall('enableExternalEntities', [$config['visitors']['xml_deserialization']['external_entities']]);
         }
+        if (!empty($config['visitors']['xml_deserialization']['options'])) {
+            $container->getDefinition('jms_serializer.xml_deserialization_visitor')
+                ->addMethodCall('setOptions', [$config['visitors']['xml_deserialization']['options']]);
+        }
     }
 }
