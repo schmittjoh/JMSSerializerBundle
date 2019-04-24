@@ -496,8 +496,6 @@ class JMSSerializerExtensionTest extends TestCase
 
         $calls = $visitor->getMethodCalls();
 
-        print_r($calls);
-
         $this->assertEquals("setOptions", $calls[0][0]);
         $this->assertEquals(LIBXML_BIGLINES | LIBXML_NOBLANKS, $calls[0][1][0]);
     }
