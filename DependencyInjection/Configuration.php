@@ -229,9 +229,42 @@ class Configuration implements ConfigurationInterface
 
             return $value;
         };
+        $arrayNormalizationXML = function($v) {
+            $options = 0;
+            foreach ($v as $option) {
+                if (is_numeric($option)) {
+                    $options |= (int) $option;
+                } elseif (defined($option)) {
+                    $options |= constant($option);
+                } else {
+                    throw new InvalidArgumentException('Expected either an integer representing one of the LIBXML_ constants, or a string of the constant itself.');
+                }
+            }
+
+            return $options;
+        };
+        $stringNormalizationXML = function($v) {
+            if (is_numeric($v)) {
+                $value = (int) $v;
+            } elseif (defined($v)) {
+                $value = constant($v);
+            } else {
+                throw new InvalidArgumentException('Expected either an integer representing one of the LIBXML_ constants, or a string of the constant itself.');
+            }
+
+            return $value;
+        };
+
         $jsonValidation = function($v) {
             if (!is_int($v)) {
                 throw new InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
+            }
+
+            return $v;
+        };
+        $xmlValidation = function($v) {
+            if (!is_int($v)) {
+                throw new InvalidArgumentException('Expected either integer value or a array of the LIBXML_ constants.');
             }
 
             return $v;
@@ -303,6 +336,18 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->booleanNode('external_entities')
                                 ->defaultFalse()
+                            ->end()
+                            ->scalarNode('options')
+                                ->defaultValue(0)
+                                ->beforeNormalization()
+                                    ->ifArray()->then($arrayNormalizationXML)
+                                ->end()
+                                ->beforeNormalization()
+                                    ->ifString()->then($stringNormalizationXML)
+                                ->end()
+                                ->validate()
+                                    ->always($xmlValidation)
+                                ->end()
                             ->end()
                         ->end()
                     ->end()
