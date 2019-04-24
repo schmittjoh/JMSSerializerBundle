@@ -204,7 +204,7 @@ class JMSSerializerExtension extends ConfigurableExtension
                 ->addMethodCall('setDepth', [$config['visitors']['json_serialization']['depth']]);
         }
 
-        // json (serialization)
+        // json (deserialization)
         if (!empty($config['visitors']['json_deserialization']['options'])) {
             $container->getDefinition('jms_serializer.json_deserialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
