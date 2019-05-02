@@ -11,4 +11,10 @@ This bundle integrates the [serializer library](https://github.com/schmittjoh/se
 
 Please open new issues or feature request which are related to the library on the new repository.
 
+## Documentation
+
 You can learn more about the bundle in its [documentation](http://jmsyst.com/bundles/JMSSerializerBundle).
+
+## Professional Support
+
+For eventual paid support please write an email to [goetas@gmail.com](mailto:goetas@gmail.com).
