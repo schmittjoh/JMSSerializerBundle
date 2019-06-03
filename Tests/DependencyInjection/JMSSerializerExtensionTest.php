@@ -386,7 +386,68 @@ class JMSSerializerExtensionTest extends TestCase
             )
         ));
 
+        $configs[] = array(0, array(
+            'visitors' => array(
+                'json_serialization' => array(
+                    'options' => array(),
+                ),
+            ),
+        ));
+
+        $configs[] = array(JSON_PRESERVE_ZERO_FRACTION, array(
+            'visitors' => array(
+                'json_serialization' => array(
+                    'options' => 'JSON_PRESERVE_ZERO_FRACTION',
+                ),
+            ),
+        ));
+
         return $configs;
+    }
+
+    /**
+     * @dataProvider getJsonVisitorOptions
+     */
+    public function testPassJsonVisitorOptions(string $expected, $data, $options)
+    {
+        $container = $this->getContainerForConfig([
+            [
+                'visitors' => [
+                    'json_serialization' => [
+                        'options' => $options,
+                    ],
+                ],
+            ],
+        ]);
+        $serializer = $container->get('jms_serializer');
+
+        $this->assertSame($expected, $serializer->serialize($data, 'json'));
+    }
+
+    public function getJsonVisitorOptions()
+    {
+        return [
+            ['0', 0.0, 0],
+            ['0', 0.0, []],
+            ['0.0', 0.0, 'JSON_PRESERVE_ZERO_FRACTION'],
+        ];
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Expected either integer value or a array of the JSON_ constants.
+     */
+    public function testEmptyJsonVisitorOptions()
+    {
+        $this->getContainerForConfig([
+            [
+                'visitors' => [
+                    'json_serialization' => [
+                        'options' => null,
+                    ],
+                ],
+            ],
+        ]);
     }
 
     public function testExpressionLanguage()

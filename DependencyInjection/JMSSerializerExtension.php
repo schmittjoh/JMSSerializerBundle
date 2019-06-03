@@ -195,21 +195,20 @@ class JMSSerializerExtension extends ConfigurableExtension
     private function setVisitorOptions(array $config, ContainerBuilder $container): void
     {
         // json (serialization)
-        if (!empty($config['visitors']['json_serialization']['options'])) {
+        if (isset($config['visitors']['json_serialization']['options'])) {
             $container->getDefinition('jms_serializer.json_serialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['json_serialization']['options']]);
         }
-        if (!empty($config['visitors']['json_serialization']['depth'])) {
+        if (isset($config['visitors']['json_serialization']['depth'])) {
             $container->getDefinition('jms_serializer.json_serialization_visitor')
                 ->addMethodCall('setDepth', [$config['visitors']['json_serialization']['depth']]);
         }
 
         // json (deserialization)
-        if (!empty($config['visitors']['json_deserialization']['options'])) {
+        if (isset($config['visitors']['json_deserialization']['options'])) {
             $container->getDefinition('jms_serializer.json_deserialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
         }
-
 
         // xml (serialization)
         if (!empty($config['visitors']['xml_serialization']['default_root_name'])) {
