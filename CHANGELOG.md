@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.4.0) (2019-06-24)
+**Implemented enhancements:**
+
+- Xml deserialization options [\#744](https://github.com/schmittjoh/JMSSerializerBundle/pull/744) ([kopeckyales](https://github.com/kopeckyales))
+
+**Merged pull requests:**
+
+- Allow to call `JsonSerializationVisitorFactory::setOptions\(\)` with value `0` [\#749](https://github.com/schmittjoh/JMSSerializerBundle/pull/749) ([phansys](https://github.com/phansys))
+
 ## [3.3.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.3.0) (2019-04-23)
 **Implemented enhancements:**
 
