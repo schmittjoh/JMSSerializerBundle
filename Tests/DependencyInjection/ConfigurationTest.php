@@ -246,4 +246,13 @@ class ConfigurationTest extends TestCase
 
         $this->assertEquals(\DateTime::ATOM, $config['handlers']['datetime']['default_format']);
     }
+
+    public function testJsonSerializationVisitorDefaultOptions()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertEquals(1024 /*JSON_PRESERVE_ZERO_FRACTION*/, $config['visitors']['json_serialization']['options']);
+
+    }
 }

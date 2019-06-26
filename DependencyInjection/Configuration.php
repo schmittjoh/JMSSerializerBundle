@@ -279,7 +279,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode("depth")->end()
                             ->scalarNode('options')
-                                ->defaultValue(0)
+                                ->defaultValue(1024 /*JSON_PRESERVE_ZERO_FRACTION*/)
                                 ->beforeNormalization()
                                     ->ifArray()->then($arrayNormalization)
                                 ->end()
