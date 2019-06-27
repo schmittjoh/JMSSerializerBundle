@@ -1,5 +1,15 @@
 # Change Log
 
+## [3.4.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.4.1) (2019-06-27)
+**Fixed bugs:**
+
+- Since 3.4.0, JSON\_PRESERVE\_ZERO\_FRACTION is no longer the default value `json\_encode` [\#755](https://github.com/schmittjoh/JMSSerializerBundle/issues/755)
+
+**Merged pull requests:**
+
+- Fix jms\_serializer.json\_serialization\_visitor default options [\#757](https://github.com/schmittjoh/JMSSerializerBundle/pull/757) ([fbourigault](https://github.com/fbourigault))
+
+
 ## [3.4.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.4.0) (2019-06-24)
 **Implemented enhancements:**
 
