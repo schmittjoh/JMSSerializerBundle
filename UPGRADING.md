@@ -4,8 +4,8 @@ when upgrading from one version to another.
 Upgrading From 2.x to 3.0
 ==========================
 
-- The configuration optins under `jms_serializer.visitors` previously were `json` and `xml`, 
-  now the optins are direction specific as `json_serialization`, `json_deserialization` ,
+- The configuration options under `jms_serializer.visitors` previously were `json` and `xml`, 
+  now the options are direction specific as `json_serialization`, `json_deserialization` ,
   `xml_serialization`, `xml_deserialization`. 
    A complete list of options is available in the [configration reference](/Resources/doc/configuration.rst#extension-reference)
 
