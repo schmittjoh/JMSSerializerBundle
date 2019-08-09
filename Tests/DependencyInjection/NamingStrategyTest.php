@@ -59,6 +59,7 @@ class NamingStrategyTest extends TestCase
         $container = $this->getContainer(array(
             'property_naming' => array(
                 'id' => 'custom_naming_strategy',
+                'allow_custom_serialized_name' => true
             )
         ));
 
@@ -73,12 +74,11 @@ class NamingStrategyTest extends TestCase
         self::assertSame('abc', $strategy->translateName($property));
     }
 
-    public function testCustomNamingStrategyWrapCanBeDisabled()
+    public function testCustomNamingStrategyWrapIsDisabledByDefault()
     {
         $container = $this->getContainer(array(
             'property_naming' => array(
                 'id' => 'custom_naming_strategy',
-                'allow_custom_serialized_name' => false,
             )
         ));
 

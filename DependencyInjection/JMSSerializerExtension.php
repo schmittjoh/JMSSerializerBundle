@@ -55,10 +55,10 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->addArgument($config['property_naming']['separator'])
             ->addArgument($config['property_naming']['lower_case']);
 
-        $namingStrategyServiceId = $config['property_naming']['id'] ?? 'jms_serializer.camel_case_naming_strategy';
+        $namingStrategyServiceId = $config['property_naming']['id'] ?? 'jms_serializer.serialized_name_annotation_strategy';
         $container->setAlias('jms_serializer.naming_strategy', $namingStrategyServiceId);
 
-        if (!empty($config['property_naming']['allow_custom_serialized_name'])) {
+        if (!empty($config['property_naming']['allow_custom_serialized_name']) && $namingStrategyServiceId !== 'jms_serializer.serialized_name_annotation_strategy') {
             $container
                 ->register($namingStrategyServiceId . '.decorated', SerializedNameAnnotationStrategy::class)
                 ->setDecoratedService($namingStrategyServiceId)

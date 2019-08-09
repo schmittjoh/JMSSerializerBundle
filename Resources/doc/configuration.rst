@@ -183,7 +183,7 @@ values:
 
             property_naming:
                 id: ~ # service id for a custom naming strategy to use, separator and lower_case will be ignored
-                allow_custom_serialized_name: true # consider metadata custom name definitions (@SerializedName as example)
+                allow_custom_serialized_name: false # consider metadata custom name definitions (@SerializedName as example), suggested to true, false as default for BC reasons
                 separator:  _
                 lower_case: true
 
