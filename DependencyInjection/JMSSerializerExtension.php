@@ -5,6 +5,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -54,8 +55,14 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->addArgument($config['property_naming']['separator'])
             ->addArgument($config['property_naming']['lower_case']);
 
-        if (!empty($config['property_naming']['id'])) {
-            $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
+        $namingStrategyServiceId = $config['property_naming']['id'] ?? 'jms_serializer.camel_case_naming_strategy';
+        $container->setAlias('jms_serializer.naming_strategy', $namingStrategyServiceId);
+
+        if (!empty($config['property_naming']['allow_custom_serialized_name'])) {
+            $container
+                ->register($namingStrategyServiceId . '.decorated', SerializedNameAnnotationStrategy::class)
+                ->setDecoratedService($namingStrategyServiceId)
+                ->addArgument(new Reference($namingStrategyServiceId. '.decorated.inner'));
         }
 
         $bundles = $container->getParameter('kernel.bundles');
@@ -72,7 +79,6 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
                 ->setArgument(0, new Reference($config['expression_evaluator']['id']));
-
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
