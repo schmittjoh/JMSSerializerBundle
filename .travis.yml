@@ -11,9 +11,11 @@ php:
 env:
   - SYMFONY_VERSION=^3.4 JMS_VERSION=^2.2
   - SYMFONY_VERSION=^4.0 JMS_VERSION=^2.2
+  - SYMFONY_VERSION=^5.0 JMS_VERSION=^2.2
 
   - SYMFONY_VERSION=^3.4 JMS_VERSION=^3.0
   - SYMFONY_VERSION=^4.0 JMS_VERSION=^3.0
+  - SYMFONY_VERSION=^5.0 JMS_VERSION=^3.0
 
 
 matrix:
@@ -24,7 +26,13 @@ matrix:
 
 before_script:
   - if [[ "$JMS_VERSION" != "" ]]; then composer require --dev --no-update jms/serializer=$JMS_VERSION; fi
-  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
+  - |
+    if [[ "$SYMFONY_VERSION" != "" ]]; then
+      if [[ "$SYMFONY_VERSION" == "^5.0" ]]; then
+        composer config minimum-stability dev
+      fi
+      composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION;
+    fi
   - composer update ${COMPOSER_FLAGS} --no-interaction
 
 script:
