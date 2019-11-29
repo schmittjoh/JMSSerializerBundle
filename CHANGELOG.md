@@ -1,5 +1,27 @@
 # Change Log
 
+## [3.5.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.5.0) (2019-11-29)
+
+**Implemented enhancements:**
+
+- Add ^5.0 in composer.json for symfony dependencies [\#777](https://github.com/schmittjoh/JMSSerializerBundle/issues/777) 
+
+**Fixed bugs:**
+
+- @VirtualProperty makes collection null [\#596](https://github.com/schmittjoh/JMSSerializerBundle/issues/596)
+
+**Closed issues:**
+
+- Jms deserializer class with parent properties [\#774](https://github.com/schmittjoh/JMSSerializerBundle/issues/774)
+- Bad Serialization : object instead of array [\#773](https://github.com/schmittjoh/JMSSerializerBundle/issues/773)
+- Interface 'Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface' not found [\#765](https://github.com/schmittjoh/JMSSerializerBundle/issues/765)
+- JSON Serialization Options seem to be ignored [\#763](https://github.com/schmittjoh/JMSSerializerBundle/issues/763)
+- Symfony. User Deprcated warning. [\#759](https://github.com/schmittjoh/JMSSerializerBundle/issues/759)
+
+**Merged pull requests:**
+
+- Fix typo in UPGRADING.md [\#760](https://github.com/schmittjoh/JMSSerializerBundle/pull/760) ([jdreesen](https://github.com/jdreesen))
+
 ## [3.4.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.4.1) (2019-06-27)
 **Fixed bugs:**
 
