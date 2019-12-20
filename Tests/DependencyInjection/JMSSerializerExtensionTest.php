@@ -98,6 +98,13 @@ class JMSSerializerExtensionTest extends TestCase
 
         $this->assertEquals('foo', (string)$serializationFactoryArg);
         $this->assertEquals('bar', (string)$deSerializationFactoryArg);
+
+        $serializationContextFactoryAlias = $container->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface');
+        $deserializationContextFactoryAlias = $container->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface');
+
+        $this->assertEquals('foo', (string)$serializationContextFactoryAlias);
+        $this->assertEquals('bar', (string)$deserializationContextFactoryAlias);
+
     }
 
     public function testLoadWithoutTranslator()
