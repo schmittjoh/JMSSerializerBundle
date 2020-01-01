@@ -96,19 +96,19 @@ To define the metadata using YAML or XML, you need to specify their location and
                 directories:
                     App:
                         namespace_prefix: "App\\Entity"
-                        path: "%kernel.root_dir%/serializer/app"
+                        path: "%kernel.project_dir%/serializer/app"
                     FOSUB:
                         namespace_prefix: "FOS\\UserBundle"
-                        path: "%kernel.root_dir%/serializer/FOSUB"
+                        path: "%kernel.project_dir%/serializer/FOSUB"
 
     .. code-block :: xml
 
         <jms-serializer>
             <metadata>
                 <directory namespace_prefix="App\Entity"
-                           path="%kernel.root_dir%/serializer/app" />
+                           path="%kernel.project_dir%/serializer/app" />
                 <directory namespace_prefix="FOS\UserBundle"
-                           path="%kernel.root_dir%/serializer/FOSUB" />
+                           path="%kernel.project_dir%/serializer/FOSUB" />
             </metadata>
         </jms-serializer>
 
@@ -119,8 +119,8 @@ To define the metadata using YAML or XML, you need to specify their location and
 
 
 Suppose you want to define the metadata using YAML for the classes in the ``App\\Entity`` namespace prefix
-and the configured path is ``%kernel.root_dir%/serializer/app``, then your metadata file should be named:
-``%kernel.root_dir%/serializer/app/Product.yml``.
+and the configured path is ``%kernel.project_dir%/serializer/app``, then your metadata file should be named:
+``%kernel.project_dir%/serializer/app/Product.yml``.
 
 
 This feature is also useful for **Overriding Third-Party Metadata**.
