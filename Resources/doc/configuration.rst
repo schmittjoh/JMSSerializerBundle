@@ -237,7 +237,7 @@ values:
                     options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
                     depth: 512
                 json_deserialization:
-                    options: 0 # json_encode options bitmask, suggested JSON_PRETTY_PRINT in development
+                    options: 0 # json_decode options bitmask
                 xml_serialization:
                     format_output: false
                     version: "1.0"
