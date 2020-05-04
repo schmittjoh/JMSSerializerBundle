@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -95,6 +96,11 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         if ($config['metadata']['infer_types_from_doctrine_metadata'] === false) {
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
+        }
+
+        if (PHP_VERSION_ID < 70400 || !class_exists(TypedPropertiesDriver::class)) {
+            $container
+                ->setAlias('jms_serializer.metadata_driver', new Alias('jms_serializer.metadata.chain_driver', true));
         }
 
         $container
