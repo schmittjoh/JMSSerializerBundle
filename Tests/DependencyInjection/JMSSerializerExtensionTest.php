@@ -10,10 +10,12 @@ use JMS\SerializerBundle\JMSSerializerBundle;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\TypedObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 
 class JMSSerializerExtensionTest extends TestCase
 {
@@ -104,7 +106,6 @@ class JMSSerializerExtensionTest extends TestCase
 
         $this->assertEquals('foo', (string)$serializationContextFactoryAlias);
         $this->assertEquals('bar', (string)$deserializationContextFactoryAlias);
-
     }
 
     public function testLoadWithoutTranslator()
@@ -314,7 +315,7 @@ class JMSSerializerExtensionTest extends TestCase
                     ]
                 ]
             ]
-        ]], function ($container){
+        ]], function ($container) {
             $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
         });
 
@@ -552,7 +553,8 @@ class JMSSerializerExtensionTest extends TestCase
         return $configs;
     }
 
-    public function testXmlDeserializationVisitorOptions(){
+    public function testXmlDeserializationVisitorOptions()
+    {
         $container = $this->getContainerForConfigLoad([[
             'visitors' => [
                 'xml_deserialization' => [
@@ -609,6 +611,24 @@ class JMSSerializerExtensionTest extends TestCase
 
         $this->assertTrue(array_key_exists(SubscribingHandlerInterface::class, $autoconfigureInstance));
         $this->assertTrue($autoconfigureInstance[SubscribingHandlerInterface::class]->hasTag('jms_serializer.subscribing_handler'));
+    }
+
+    public function testTypedDriverIsEnabled()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
+        }
+
+        if (!class_exists(TypedPropertiesDriver::class)) {
+            $this->markTestSkipped(sprintf('%s requires %s', __METHOD__, TypedPropertiesDriver::class));
+        }
+
+        $container = $this->getContainerForConfig(array(array()));
+
+        $metadata = $container->get('jms_serializer.metadata_driver')
+            ->loadMetadataForClass(new \ReflectionClass(TypedObject::class));
+
+        self::assertSame('int', $metadata->propertyMetadata['foo']->type['name']);
     }
 
     private function getContainerForConfigLoad(array $configs, callable $configurator = null)

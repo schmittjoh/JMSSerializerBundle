@@ -72,6 +72,11 @@
             </argument>
         </service>
 
+        <service id="jms_serializer.metadata.typed_properties_driver" class="JMS\Serializer\Metadata\Driver\TypedPropertiesDriver" public="false">
+            <argument type="service" id="jms_serializer.metadata.chain_driver" />
+            <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+        </service>
+
         <!-- extra metadata driver -->
         <service id="jms_serializer.metadata.doctrine_type_driver" class="JMS\Serializer\Metadata\Driver\DoctrineTypeDriver" public="false">
             <argument type="service" id="jms_serializer.metadata.chain_driver" />
@@ -86,7 +91,7 @@
             <argument>jms_serializer.metadata_driver</argument>
         </service>
 
-        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.chain_driver" public="true"/>
+        <service id="jms_serializer.metadata_driver" alias="jms_serializer.metadata.typed_properties_driver" public="true"/>
 
         <!-- Metadata Factory -->
         <service id="jms_serializer.metadata.cache.file_cache" class="Metadata\Cache\FileCache" public="false">
