@@ -66,6 +66,11 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $bundles = $container->getParameter('kernel.bundles');
 
+        if (!isset($bundles['TwigBundle'])) {
+            $container->removeDefinition('jms_serializer.twig_extension.serializer');
+            $container->removeDefinition('jms_serializer.twig_extension.serializer_runtime_helper');
+        }
+
         if (!empty($config['expression_evaluator']['id'])) {
             $container
                 ->getDefinition('jms_serializer.deserialization_graph_navigator_factory')

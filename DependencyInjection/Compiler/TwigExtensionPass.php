@@ -11,6 +11,10 @@ class TwigExtensionPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
+        if (!$container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper')) {
+            return;
+        }
+
         if (!$container->hasDefinition('twig.runtime_loader')
             || !class_exists(SerializerRuntimeExtension::class)
             || !(interface_exists('Twig\RuntimeLoader\RuntimeLoaderInterface') || interface_exists('Twig_RuntimeLoaderInterface'))
