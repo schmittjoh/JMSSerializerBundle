@@ -14,6 +14,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
+use Symfony\Component\Templating\Helper\Helper;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -57,6 +58,10 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         if (!empty($config['property_naming']['id'])) {
             $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
+        }
+
+        if (!class_exists(Helper::class)) {
+            $container->removeDefinition('jms_serializer.templating.helper.serializer');
         }
 
         $bundles = $container->getParameter('kernel.bundles');
