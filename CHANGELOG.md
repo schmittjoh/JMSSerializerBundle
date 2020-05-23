@@ -1,4 +1,23 @@
-# Change Log
+# Changelog
+
+## [3.7.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.7.0) (2020-05-23)
+
+**Implemented enhancements:**
+
+- Add support for PHP 7.4 typed properties  [\#798](https://github.com/schmittjoh/JMSSerializerBundle/pull/798) ([goetas](https://github.com/goetas))
+
+**Fixed bugs:**
+
+- Missing dependency symfony/templating ? [\#799](https://github.com/schmittjoh/JMSSerializerBundle/issues/799)
+- \[DefaultContext\] ContextFactoryInterface aliases not updated when using defaultContext.id config [\#781](https://github.com/schmittjoh/JMSSerializerBundle/issues/781)
+- Conditional loading of templating and twig extensions [\#800](https://github.com/schmittjoh/JMSSerializerBundle/pull/800) ([goetas](https://github.com/goetas))
+
+**Merged pull requests:**
+
+- add .gitattributes [\#792](https://github.com/schmittjoh/JMSSerializerBundle/pull/792) ([Tobion](https://github.com/Tobion))
+- \[doc\] Removed confusing JSON\_PRETTY\_PRINT suggestion from json\_deserialization [\#787](https://github.com/schmittjoh/JMSSerializerBundle/pull/787) ([wouterj](https://github.com/wouterj))
+- Symfony 5 parameter doc fix [\#783](https://github.com/schmittjoh/JMSSerializerBundle/pull/783) ([michaljusiega](https://github.com/michaljusiega))
+- \[defaultContext\] update ContextFactoryInterface aliases [\#782](https://github.com/schmittjoh/JMSSerializerBundle/pull/782) ([alexandre-abrioux](https://github.com/alexandre-abrioux))
 
 ## [3.5.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.5.0) (2019-11-29)
 
