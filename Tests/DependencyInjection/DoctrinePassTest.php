@@ -6,6 +6,7 @@ use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
 class DoctrinePassTest extends TestCase
 {
@@ -23,7 +24,15 @@ class DoctrinePassTest extends TestCase
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', array());
 
+        $pass = new DoctrinePass();
+        $container->addCompilerPass($pass);
+
         $loader->load(['jms_serializer' => $configs], $container);
+
+        $container->register('jms_serializer.object_constructor', 'stdClass')->setPublic(true);
+        $container->register('jms_serializer.metadata_driver', 'stdClass')->setPublic(true);
+        $container->register('annotation_reader', 'stdClass');
+
         return $container;
     }
 
@@ -32,69 +41,84 @@ class DoctrinePassTest extends TestCase
         $container = $this->getContainer(array(
             'metadata' => array('infer_types_from_doctrine_metadata' => false)
         ));
-        $container->register('doctrine.orm.entity_manager');
+        $container->register('doctrine.orm.entity_manager', 'stdClass');
 
-        $pass = new DoctrinePass();
-        $pass->process($container);
+        $container->compile();
 
-        $alias = $container->getAlias('jms_serializer.object_constructor');
-        $this->assertFalse($alias->isPublic());
+        $constructor = $container->findDefinition('jms_serializer.object_constructor');
+        $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$alias);
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
+
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
     }
 
     public function testOrm()
     {
         $container = $this->getContainer();
-        $container->register('doctrine.orm.entity_manager');
+        $container->register('doctrine.orm.entity_manager', 'stdClass');
+        $container->register('doctrine', 'stdClass');
 
-        $pass = new DoctrinePass();
-        $pass->process($container);
+        $container->compile();
 
-        $alias = $container->getAlias('jms_serializer.object_constructor');
-        $this->assertTrue($alias->isPublic());
+        $constructor = $container->findDefinition('jms_serializer.object_constructor');
+        $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$alias);
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
     }
 
     public function testOdm()
     {
         $container = $this->getContainer();
-        $container->register('doctrine_phpcr.odm.document_manager');
+        $container->register('doctrine_phpcr.odm.document_manager', 'stdClass');
+        $container->register('doctrine_phpcr', 'stdClass');
 
-        $pass = new DoctrinePass();
-        $pass->process($container);
+        $container->compile();
 
-        $alias = $container->getAlias('jms_serializer.object_constructor');
-        $this->assertTrue($alias->isPublic());
+        $constructor = $container->findDefinition('jms_serializer.object_constructor');
+        $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertEquals('jms_serializer.doctrine_phpcr_object_constructor', (string)$alias);
-
-        $def = $container->getDefinition('jms_serializer.doctrine_phpcr_object_constructor');
-        $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$def->getArgument(1));
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
     }
 
     public function testOrmAndOdm()
     {
         $container = $this->getContainer();
+        $container->register('doctrine.orm.entity_manager', 'stdClass');
+        $container->register('doctrine', 'stdClass');
+        $container->register('doctrine_phpcr.odm.document_manager', 'stdClass');
+        $container->register('doctrine_phpcr', 'stdClass');
 
-        $container->register('doctrine_phpcr.odm.document_manager');
-        $container->register('doctrine.orm.entity_manager');
+        $container->compile();
 
-        $pass = new DoctrinePass();
-        $pass->process($container);
+        $constructor = $container->findDefinition('jms_serializer.object_constructor');
+        $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
 
-        $alias = $container->getAlias('jms_serializer.object_constructor');
-        $this->assertTrue($alias->isPublic());
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
+        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
 
-        $this->assertEquals('jms_serializer.doctrine_object_constructor', (string)$alias);
+    }
 
-        $def = $container->getDefinition('jms_serializer.doctrine_object_constructor');
-        $this->assertEquals('jms_serializer.doctrine_phpcr_object_constructor', (string)$def->getArgument(1));
+    private static function assertDefinitionIsOfType(ContainerBuilder $builder, Definition $definition, string $class)
+    {
+        if ($definition->getClass() === $class) {
+            return true;
+        }
 
-        $def = $container->getDefinition('jms_serializer.doctrine_phpcr_object_constructor');
-        $this->assertEquals('jms_serializer.unserialize_object_constructor', (string)$def->getArgument(1));
+        foreach ($definition->getArguments() as $argument) {
+            if ($argument instanceof Definition && self::assertDefinitionIsOfType($builder, $argument, $class)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

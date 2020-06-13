@@ -28,31 +28,18 @@ class DoctrinePass implements CompilerPassInterface
             }
         }
 
-        if (empty($registries)) {
-            return;
-        }
-
-        $serviceTemplates = array(
-            'jms_serializer.metadata_driver' => array('template' => 'jms_serializer.metadata.%s_type_driver', 'position' => 0),
-            'jms_serializer.object_constructor' => array('template' => 'jms_serializer.%s_object_constructor', 'position' => 1)
-        );
-
-        $registry = array_pop($registries);
-        $previousId = array();
-        foreach ($serviceTemplates as $serviceName => $service) {
-            $previousId[$serviceName] = sprintf($service['template'], $registry);
-            $container->setAlias($serviceName, new Alias($previousId[$serviceName], true));
-        }
-
         foreach ($registries as $registry) {
-            foreach ($serviceTemplates as $serviceName => $service) {
-                $id = sprintf($service['template'], $registry);
-                $container
-                    ->findDefinition($id)
-                    ->replaceArgument($service['position'], new Reference($previousId[$serviceName]));
-                $previousId[$serviceName] = $id;
-                $container->setAlias($serviceName, new Alias($previousId[$serviceName], true));
-            }
+            $container->getDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))
+                ->setDecoratedService('jms_serializer.metadata_driver')
+                ->replaceArgument(0, new Reference(sprintf('jms_serializer.metadata.%s_type_driver.inner', $registry)))
+                ->setPublic(false)
+                ;
+
+            $container->getDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))
+                ->setDecoratedService('jms_serializer.object_constructor')
+                ->replaceArgument(1, new Reference(sprintf('jms_serializer.%s_object_constructor.inner', $registry)))
+                ->setPublic(false)
+                ;
         }
     }
 }

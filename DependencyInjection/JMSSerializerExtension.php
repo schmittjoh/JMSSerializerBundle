@@ -108,9 +108,11 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
         }
 
-        if (PHP_VERSION_ID < 70400 || !class_exists(TypedPropertiesDriver::class)) {
-            $container
-                ->setAlias('jms_serializer.metadata_driver', new Alias('jms_serializer.metadata.chain_driver', true));
+        if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
+            $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
+                ->setDecoratedService('jms_serializer.metadata_driver')
+                ->setPublic(false)
+            ;
         }
 
         $container
