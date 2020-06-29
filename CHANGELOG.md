@@ -6,7 +6,7 @@
 
 - Use symfony decorators [\#803](https://github.com/schmittjoh/JMSSerializerBundle/pull/803) ([goetas](https://github.com/goetas))
 
-## [3.7.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.7.0) (2020-05-23)
+## [3.6.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.6.0) (2020-05-23)
 
 **Implemented enhancements:**
 
