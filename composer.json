@@ -40,6 +40,7 @@
     },
     "suggest": {
         "jms/di-extra-bundle": "Required to get lazy loading (de)serialization visitors, ^1.3",
+        "symfony/expression-language": "Required for opcache preloading, ^3.0 || ^4.0 || ^5.0",
         "symfony/finder": "Required for cache warmup, supported versions ^3.0|^4.0"
     },
     "config": {
