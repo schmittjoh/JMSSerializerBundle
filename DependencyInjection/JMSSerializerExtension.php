@@ -117,7 +117,8 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $container
             ->getDefinition('jms_serializer.metadata_factory')
-            ->replaceArgument(2, $config['metadata']['debug']);
+            ->replaceArgument(2, $config['metadata']['debug'])
+            ->addMethodCall('setIncludeInterfaces', [$config['metadata']['include_interfaces']]);
 
         // warmup
         if (!empty($config['metadata']['warmup']['paths']['included']) && class_exists(Finder::class)) {

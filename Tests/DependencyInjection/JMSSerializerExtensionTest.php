@@ -7,6 +7,8 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
@@ -629,6 +631,36 @@ class JMSSerializerExtensionTest extends TestCase
             ->loadMetadataForClass(new \ReflectionClass(TypedObject::class));
 
         self::assertSame('int', $metadata->propertyMetadata['foo']->type['name']);
+    }
+
+    public function testIncludeInterfaces()
+    {
+        $container = $this->getContainerForConfig([
+            [
+                'metadata' => [
+                    'include_interfaces' => true,
+                ],
+            ]
+        ]);
+        $serializer = $container->get('jms_serializer');
+
+        $actual = $serializer->toArray(
+            new AnObject(
+                'foo',
+                new AnInterfaceImplementation(
+                    'bar'
+                )
+            )
+        );
+        $expected = [
+            'foo' => 'foo',
+            'bar' => [
+                'bar' => 'bar',
+                'type' => 'a',
+            ],
+        ];
+
+        self::assertSame($expected, $actual);
     }
 
     private function getContainerForConfigLoad(array $configs, callable $configurator = null)
