@@ -6,6 +6,7 @@ use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndS
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleHandler;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -40,12 +41,11 @@ class EventSubscribersAndListenersPassTest extends TestCase
         return $container;
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The tag "jms_serializer.event_listener" of service "my_listener" requires an attribute named "event".
-     */
     public function testEventListenerMustHaveEventDefined()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The tag "jms_serializer.event_listener" of service "my_listener" requires an attribute named "event".');
+
         $container = $this->getContainer();
 
         $def = new Definition('Foo');
@@ -209,12 +209,11 @@ class EventSubscribersAndListenersPassTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The service "my_listener" (class: JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject) does not implement the EventSubscriberInterface.
-     */
     public function testEventSubscriberInterface()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The service "my_listener" (class: JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject) does not implement the EventSubscriberInterface.');
+
         $container = $this->getContainer();
 
         $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject');

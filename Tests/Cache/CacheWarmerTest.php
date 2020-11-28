@@ -11,7 +11,7 @@ class CacheWarmerTest extends TestCase
 {
     private $metadataFactory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->metadataFactory = $this->getMockBuilder(MetadataFactoryInterface::class)
             ->disableOriginalConstructor()

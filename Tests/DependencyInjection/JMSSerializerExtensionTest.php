@@ -3,6 +3,7 @@
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -13,18 +14,20 @@ use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\TypedObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 
 class JMSSerializerExtensionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->clearTempDir();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->clearTempDir();
     }
@@ -334,12 +337,11 @@ class JMSSerializerExtensionTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\RuntimeException
-     * @expectedExceptionMessage  The metadata directory "foo_dir" does not exist for the namespace "foo_ns"
-     */
     public function testLoadNotExistentMetadataDir()
     {
+        $this->expectException(\JMS\Serializer\Exception\RuntimeException::class);
+        $this->expectExceptionMessage("The metadata directory \"foo_dir\" does not exist for the namespace \"foo_ns\"");
+
         $this->getContainerForConfig(array(array(
             'metadata' => [
                 'directories' => [
@@ -441,12 +443,11 @@ class JMSSerializerExtensionTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Expected either integer value or a array of the JSON_ constants.
-     */
     public function testEmptyJsonVisitorOptions()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Expected either integer value or a array of the JSON_ constants.");
+
         $this->getContainerForConfig([
             [
                 'visitors' => [
@@ -484,11 +485,10 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('{"v_prop_name":"foo"}', $serializer->serialize($object, 'json'));
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     */
     public function testExpressionLanguageDisabledVirtualProperties()
     {
+        $this->expectException(ExpressionLanguageRequiredException::class);
+
         if (!interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
             $this->markTestSkipped("The Symfony Expression Language is not available");
         }
@@ -499,12 +499,11 @@ class JMSSerializerExtensionTest extends TestCase
         $serializer->serialize($object, 'json');
     }
 
-    /**
-     * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
-     * @expectedExceptionMessage  To use conditional exclude/expose in JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage you must configure the expression language.
-     */
     public function testExpressionLanguageNotLoaded()
     {
+        $this->expectException(ExpressionLanguageRequiredException::class);
+        $this->expectExceptionMessage("To use conditional exclude/expose in JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage you must configure the expression language.");
+
         $container = $this->getContainerForConfig(array(array('expression_evaluator' => array('id' => null))));
         $serializer = $container->get('jms_serializer');
         // test that all components have been wired correctly
@@ -512,12 +511,11 @@ class JMSSerializerExtensionTest extends TestCase
         $serializer->serialize($object, 'json');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features
-     */
     public function testExpressionInvalidEvaluator()
     {
+        $this->expectExceptionMessage('Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features');
+        $this->expectException(InvalidConfigurationException::class);
+
         if (interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
             $this->markTestSkipped('To pass this test the "symfony/expression-language" component should be available');
         }
