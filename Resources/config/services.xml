@@ -87,6 +87,10 @@
             <argument id="jms_serializer.metadata.typed_properties_driver.inner" type="service"/>
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
         </service>
+        <service id="jms_serializer.metadata.doc_block_driver" class="JMS\Serializer\Metadata\Driver\DocBlockDriver" public="false">
+            <argument id="jms_serializer.metadata.doc_block_driver.inner" type="service"/>
+            <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+        </service>
 
         <service id="jms_serializer.metadata.service_locator" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
             <argument type="collection">

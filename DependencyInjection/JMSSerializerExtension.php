@@ -7,6 +7,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -106,6 +107,13 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         if (false === $config['metadata']['infer_types_from_doctrine_metadata']) {
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
+        }
+
+        if (class_exists(DocBlockDriver::class)) {
+            $container->getDefinition('jms_serializer.metadata.doc_block_driver')
+                ->setDecoratedService('jms_serializer.metadata_driver')
+                ->setPublic(false)
+            ;
         }
 
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
