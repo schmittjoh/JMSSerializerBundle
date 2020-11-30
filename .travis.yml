@@ -12,7 +12,7 @@ php:
 env:
   - SYMFONY_VERSION=^3.4
   - SYMFONY_VERSION=^4.4
-  - SYMFONY_VERSION=^5.0
+  - SYMFONY_VERSION=^5.2
 
 matrix:
   fast_finish: true
