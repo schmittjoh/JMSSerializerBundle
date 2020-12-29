@@ -12,6 +12,8 @@ php:
 env:
   - SYMFONY_VERSION=^3.4
   - SYMFONY_VERSION=^4.4
+  - SYMFONY_VERSION=^5.0
+  - SYMFONY_VERSION=^5.1
   - SYMFONY_VERSION=^5.2
 
 matrix:
@@ -30,6 +32,5 @@ script:
 after_success:
     - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover clover
-
 
 
