@@ -42,10 +42,12 @@ class NamingStrategyTest extends TestCase
     }
 }
 
+// phpcs:disable
 class CustomNamingStrategy implements PropertyNamingStrategyInterface
 {
-    public function translateName(PropertyMetadata $property):string
+    public function translateName(PropertyMetadata $property): string
     {
         return 'foo';
     }
 }
+// phpcs:enable

@@ -46,4 +46,3 @@ class CacheWarmerTest extends TestCase
         $warmer->warmUp("foo");
     }
 }
-

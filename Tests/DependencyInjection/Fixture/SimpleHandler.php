@@ -15,6 +15,5 @@ class SimpleHandler implements EventSubscriberInterface
 
     public function onEventName()
     {
-
     }
 }

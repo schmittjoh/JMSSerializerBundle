@@ -41,8 +41,10 @@ class EventSubscribersAndListenersPassTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException RuntimeException
      * @expectedExceptionMessage The tag "jms_serializer.event_listener" of service "my_listener" requires an attribute named "event".
+     * phpcs:enable
      */
     public function testEventListenerMustHaveEventDefined()
     {
@@ -210,8 +212,10 @@ class EventSubscribersAndListenersPassTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException RuntimeException
      * @expectedExceptionMessage The service "my_listener" (class: JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject) does not implement the EventSubscriberInterface.
+     * phpcs:enable
      */
     public function testEventSubscriberInterface()
     {
@@ -263,4 +267,3 @@ class EventSubscribersAndListenersPassTest extends TestCase
         }
     }
 }
-

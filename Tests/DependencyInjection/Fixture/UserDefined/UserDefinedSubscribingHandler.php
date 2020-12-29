@@ -1,4 +1,5 @@
 <?php
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined;
 
 use JMS\Serializer\GraphNavigator;
@@ -18,4 +19,3 @@ class UserDefinedSubscribingHandler implements SubscribingHandlerInterface
         );
     }
 }
-

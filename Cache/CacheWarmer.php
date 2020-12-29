@@ -24,8 +24,11 @@ class CacheWarmer implements CacheWarmerInterface
      */
     private $excludePaths = array();
 
-    public function __construct(array $includePaths, MetadataFactoryInterface $metadataFactory, array $excludePaths = array())
-    {
+    public function __construct(
+        array $includePaths,
+        MetadataFactoryInterface $metadataFactory,
+        array $excludePaths = array()
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->includePaths = $includePaths;
         $this->excludePaths = $excludePaths;
@@ -57,11 +60,15 @@ class CacheWarmer implements CacheWarmerInterface
     /**
      * Extract the classes in the given file.
      *
+     * phpcs:disable
      * This has been copied from https://github.com/composer/composer/blob/bfed974ae969635e622c4844e5e69526d8459baf/src/Composer/Autoload/ClassMapGenerator.php#L120-L214
+     * phpcs:enable
      *
-     * @param  string $path The file to check
-     * @throws \RuntimeException
+     * @param string $path The file to check
+     *
      * @return array             The found classes
+     *
+     * @throws \RuntimeException
      */
     private static function findClasses($path)
     {
@@ -97,9 +104,17 @@ class CacheWarmer implements CacheWarmerInterface
         }
 
         // strip heredocs/nowdocs
-        $contents = preg_replace('{<<<\s*(\'?)(\w+)\\1(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)\\2(?=\r\n|\n|\r|;)}s', 'null', $contents);
+        $contents = preg_replace(
+            '{<<<\s*(\'?)(\w+)\\1(?:\r\n|\n|\r)(?:.*?)(?:\r\n|\n|\r)\\2(?=\r\n|\n|\r|;)}s',
+            'null',
+            $contents
+        );
         // strip strings
-        $contents = preg_replace('{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s', 'null', $contents);
+        $contents = preg_replace(
+            '{"[^"\\\\]*+(\\\\.[^"\\\\]*+)*+"|\'[^\'\\\\]*+(\\\\.[^\'\\\\]*+)*+\'}s',
+            'null',
+            $contents
+        );
         // strip leading non-php code if needed
         if (substr($contents, 0, 2) !== '<?') {
             $contents = preg_replace('{^.+?<\?}s', '<?', $contents, 1, $replacements);
@@ -115,12 +130,14 @@ class CacheWarmer implements CacheWarmerInterface
             $contents = substr($contents, 0, $pos);
         }
 
+        // phpcs:disable
         preg_match_all('{
             (?:
                  \b(?<![\$:>])(?P<type>class|interface' . $extraTypes . ') \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
                | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s++[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\s*+\\\\\s*+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+)? \s*+ [\{;]
             )
         }ix', $contents, $matches);
+        // phpcs:enable
 
         $classes = array();
         $namespace = '';

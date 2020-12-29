@@ -16,7 +16,10 @@ class ConfigurationTest extends TestCase
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', array('JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle'));
+        $container->setParameter(
+            'kernel.bundles',
+            array('JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle')
+        );
 
         $bundle = new JMSSerializerBundle();
 
@@ -187,8 +190,14 @@ class ConfigurationTest extends TestCase
         $this->assertArrayHasKey('id', $config['default_context']['serialization']);
         $this->assertArrayHasKey('id', $config['default_context']['deserialization']);
 
-        $this->assertSame($configArray['default_context']['serialization'], $config['default_context']['serialization']['id']);
-        $this->assertSame($configArray['default_context']['deserialization'], $config['default_context']['deserialization']['id']);
+        $this->assertSame(
+            $configArray['default_context']['serialization'],
+            $config['default_context']['serialization']['id']
+        );
+        $this->assertSame(
+            $configArray['default_context']['deserialization'],
+            $config['default_context']['deserialization']['id']
+        );
 
         $this->assertArrayHasKey('property_naming', $config);
         $this->assertArrayHasKey('expression_evaluator', $config);
@@ -253,6 +262,5 @@ class ConfigurationTest extends TestCase
         $config = $processor->processConfiguration(new Configuration(true), []);
 
         $this->assertEquals(1024 /*JSON_PRESERVE_ZERO_FRACTION*/, $config['visitors']['json_serialization']['options']);
-
     }
 }

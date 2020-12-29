@@ -88,10 +88,13 @@ class JMSSerializerExtensionTest extends TestCase
         $bar = new Definition('stdClass');
         $bar->setPublic(true);
 
-        $container = $this->getContainerForConfig(array($config), function (ContainerBuilder $containerBuilder) use ($foo, $bar) {
-            $containerBuilder->setDefinition('foo', $foo);
-            $containerBuilder->setDefinition('bar', $bar);
-        });
+        $container = $this->getContainerForConfig(
+            array($config),
+            function (ContainerBuilder $containerBuilder) use ($foo, $bar) {
+                $containerBuilder->setDefinition('foo', $foo);
+                $containerBuilder->setDefinition('bar', $bar);
+            }
+        );
 
         $def = $container->getDefinition('jms_serializer');
 
@@ -101,8 +104,10 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('foo', (string)$serializationFactoryArg);
         $this->assertEquals('bar', (string)$deSerializationFactoryArg);
 
-        $serializationContextFactoryAlias = $container->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface');
-        $deserializationContextFactoryAlias = $container->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface');
+        $serializationContextFactoryAlias = $container
+            ->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface');
+        $deserializationContextFactoryAlias = $container
+            ->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface');
 
         $this->assertEquals('foo', (string)$serializationContextFactoryAlias);
         $this->assertEquals('bar', (string)$deserializationContextFactoryAlias);
@@ -161,7 +166,10 @@ class JMSSerializerExtensionTest extends TestCase
             $values = $config['default_context'][$configKey];
 
             $this->assertSame($values['version'], $this->getDefinitionMethodCall($def, 'setVersion')[0]);
-            $this->assertSame($values['serialize_null'], $this->getDefinitionMethodCall($def, 'setSerializeNulls')[0]);
+            $this->assertSame(
+                $values['serialize_null'],
+                $this->getDefinitionMethodCall($def, 'setSerializeNulls')[0]
+            );
             $this->assertSame($values['attributes'], $this->getDefinitionMethodCall($def, 'setAttributes')[0]);
             $this->assertSame($values['groups'], $this->getDefinitionMethodCall($def, 'setGroups')[0]);
             $this->assertSame($values['groups'], $this->getDefinitionMethodCall($def, 'setGroups')[0]);
@@ -217,37 +225,91 @@ class JMSSerializerExtensionTest extends TestCase
             $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
             $container->getAlias('JMS\Serializer\SerializerInterface')->setPublic(true);
             $container->getAlias('JMS\Serializer\ArrayTransformerInterface')->setPublic(true);
-            $container->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')->setPublic(true);
-            $container->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface')->setPublic(true);
+            $container->getAlias('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')
+                ->setPublic(true);
+            $container->getAlias('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface')
+                ->setPublic(true);
         });
 
         $simpleObject = new SimpleObject('foo', 'bar');
         $versionedObject = new VersionedObject('foo', 'bar');
         $serializer = $container->get('jms_serializer');
 
-        $this->assertTrue($container->has('JMS\Serializer\SerializerInterface'), 'Alias should be defined to allow autowiring');
-        $this->assertTrue($container->has('JMS\Serializer\ArrayTransformerInterface'), 'Alias should be defined to allow autowiring');
-        $this->assertTrue($container->has('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface'), 'Alias should be defined to allow autowiring');
-        $this->assertTrue($container->has('JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface'), 'Alias should be defined to allow autowiring');
+        $this->assertTrue(
+            $container->has('JMS\Serializer\SerializerInterface'),
+            'Alias should be defined to allow autowiring'
+        );
+        $this->assertTrue(
+            $container->has('JMS\Serializer\ArrayTransformerInterface'),
+            'Alias should be defined to allow autowiring'
+        );
+        $this->assertTrue(
+            $container->has('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface'),
+            'Alias should be defined to allow autowiring'
+        );
+        $this->assertTrue(
+            $container->has(
+                'JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface'
+            ),
+            'Alias should be defined to allow autowiring'
+        );
 
-        $this->assertFalse($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
+        $this->assertFalse(
+            $container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0)
+        );
 
         // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
-        $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
-        $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
+        $this->assertTrue(
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0)
+        );
+        $this->assertFalse(
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1)
+        );
 
-        $this->assertEquals("null", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
+        $this->assertEquals(
+            "null",
+            $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2)
+        );
 
         // test that all components have been wired correctly
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
-        $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'json'), get_class($simpleObject), 'json'));
-        $this->assertEquals($simpleObject, $serializer->deserialize($serializer->serialize($simpleObject, 'xml'), get_class($simpleObject), 'xml'));
+        $this->assertEquals(
+            $simpleObject,
+            $serializer->deserialize(
+                $serializer->serialize($simpleObject, 'json'),
+                get_class($simpleObject),
+                'json'
+            )
+        );
+        $this->assertEquals(
+            $simpleObject,
+            $serializer->deserialize(
+                $serializer->serialize($simpleObject, 'xml'),
+                get_class($simpleObject),
+                'xml'
+            )
+        );
 
-        $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('0.0.1')));
+        $this->assertEquals(
+            json_encode(array('name' => 'foo')),
+            $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('0.0.1'))
+        );
 
-        $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('1.1.1')));
+        $this->assertEquals(
+            json_encode(array('name' => 'bar')),
+            $serializer->serialize($versionedObject, 'json', SerializationContext::create()->setVersion('1.1.1'))
+        );
 
-        $this->assertEquals(json_encode(array('name' => 'foo')), $serializer->serialize($versionedObject, 'json', $container->get('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')->createSerializationContext()->setVersion('0.0.1')));
+        $this->assertEquals(
+            json_encode(array('name' => 'foo')),
+            $serializer->serialize(
+                $versionedObject,
+                'json',
+                $container->get('JMS\Serializer\ContextFactory\SerializationContextFactoryInterface')
+                    ->createSerializationContext()
+                    ->setVersion('0.0.1')
+            )
+        );
     }
 
     public function testLoadWithOptions()
@@ -281,7 +343,10 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
         $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
 
-        $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
+        $this->assertEquals(
+            "exception",
+            $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2)
+        );
     }
 
     public function testLoadExistentMetadataDir()
@@ -500,8 +565,10 @@ class JMSSerializerExtensionTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException \JMS\Serializer\Exception\ExpressionLanguageRequiredException
      * @expectedExceptionMessage  To use conditional exclude/expose in JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage you must configure the expression language.
+     * phpcs:enable
      */
     public function testExpressionLanguageNotLoaded()
     {
@@ -513,8 +580,10 @@ class JMSSerializerExtensionTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      * @expectedExceptionMessage Invalid configuration for path "jms_serializer.expression_evaluator.id": You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features
+     * phpcs:enable
      */
     public function testExpressionInvalidEvaluator()
     {
@@ -601,7 +670,9 @@ class JMSSerializerExtensionTest extends TestCase
         $autoconfigureInstance = $container->getAutoconfiguredInstanceof();
 
         $this->assertTrue(array_key_exists(EventSubscriberInterface::class, $autoconfigureInstance));
-        $this->assertTrue($autoconfigureInstance[EventSubscriberInterface::class]->hasTag('jms_serializer.event_subscriber'));
+        $this->assertTrue(
+            $autoconfigureInstance[EventSubscriberInterface::class]->hasTag('jms_serializer.event_subscriber')
+        );
     }
 
     public function testAutoconfigureHandlers()
@@ -610,7 +681,9 @@ class JMSSerializerExtensionTest extends TestCase
         $autoconfigureInstance = $container->getAutoconfiguredInstanceof();
 
         $this->assertTrue(array_key_exists(SubscribingHandlerInterface::class, $autoconfigureInstance));
-        $this->assertTrue($autoconfigureInstance[SubscribingHandlerInterface::class]->hasTag('jms_serializer.subscribing_handler'));
+        $this->assertTrue(
+            $autoconfigureInstance[SubscribingHandlerInterface::class]->hasTag('jms_serializer.subscribing_handler')
+        );
     }
 
     public function testTypedDriverIsEnabled()
@@ -643,8 +716,14 @@ class JMSSerializerExtensionTest extends TestCase
         $container->setParameter('foo', 'bar');
         $container->set('annotation_reader', new AnnotationReader());
         $container->setDefinition('doctrine', new Definition(Registry::class));
-        $container->set('translator', $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock());
-        $container->set('debug.stopwatch', $this->getMockBuilder('Symfony\\Component\\Stopwatch\\Stopwatch')->getMock());
+        $container->set(
+            'translator',
+            $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock()
+        );
+        $container->set(
+            'debug.stopwatch',
+            $this->getMockBuilder('Symfony\\Component\\Stopwatch\\Stopwatch')->getMock()
+        );
         $container->registerExtension($extension);
         $extension->load($configs, $container);
 

@@ -19,4 +19,3 @@ class SubscribingHandler implements SubscribingHandlerInterface
         );
     }
 }
-

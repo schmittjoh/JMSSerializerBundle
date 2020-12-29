@@ -1,0 +1,25 @@
+name: Code style
+
+on:
+    pull_request:
+    push:
+        branches:
+            - master
+            - 2.x
+
+jobs:
+    php-cs-fixer:
+        name: PHP-CS-Fixer
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+
+            - name: Install dependencies
+              run: composer update --no-progress --no-interaction --prefer-dist
+
+            - name: Run script
+              run: vendor/bin/phpcs

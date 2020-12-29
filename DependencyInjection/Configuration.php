@@ -104,6 +104,7 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
+    // phpcs:disable
     private function addSerializersSection(NodeBuilder $builder)
     {
         $builder
@@ -138,7 +139,7 @@ class Configuration implements ConfigurationInterface
                             return null;
                         })
                         ->validate()
-                            ->always(function($v) {
+                            ->always(function ($v) {
                                 if (!empty($v) && !interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
                                     throw new InvalidArgumentException('You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features');
                                 }
@@ -201,10 +202,11 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
     }
+    // phpcs:enable
 
     private function addVisitorsSection(NodeBuilder $builder)
     {
-        $arrayNormalization = function($v) {
+        $arrayNormalization = function ($v) {
             $options = 0;
             foreach ($v as $option) {
                 if (is_numeric($option)) {
@@ -212,24 +214,32 @@ class Configuration implements ConfigurationInterface
                 } elseif (defined($option)) {
                     $options |= constant($option);
                 } else {
-                    throw new InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                    throw new InvalidArgumentException(sprintf(
+                        '%s, %s',
+                        'Expected either an integer representing one of the JSON_ constants',
+                        'or a string of the constant itself.'
+                    ));
                 }
             }
 
             return $options;
         };
-        $stringNormalization = function($v) {
+        $stringNormalization = function ($v) {
             if (is_numeric($v)) {
                 $value = (int) $v;
             } elseif (defined($v)) {
                 $value = constant($v);
             } else {
-                throw new InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                throw new InvalidArgumentException(sprintf(
+                    '%s, %s',
+                    'Expected either an integer representing one of the JSON_ constants',
+                    'or a string of the constant itself.'
+                ));
             }
 
             return $value;
         };
-        $arrayNormalizationXML = function($v) {
+        $arrayNormalizationXML = function ($v) {
             $options = 0;
             foreach ($v as $option) {
                 if (is_numeric($option)) {
@@ -237,34 +247,46 @@ class Configuration implements ConfigurationInterface
                 } elseif (defined($option)) {
                     $options |= constant($option);
                 } else {
-                    throw new InvalidArgumentException('Expected either an integer representing one of the LIBXML_ constants, or a string of the constant itself.');
+                    throw new InvalidArgumentException(sprintf(
+                        '%s, %s',
+                        'Expected either an integer representing one of the LIBXML_ constants',
+                        'or a string of the constant itself.'
+                    ));
                 }
             }
 
             return $options;
         };
-        $stringNormalizationXML = function($v) {
+        $stringNormalizationXML = function ($v) {
             if (is_numeric($v)) {
                 $value = (int) $v;
             } elseif (defined($v)) {
                 $value = constant($v);
             } else {
-                throw new InvalidArgumentException('Expected either an integer representing one of the LIBXML_ constants, or a string of the constant itself.');
+                throw new InvalidArgumentException(sprintf(
+                    '%s, %s',
+                    'Expected either an integer representing one of the LIBXML_ constants',
+                    'or a string of the constant itself.'
+                ));
             }
 
             return $value;
         };
 
-        $jsonValidation = function($v) {
+        $jsonValidation = function ($v) {
             if (!is_int($v)) {
-                throw new InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
+                throw new InvalidArgumentException(
+                    'Expected either integer value or a array of the JSON_ constants.'
+                );
             }
 
             return $v;
         };
-        $xmlValidation = function($v) {
+        $xmlValidation = function ($v) {
             if (!is_int($v)) {
-                throw new InvalidArgumentException('Expected either integer value or a array of the LIBXML_ constants.');
+                throw new InvalidArgumentException(
+                    'Expected either integer value or a array of the LIBXML_ constants.'
+                );
             }
 
             return $v;
@@ -387,8 +409,10 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('id')->cannotBeEmpty()->end()
                     ->scalarNode('serialize_null')
                         ->validate()->always(function ($v) {
-                            if (!in_array($v, array(true, false, NULL), true)){
-                                throw new InvalidTypeException("Expected boolean or NULL for the serialize_null option");
+                            if (!in_array($v, array(true, false, null), true)) {
+                                throw new InvalidTypeException(
+                                    "Expected boolean or NULL for the serialize_null option"
+                                );
                             }
                             return $v;
                         })

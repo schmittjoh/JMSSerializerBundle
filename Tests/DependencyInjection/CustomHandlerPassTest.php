@@ -107,8 +107,10 @@ class CustomHandlerPassTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException RuntimeException
      * @expectedExceptionMessage The direction "bar" of tag "jms_serializer.handler" of service "my_service" does not exist
+     * phpcs:enable
      */
     public function testHandlerIncorrectDirection()
     {
@@ -127,8 +129,10 @@ class CustomHandlerPassTest extends TestCase
     }
 
     /**
+     * phpcs:disable
      * @expectedException RuntimeException
      * @expectedExceptionMessage Each tag named "jms_serializer.handler" of service "my_service" must have at least two attributes: "type" and "format"
+     * phpcs:enable
      */
     public function testHandlerMustHaveTypeAndFormat()
     {
@@ -317,7 +321,9 @@ class CustomHandlerPassTest extends TestCase
         $def->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_service', $def);
 
-        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userDef = new Definition(
+            'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler'
+        );
         $userDef->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_custom_service', $userDef);
 
@@ -339,11 +345,15 @@ class CustomHandlerPassTest extends TestCase
         $def->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_service', $def);
 
-        $userDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userDef = new Definition(
+            'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler'
+        );
         $userDef->addTag('jms_serializer.subscribing_handler');
         $container->setDefinition('my_custom_service', $userDef);
 
-        $userExplicitDef = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler');
+        $userExplicitDef = new Definition(
+            'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\UserDefined\UserDefinedSubscribingHandler'
+        );
         $userExplicitDef->addTag('jms_serializer.subscribing_handler', ['priority' => -100]);
         $container->setDefinition('my_custom_explicit_service', $userExplicitDef);
 
@@ -356,5 +366,4 @@ class CustomHandlerPassTest extends TestCase
             1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'onDateTime']]]
         ], $args[1]);
     }
-
 }

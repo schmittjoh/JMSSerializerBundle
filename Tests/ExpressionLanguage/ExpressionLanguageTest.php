@@ -16,8 +16,19 @@ class ExpressionLanguageTest extends TestCase
         $exp->registerProvider($provider);
 
         $this->assertEquals('$this->get("foo")', $exp->compile("service('foo')"));
-        $this->assertEquals('$this->getParameter("foo")', $exp->compile("parameter('foo')"));
-        $this->assertEquals('call_user_func_array(array($this->get(\'security.authorization_checker\'), \'isGranted\'), array("foo", ))', $exp->compile("is_granted('foo')"));
+        $this->assertEquals(
+            '$this->getParameter("foo")',
+            $exp->compile("parameter('foo')")
+        );
+
+        $this->assertEquals(
+            sprintf(
+                'call_user_func_array(array(%s, %s)',
+                '$this->get(\'security.authorization_checker\'), \'isGranted\')',
+                'array("foo", )'
+            ),
+            $exp->compile("is_granted('foo')")
+        );
     }
 
     public function testFunctionProviderEvaluation()
@@ -43,7 +54,9 @@ class ExpressionLanguageTest extends TestCase
 
         $this->assertEquals('bar', $exp->evaluate("parameter('foo')", ['container' => $container]));
 
-        $authChecker = $this->getMockBuilder('JMS\SerializerBundle\Tests\ExpressionLanguage\AuthCheckerMock')->getMock();
+        $authChecker = $this
+            ->getMockBuilder('JMS\SerializerBundle\Tests\ExpressionLanguage\AuthCheckerMock')->getMock();
+
         $authChecker
             ->expects($this->once())
             ->method('isGranted')->with('foo')
@@ -60,11 +73,11 @@ class ExpressionLanguageTest extends TestCase
     }
 }
 
+// phpcs:disable
 class AuthCheckerMock
 {
     public function isGranted()
     {
-
     }
 }
-
+// phpcs:enable

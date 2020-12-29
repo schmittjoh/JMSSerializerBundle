@@ -68,4 +68,3 @@ class TwigExtensionPassTest extends TestCase
         $this->assertTrue($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
     }
 }
-

@@ -83,7 +83,6 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
                 ->setArgument(0, new Reference($config['expression_evaluator']['id']));
-
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
@@ -101,7 +100,13 @@ class JMSSerializerExtension extends ConfigurableExtension
                 throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
             }
         } else {
-            $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
+            $container->setAlias(
+                'jms_serializer.metadata.cache',
+                new Alias(
+                    $config['metadata']['cache'],
+                    false
+                )
+            );
         }
 
         if ($config['metadata']['infer_types_from_doctrine_metadata'] === false) {
@@ -149,16 +154,29 @@ class JMSSerializerExtension extends ConfigurableExtension
                 $bundleName = substr($pathParts[0], 1);
 
                 if (!isset($bundles[$bundleName])) {
-                    throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
+                    throw new RuntimeException(sprintf(
+                        'The bundle "%s" has not been registered with AppKernel. Available bundles: %s',
+                        $bundleName,
+                        implode(', ', array_keys($bundles))
+                    ));
                 }
 
                 $ref = new \ReflectionClass($bundles[$bundleName]);
-                $directory['path'] = dirname($ref->getFileName()) . substr($directory['path'], strlen('@' . $bundleName));
+                $directory['path'] = dirname(
+                    $ref->getFileName()
+                ) . substr(
+                    $directory['path'],
+                    strlen('@' . $bundleName)
+                );
             }
 
             $dir = rtrim($directory['path'], '\\/');
             if (!file_exists($dir)) {
-                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist for the namespace "%s"', $dir, $directory['namespace_prefix']));
+                throw new RuntimeException(sprintf(
+                    'The metadata directory "%s" does not exist for the namespace "%s"',
+                    $dir,
+                    $directory['namespace_prefix']
+                ));
             }
 
             $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
@@ -182,20 +200,41 @@ class JMSSerializerExtension extends ConfigurableExtension
             $contextFactory = $container->getDefinition($serviceId);
 
             if (isset($config['default_context'][$configKey]['id'])) {
-                $container->setAlias('jms_serializer.' . $configKey . '_context_factory', new Alias($config['default_context'][$configKey]['id'], true));
-                $container->setAlias('JMS\\Serializer\\ContextFactory\\' . ucfirst($configKey) . 'ContextFactoryInterface', new Alias($config['default_context'][$configKey]['id'], true));
+                $container->setAlias(
+                    'jms_serializer.' . $configKey . '_context_factory',
+                    new Alias(
+                        $config['default_context'][$configKey]['id'],
+                        true
+                    )
+                );
+                $container->setAlias(
+                    'JMS\\Serializer\\ContextFactory\\' . ucfirst($configKey) . 'ContextFactoryInterface',
+                    new Alias(
+                        $config['default_context'][$configKey]['id'],
+                        true
+                    )
+                );
                 $container->removeDefinition($serviceId);
                 continue;
             }
 
             if (isset($config['default_context'][$configKey]['version'])) {
-                $contextFactory->addMethodCall('setVersion', [$config['default_context'][$configKey]['version']]);
+                $contextFactory->addMethodCall(
+                    'setVersion',
+                    [$config['default_context'][$configKey]['version']]
+                );
             }
             if (isset($config['default_context'][$configKey]['serialize_null'])) {
-                $contextFactory->addMethodCall('setSerializeNulls', [$config['default_context'][$configKey]['serialize_null']]);
+                $contextFactory->addMethodCall(
+                    'setSerializeNulls',
+                    [$config['default_context'][$configKey]['serialize_null']]
+                );
             }
             if (!empty($config['default_context'][$configKey]['attributes'])) {
-                $contextFactory->addMethodCall('setAttributes', [$config['default_context'][$configKey]['attributes']]);
+                $contextFactory->addMethodCall(
+                    'setAttributes',
+                    [$config['default_context'][$configKey]['attributes']]
+                );
             }
             if (!empty($config['default_context'][$configKey]['groups'])) {
                 $contextFactory->addMethodCall('setGroups', [$config['default_context'][$configKey]['groups']]);
@@ -253,11 +292,17 @@ class JMSSerializerExtension extends ConfigurableExtension
         // xml (deserialization)
         if (!empty($config['visitors']['xml_deserialization']['doctype_whitelist'])) {
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
-                ->addMethodCall('setDoctypeWhitelist', [$config['visitors']['xml_deserialization']['doctype_whitelist']]);
+                ->addMethodCall(
+                    'setDoctypeWhitelist',
+                    [$config['visitors']['xml_deserialization']['doctype_whitelist']]
+                );
         }
         if (!empty($config['visitors']['xml_deserialization']['external_entities'])) {
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
-                ->addMethodCall('enableExternalEntities', [$config['visitors']['xml_deserialization']['external_entities']]);
+                ->addMethodCall(
+                    'enableExternalEntities',
+                    [$config['visitors']['xml_deserialization']['external_entities']]
+                );
         }
         if (!empty($config['visitors']['xml_deserialization']['options'])) {
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')

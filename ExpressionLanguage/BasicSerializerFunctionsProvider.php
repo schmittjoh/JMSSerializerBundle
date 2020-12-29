@@ -21,7 +21,13 @@ class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInte
                 return $variables['container']->getParameter($value);
             }),
             new ExpressionFunction('is_granted', function ($attribute, $object = null) {
-                return sprintf('call_user_func_array(array($this->get(\'security.authorization_checker\'), \'isGranted\'), array(%s, %s))', $attribute, $object);
+
+                return sprintf(
+                    'call_user_func_array(array(%s, array(%s, %s))',
+                    '$this->get(\'security.authorization_checker\'), \'isGranted\')',
+                    $attribute,
+                    $object
+                );
             }, function (array $variables, $attribute, $object = null) {
                 return call_user_func_array(
                     array($variables['container']->get('security.authorization_checker'), 'isGranted'),

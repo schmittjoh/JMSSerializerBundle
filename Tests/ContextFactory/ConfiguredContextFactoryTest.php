@@ -34,8 +34,7 @@ class ConfiguredContextFactoryTest extends TestCase
         $expectedInterface,
         $expectedContextClass,
         $factoryMethod
-    )
-    {
+    ) {
         $object = new ConfiguredContextFactory();
 
         $object->setVersion($version);

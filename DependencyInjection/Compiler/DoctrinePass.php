@@ -11,7 +11,8 @@ class DoctrinePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata')
+        if (
+            $container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata')
             && $container->getParameter('jms_serializer.infer_types_from_doctrine_metadata') === false
         ) {
             return;

@@ -21,8 +21,7 @@ class ExpressionFunctionProviderPass implements CompilerPassInterface
             foreach (array_keys($container->findTaggedServiceIds('jms.expression.function_provider')) as $id) {
                 $registryDefinition->addMethodCall('registerProvider', [new Reference($id)]);
             }
-        } catch (ServiceNotFoundException $exception){
-
+        } catch (ServiceNotFoundException $exception) {
         }
     }
 }

@@ -48,11 +48,29 @@ class DoctrinePassTest extends TestCase
         $constructor = $container->findDefinition('jms_serializer.object_constructor');
         $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertFalse(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
+        $this->assertFalse(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
 
-        $this->assertFalse(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
+        $this->assertFalse(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'
+        ));
+
+        $this->assertFalse(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
+
+        $this->assertFalse(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'
+        ));
     }
 
     public function testOrm()
@@ -66,8 +84,16 @@ class DoctrinePassTest extends TestCase
         $constructor = $container->findDefinition('jms_serializer.object_constructor');
         $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'
+        ));
     }
 
     public function testOdm()
@@ -81,8 +107,16 @@ class DoctrinePassTest extends TestCase
         $constructor = $container->findDefinition('jms_serializer.object_constructor');
         $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'
+        ));
     }
 
     public function testOrmAndOdm()
@@ -98,12 +132,27 @@ class DoctrinePassTest extends TestCase
         $constructor = $container->findDefinition('jms_serializer.object_constructor');
         $driver = $container->findDefinition('jms_serializer.metadata_driver');
 
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'
+        ));
 
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
-        $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
-
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $constructor,
+            'JMS\Serializer\Construction\DoctrineObjectConstructor'
+        ));
+        $this->assertTrue(self::assertDefinitionIsOfType(
+            $container,
+            $driver,
+            'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'
+        ));
     }
 
     private static function assertDefinitionIsOfType(ContainerBuilder $builder, Definition $definition, string $class)
@@ -121,4 +170,3 @@ class DoctrinePassTest extends TestCase
         return false;
     }
 }
-
