@@ -39,7 +39,7 @@ class FormErrorHandlerTranslationDomainPassTest extends TestCase
         $args = $container->findDefinition('jms_serializer.form_error_handler')->getArguments();
 
         $this->assertArrayHasKey(1, $args);
-        $this->assertContains('%validator.translation_domain%', $args[1]);
+        $this->assertSame('%validator.translation_domain%', $args[1]);
     }
 
     public function testNonExistentParameter()

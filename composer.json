@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.2 || ^8.0",
         "jms/serializer": "^3.0",
         "jms/metadata": "^2.3",
         "symfony/dependency-injection": "^3.3 || ^4.0 || ^5.0",
@@ -29,7 +29,7 @@
     },
     "require-dev": {
         "doctrine/orm": "^2.4",
-        "phpunit/phpunit": "^6.0|^7.0",
+        "phpunit/phpunit": "^8.0 || ^9.0",
         "symfony/expression-language": "^3.0 || ^4.0 || ^5.0",
         "symfony/finder": "^3.0 || ^4.0 || ^5.0",
         "symfony/form": "^3.0 || ^4.0 || ^5.0",

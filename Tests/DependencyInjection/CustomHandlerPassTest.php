@@ -2,10 +2,10 @@
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -106,12 +106,11 @@ class CustomHandlerPassTest extends TestCase
         ], $args[1]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The direction "bar" of tag "jms_serializer.handler" of service "my_service" does not exist
-     */
     public function testHandlerIncorrectDirection()
     {
+        $this->expectExceptionMessage('The direction "bar" of tag "jms_serializer.handler" of service "my_service" does not exist');
+        $this->expectException(RuntimeException::class);
+
         $container = $this->getContainer();
 
         $def = new Definition('Foo');
@@ -126,12 +125,11 @@ class CustomHandlerPassTest extends TestCase
         $pass->process($container);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Each tag named "jms_serializer.handler" of service "my_service" must have at least two attributes: "type" and "format"
-     */
     public function testHandlerMustHaveTypeAndFormat()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Each tag named "jms_serializer.handler" of service "my_service" must have at least two attributes: "type" and "format"');
+
         $container = $this->getContainer();
 
         $def = new Definition('Foo');
@@ -293,12 +291,11 @@ class CustomHandlerPassTest extends TestCase
         ], $args[1]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The service "my_service" must implement the SubscribingHandlerInterface
-     */
     public function testSubscribingHandlerInterface()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The service "my_service" must implement the SubscribingHandlerInterface');
+
         $container = $this->getContainer();
 
         $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject');

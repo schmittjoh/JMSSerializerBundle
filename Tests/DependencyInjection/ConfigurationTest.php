@@ -5,6 +5,7 @@ namespace JMS\SerializerBundle\Tests\DependencyInjection;
 use JMS\SerializerBundle\DependencyInjection\Configuration;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -52,11 +53,10 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testWrongObjectConstructorFallbackStrategyTriggersException()
     {
+        $this->expectException(InvalidConfigurationException::class);
+
         $processor = new Processor();
         $processor->processConfiguration(new Configuration(true), [
             'jms_serializer' => [
