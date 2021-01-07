@@ -1,5 +1,5 @@
 {%- extends '@WebProfiler/Profiler/layout.html.twig' -%}
-
+{%- import _self as helper -%}
 {%- block toolbar -%}
 
     {%- set icon -%}
@@ -8,6 +8,9 @@
         <span class="sf-toolbar-value">{{- collector.runs(1)|length }}</span>
         <span class="sf-toolbar-label">D:</span>
         <span class="sf-toolbar-value">{{- collector.runs(2)|length }}</span>
+        {% if collector.instance != 'default' %}
+            <span class="sf-toolbar-label">{{- collector.instance -}}</span>
+        {% endif %}
     {%- endset -%}
 
     {%- set text -%}
@@ -66,17 +69,27 @@
         <span class="icon">
             {{ include('@JMSSerializer/icon.svg') }}
         </span>
-        <strong>JMS Serializer</strong>
+        <strong>
+            JMS Serializer
+            {% if collector.instance != 'default' %}
+                <small><br>({{- collector.instance -}})</small>
+            {% endif %}
+        </strong>
 
         <span class="count">
-            <span>{{ total }}</span>
+            <span>{{ (collector.runs(1)|length) }} + {{ (collector.runs(2)|length) }}</span>
         </span>
 
     </span>
 {%- endblock -%}
 
 {%- block panel -%}
-    <h2>JMS Serializer</h2>
+    <h2>
+        JMS Serializer
+        {% if collector.instance != 'default' %}
+            ({{- collector.instance -}})
+        {% endif %}
+    </h2>
 
     <div class="metrics">
         <div class="metric">
@@ -97,6 +110,9 @@
             <span class="label">Triggered event listeners (time)</span>
         </div>
     </div>
+
+    {{ helper.render_table_runs(collector.runs(1), 'Serializations') }}
+    {{ helper.render_table_runs(collector.runs(2), 'Deerializations') }}
 
     <div class="sf-tabs">
         <div class="tab">
@@ -155,3 +171,22 @@
         </div>
     </div>
 {%- endblock -%}
+
+{%- macro render_table_runs(runs, mode) -%}
+
+    {%- if (runs|length)>0 -%}
+        <h3>{{ mode }}</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Type</th>
+            </tr>
+            </thead>
+            {%- for run in runs -%}
+                <tr>
+                    <th class="colored font-normal">{{ dump(run.type) }}</th>
+                </tr>
+            {%- endfor -%}
+        </table>
+    {%- endif -%}
+{%- endmacro -%}

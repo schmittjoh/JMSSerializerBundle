@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
 /**
  * @internal
  */
-final class FormErrorHandlerTranslationDomainPass implements CompilerPassInterface
+final class FormErrorHandlerTranslationDomainPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         if (!$container->hasParameter('validator.translation_domain')) {
             return;
         }
 
         $container->findDefinition('jms_serializer.form_error_handler')
-            ->addArgument('%validator.translation_domain%');
+            ->setArgument(1, '%validator.translation_domain%');
     }
 }

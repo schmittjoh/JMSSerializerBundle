@@ -15,18 +15,46 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Templating\Helper\Helper;
 use Symfony\Component\Uid\AbstractUid;
 
-class JMSSerializerExtension extends ConfigurableExtension
+/**
+ * @internal
+ */
+final class JMSSerializerExtension extends Extension
 {
-    public function loadInternal(array $config, ContainerBuilder $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function load(array $rawConfigs, ContainerBuilder $container)
     {
+        $configs = $this->processNestedConfigs($rawConfigs, $container);
+
+        $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
+        $loader->load('services.xml');
+
+        if ($configs['profiler']) {
+            $loader->load('debug.xml');
+        }
+
+        DIUtils::cloneDefinitions($container, array_keys($configs['instances']));
+
+        // twig can be enabled only on one instance at the time
+        $container->setParameter('jms_serializer.twig_enabled', $configs['twig_enabled']);
+
+        foreach ($configs['instances'] as $name => $instanceConfigs) {
+            $scopedContainer = new ScopedContainer($container, $name);
+            $scopedContainer->getDefinition('jms_serializer.serializer')
+                ->addTag('jms_serializer.serializer', ['name' => $name]);
+
+            $this->loadInternal($instanceConfigs, $scopedContainer, $configs);
+        }
+
         $container
             ->registerForAutoconfiguration(EventSubscriberInterface::class)
             ->addTag('jms_serializer.event_subscriber');
@@ -34,27 +62,39 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container
             ->registerForAutoconfiguration(SubscribingHandlerInterface::class)
             ->addTag('jms_serializer.subscribing_handler');
+    }
 
-        $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
-        $loader->load('services.xml');
+    /**
+     * @param array $rawConfigs
+     * @param ContainerBuilder $container
+     *
+     * @return array
+     */
+    private function loadConfigArray(array $rawConfigs, ContainerBuilder $container): array
+    {
+        $configs = $this->processConfiguration($this->getConfiguration($rawConfigs, $container), $rawConfigs);
+        $defConf = $configs;
+        unset($defConf['instances']);
+        $configs['instances'] = array_merge(['default' => $defConf], $configs['instances']);
 
-        if ($config['profiler']) {
-            $loader->load('debug.xml');
-        }
+        return $configs;
+    }
 
+    private function loadInternal(array $config, ScopedContainer $container, array $mainConfig): void
+    {
         // Built-in handlers.
         $container->getDefinition('jms_serializer.datetime_handler')
-            ->addArgument($config['handlers']['datetime']['default_format'])
-            ->addArgument($config['handlers']['datetime']['default_timezone'])
-            ->addArgument($config['handlers']['datetime']['cdata']);
+            ->replaceArgument(0, $config['handlers']['datetime']['default_format'])
+            ->replaceArgument(1, $config['handlers']['datetime']['default_timezone'])
+            ->replaceArgument(2, $config['handlers']['datetime']['cdata']);
 
         $container->getDefinition('jms_serializer.array_collection_handler')
             ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);
 
         if (class_exists(SymfonyUidHandler::class) && class_exists(AbstractUid::class)) {
             $container->getDefinition('jms_serializer.symfony_uid_handler')
-                ->addArgument($config['handlers']['symfony_uid']['default_format'])
-                ->addArgument($config['handlers']['symfony_uid']['cdata']);
+                ->replaceArgument(0, $config['handlers']['symfony_uid']['default_format'])
+                ->replaceArgument(1, $config['handlers']['symfony_uid']['cdata']);
         } else {
             $container->removeDefinition('jms_serializer.symfony_uid_handler');
         }
@@ -69,10 +109,9 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->replaceArgument(2, $config['object_constructors']['doctrine']['fallback_strategy']);
 
         // property naming
-        $container
-            ->getDefinition('jms_serializer.camel_case_naming_strategy')
-            ->addArgument($config['property_naming']['separator'])
-            ->addArgument($config['property_naming']['lower_case']);
+        $container->getDefinition('jms_serializer.camel_case_naming_strategy')
+            ->replaceArgument(0, $config['property_naming']['separator'])
+            ->replaceArgument(1, $config['property_naming']['lower_case']);
 
         if (!empty($config['property_naming']['id'])) {
             $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
@@ -84,8 +123,11 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $bundles = $container->getParameter('kernel.bundles');
 
-        if (!isset($bundles['TwigBundle'])) {
+        // remove twig services if the bundle is not loaded or if we are configuring an instance fof which twig is not enabled
+        // only one instance can have twig enabled
+        if (!isset($bundles['TwigBundle']) || $mainConfig['twig_enabled'] !== $container->getInstanceName()) {
             $container->removeDefinition('jms_serializer.twig_extension.serializer');
+            $container->removeDefinition('jms_serializer.twig_extension.runtime_serializer');
             $container->removeDefinition('jms_serializer.twig_extension.serializer_runtime_helper');
         }
 
@@ -100,7 +142,7 @@ class JMSSerializerExtension extends ConfigurableExtension
 
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
-                ->setArgument(0, new Reference($config['expression_evaluator']['id']));
+                ->replaceArgument(0, new Reference($config['expression_evaluator']['id']));
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
@@ -110,11 +152,15 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->removeAlias('jms_serializer.metadata.cache');
             $container->removeDefinition('jms_serializer.cache.cache_clearer');
         } elseif ('file' === $config['metadata']['cache']) {
-            $container
-                ->getDefinition('jms_serializer.metadata.cache.file_cache')
-                ->replaceArgument(0, $config['metadata']['file_cache']['dir']);
+            $instance = $container->getInstanceName();
 
-            $dir = $container->getParameterBag()->resolveValue($config['metadata']['file_cache']['dir']);
+            // make sure that the cache dir is different for each instance
+            $dirParam = $config['metadata']['file_cache']['dir'] ?: '%kernel.cache_dir%/jms_serializer' . ($instance ? '_' . $instance : '');
+
+            $container->getDefinition('jms_serializer.metadata.cache.file_cache')
+                ->replaceArgument(0, $dirParam);
+
+            $dir = $container->getParameterBag()->resolveValue($dirParam);
             if (!is_dir($dir) && !@mkdir($dir, 0777, true) && !is_dir($dir)) {
                 throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
             }
@@ -123,27 +169,39 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
 
         if (false === $config['metadata']['infer_types_from_doctrine_metadata']) {
-            $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
+            $container->removeDefinition('jms_serializer.metadata.doctrine_type_driver');
+            $container->removeDefinition('jms_serializer.metadata.doctrine_doctrine_phpcr_type_driver');
+        }
+
+        if (false === $config['object_constructors']['doctrine']['enabled']) {
+            $container->removeDefinition('jms_serializer.doctrine_object_constructor');
+            $container->removeDefinition('jms_serializer.doctrine_doctrine_phpcr__object_constructor');
         }
 
         if ($config['metadata']['infer_types_from_doc_block'] && class_exists(DocBlockDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.doc_block_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false);
+        } else {
+            $container->removeDefinition('jms_serializer.metadata.doc_block_driver');
         }
 
+        // enable the typed props reader on php 7.4
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false);
+        } else {
+            $container->removeDefinition('jms_serializer.metadata.typed_properties_driver');
         }
 
+        // enable the attribute reader on php 8
         if (PHP_VERSION_ID >= 80000 && class_exists(AttributeReader::class)) {
             $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
                 ->setArgument(0, new Reference('annotation_reader'));
 
             $container->findDefinition('jms_serializer.metadata.annotation_driver')
-                ->setArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
+                ->replaceArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
         }
 
         $container
@@ -167,18 +225,67 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
 
-        if ($config['profiler']) {
+        // the profiler setting is global
+        if ($mainConfig['profiler']) {
             $container
-                ->getDefinition('data_collector.jms_serializer')
-                ->replaceArgument(0, $directories);
+                ->getDefinition('jms_serializer.data_collector')
+                ->replaceArgument(0, $container->getInstanceName())
+                ->replaceArgument(1, $directories);
+        } else {
+            // remove profiler DI defintions if the profiler is not enabled
+            array_map([$container, 'removeDefinition'], array_keys($container->findTaggedServiceIds('jms_serializer.profiler')));
         }
 
         $this->setVisitorOptions($config, $container);
 
-        if (!$container->getParameter('kernel.debug') || !class_exists(Stopwatch::class)) {
+        if ($container->getParameter('kernel.debug') && class_exists(Stopwatch::class)) {
+            $container->getDefinition('jms_serializer.stopwatch_subscriber')
+                ->replaceArgument(1, sprintf('jms_serializer.%s', $container->getInstanceName()));
+        } else {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 
+        $this->setContextFactories($container, $config);
+    }
+
+    /**
+     * @return ConfigurationInterface
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
+    }
+
+    private function processNestedConfigs(array $rawConfigs, ContainerBuilder $container): array
+    {
+        $configs = $this->loadConfigArray($rawConfigs, $container);
+
+        $needReConfig = false;
+        foreach ($configs['instances'] as $name => $value) {
+            // if we inherit from the default configs, we merge/append the default confs into the current instance
+            if (!empty($value['inherit'])) {
+                // the twig setting is not per instance, so we need to remove it before merging the configs
+                unset($configs['instances']['default']['twig_enabled']);
+                unset($configs['instances']['default']['profiler']);
+                array_unshift($rawConfigs, [
+                    'instances' => [$name => $configs['instances']['default']],
+                ]);
+                $needReConfig = true;
+            }
+        }
+
+        // if we had to merge at least one config, we need to re-merge them
+        if ($needReConfig) {
+            $configs = $this->loadConfigArray($rawConfigs, $container);
+        }
+
+        unset($value);
+
+        return $configs;
+    }
+
+    private function setContextFactories(ScopedContainer $container, array $config): void
+    {
         // context factories
         $services = [
             'serialization' => 'jms_serializer.configured_serialization_context_factory',
@@ -216,15 +323,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
     }
 
-    /**
-     * @return ConfigurationInterface
-     */
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
-    }
-
-    private function setVisitorOptions(array $config, ContainerBuilder $container): void
+    private function setVisitorOptions(array $config, ScopedContainer $container): void
     {
         // json (serialization)
         if (isset($config['visitors']['json_serialization']['options'])) {
@@ -243,10 +342,8 @@ class JMSSerializerExtension extends ConfigurableExtension
                 ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
         }
 
-        if (isset($config['visitors']['json_deserialization']['strict'])) {
-            $container->getDefinition('jms_serializer.json_deserialization_visitor')
-                ->setArgument('$strict', $config['visitors']['json_deserialization']['strict']);
-        }
+        $container->getDefinition('jms_serializer.json_deserialization_visitor')
+            ->replaceArgument(0, (bool) $config['visitors']['json_deserialization']['strict']);
 
         // xml (serialization)
         if (!empty($config['visitors']['xml_serialization']['default_root_name'])) {

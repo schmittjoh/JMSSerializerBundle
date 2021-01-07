@@ -6,17 +6,16 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @internal
  */
-final class CustomHandlersPass implements CompilerPassInterface
+final class CustomHandlersPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         $handlersByDirection = $this->findHandlers($container);
         $handlerRegistryDef = $container->findDefinition('jms_serializer.handler_registry');
@@ -39,7 +38,7 @@ final class CustomHandlersPass implements CompilerPassInterface
             ->setArgument(0, $handlerServices);
     }
 
-    private function findHandlers(ContainerBuilder $container): array
+    private function findHandlers(ScopedContainer $container): array
     {
         $handlers = [];
         foreach ($container->findTaggedServiceIds('jms_serializer.handler') as $id => $tags) {
