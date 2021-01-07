@@ -8,18 +8,53 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Templating\Helper\Helper;
 
-class JMSSerializerExtension extends ConfigurableExtension
+class JMSSerializerExtension extends Extension
 {
-    public function loadInternal(array $config, ContainerBuilder $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function load(array $initialConfigs, ContainerBuilder $container)
     {
+        $loader = new XmlFileLoader($container, new FileLocator(array(
+            __DIR__ . '/../Resources/config/')));
+        $loader->load('services.xml');
+
+        $configs = $this->loadConfigArray($initialConfigs, $container);
+
+        $needReconfig = false;
+        foreach ($configs['instances'] as $name => $value) {
+            if (!empty($value['inherit'])) {
+                array_unshift($initialConfigs, [
+                    'instances' => [$name => $configs['instances']['default']]
+                ]);
+                $needReconfig = true;
+            }
+        }
+
+        if ($needReconfig) {
+            $configs = $this->loadConfigArray($initialConfigs, $container);
+        }
+
+        DIUtils::cloneDefinitions($container, array_keys($configs['instances']));
+
+        foreach ($configs['instances'] as $name => $configsAa) {
+            $scopedContainer = new ScopedContainer($container, $name);
+            $scopedContainer->getDefinition('jms_serializer.serializer')
+                ->addTag('jms_serializer.serializer', ['name' => $name]);
+
+            $container->setAlias('jms_serializer.instances.' . $name, new Alias($scopedContainer->getDefinitionRealId('jms_serializer.serializer'), true));
+
+            $this->loadInternal($configsAa, $scopedContainer);
+        }
+
         $container
             ->registerForAutoconfiguration(EventSubscriberInterface::class)
             ->addTag('jms_serializer.event_subscriber');
@@ -27,16 +62,29 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container
             ->registerForAutoconfiguration(SubscribingHandlerInterface::class)
             ->addTag('jms_serializer.subscribing_handler');
+    }
 
-        $loader = new XmlFileLoader($container, new FileLocator(array(
-            __DIR__ . '/../Resources/config/')));
-        $loader->load('services.xml');
+    /**
+     * @param array $initialConfigs
+     * @param ContainerBuilder $container
+     * @return array
+     */
+    private function loadConfigArray(array $initialConfigs, ContainerBuilder $container): array
+    {
+        $configs = $this->processConfiguration($this->getConfiguration($initialConfigs, $container), $initialConfigs);
+        $defConf = $configs;
+        unset($defConf['instances']);
+        $configs['instances'] = array_merge(['default' => $defConf], $configs['instances']);
+        return $configs;
+    }
 
+    public function loadInternal(array $config, ScopedContainer $container)
+    {
         // Built-in handlers.
         $container->getDefinition('jms_serializer.datetime_handler')
-            ->addArgument($config['handlers']['datetime']['default_format'])
-            ->addArgument($config['handlers']['datetime']['default_timezone'])
-            ->addArgument($config['handlers']['datetime']['cdata']);
+            ->replaceArgument(0, $config['handlers']['datetime']['default_format'])
+            ->replaceArgument(1, $config['handlers']['datetime']['default_timezone'])
+            ->replaceArgument(2, $config['handlers']['datetime']['cdata']);
 
         $container->getDefinition('jms_serializer.array_collection_handler')
             ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);
@@ -51,10 +99,9 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->replaceArgument(2, $config['object_constructors']['doctrine']['fallback_strategy']);
 
         // property naming
-        $container
-            ->getDefinition('jms_serializer.camel_case_naming_strategy')
-            ->addArgument($config['property_naming']['separator'])
-            ->addArgument($config['property_naming']['lower_case']);
+        $container->getDefinition('jms_serializer.camel_case_naming_strategy')
+            ->replaceArgument(0, $config['property_naming']['separator'])
+            ->replaceArgument(1, $config['property_naming']['lower_case']);
 
         if (!empty($config['property_naming']['id'])) {
             $container->setAlias('jms_serializer.naming_strategy', $config['property_naming']['id']);
@@ -82,8 +129,7 @@ class JMSSerializerExtension extends ConfigurableExtension
 
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
-                ->setArgument(0, new Reference($config['expression_evaluator']['id']));
-
+                ->replaceArgument(0, new Reference($config['expression_evaluator']['id']));
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
@@ -92,11 +138,15 @@ class JMSSerializerExtension extends ConfigurableExtension
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
         } elseif ('file' === $config['metadata']['cache']) {
-            $container
-                ->getDefinition('jms_serializer.metadata.cache.file_cache')
-                ->replaceArgument(0, $config['metadata']['file_cache']['dir']);
 
-            $dir = $container->getParameterBag()->resolveValue($config['metadata']['file_cache']['dir']);
+            $instance = $container->getInstanceName();
+
+            $dirParam = $config['metadata']['file_cache']['dir'] ?: '%kernel.cache_dir%/jms_serializer' . ($instance ? ('_' . $instance) : '');
+
+            $container->getDefinition('jms_serializer.metadata.cache.file_cache')
+                ->replaceArgument(0, $dirParam);
+
+            $dir = $container->getParameterBag()->resolveValue($dirParam);
             if (!is_dir($dir) && !@mkdir($dir, 0777, true) && !is_dir($dir)) {
                 throw new RuntimeException(sprintf('Could not create cache directory "%s".', $dir));
             }
@@ -110,9 +160,8 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
-                ->setDecoratedService('jms_serializer.metadata_driver')
-                ->setPublic(false)
-            ;
+                ->setDecoratedService($container->getDefinitionRealId('jms_serializer.metadata_driver'))
+                ->setPublic(false);
         }
 
         $container
@@ -169,7 +218,10 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $this->setVisitorOptions($config, $container);
 
-        if (!$container->getParameter('kernel.debug') || !class_exists(Stopwatch::class)) {
+        if ($container->getParameter('kernel.debug') && class_exists(Stopwatch::class)) {
+            $container->getDefinition('jms_serializer.stopwatch_subscriber')
+                ->replaceArgument(1, sprintf('jms_serializer.%s', $container->getInstanceName()));
+        } else {
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 
@@ -211,7 +263,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
     }
 
-    private function setVisitorOptions(array $config, ContainerBuilder $container): void
+    private function setVisitorOptions(array $config, ScopedContainer $container): void
     {
         // json (serialization)
         if (isset($config['visitors']['json_serialization']['options'])) {

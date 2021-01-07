@@ -4,14 +4,15 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class CustomHandlersPass implements CompilerPassInterface
+class CustomHandlersPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         $handlers = array();
         $handlerServices = array();
@@ -85,7 +86,7 @@ class CustomHandlersPass implements CompilerPassInterface
             ->addArgument($handlers);
 
         if (class_exists(ServiceLocatorTagPass::class)) {
-            $serviceLocator = ServiceLocatorTagPass::register($container, $handlerServices);
+            $serviceLocator = ServiceLocatorTagPass::register($container->getInnerContainer(), $handlerServices);
             $container->findDefinition('jms_serializer.handler_registry')->replaceArgument(0, $serviceLocator);
         }
     }

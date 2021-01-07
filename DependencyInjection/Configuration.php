@@ -30,6 +30,22 @@ class Configuration implements ConfigurationInterface
             $root = $tb->root('jms_serializer')->children();
         }
 
+        $this->addConfigNodes($root);
+
+        $instanceRoot = $root->arrayNode('instances')
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+            ->children();
+
+        $instanceRoot->booleanNode('inherit')->defaultFalse()->end();
+
+        $this->addConfigNodes($instanceRoot);
+
+        return $tb;
+    }
+
+    private function addConfigNodes($root): void
+    {
         $this->addHandlersSection($root);
         $this->addSubscribersSection($root);
         $this->addObjectConstructorsSection($root);
@@ -37,8 +53,6 @@ class Configuration implements ConfigurationInterface
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
         $this->addContextSection($root);
-
-        return $tb;
     }
 
     private function addHandlersSection(NodeBuilder $builder)
@@ -180,7 +194,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('file_cache')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/jms_serializer')->end()
+                            ->scalarNode('dir')->defaultValue(null)->end()
                         ->end()
                     ->end()
                     ->booleanNode('auto_detection')->defaultTrue()->end()

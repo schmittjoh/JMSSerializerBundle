@@ -19,6 +19,7 @@
         <service id="jms_serializer.stopwatch_subscriber" class="JMS\SerializerBundle\Serializer\StopwatchEventSubscriber" public="false">
             <tag name="jms_serializer.event_subscriber" />
             <argument type="service" id="debug.stopwatch" />
+            <argument>jms_serializer</argument>
         </service>
 
         <!-- Handlers -->
@@ -34,6 +35,9 @@
         </service>
         <service id="jms_serializer.datetime_handler" class="JMS\Serializer\Handler\DateHandler" public="false">
             <tag name="jms_serializer.subscribing_handler" />
+            <argument/> <!-- default_format -->
+            <argument/> <!-- default_timezone -->
+            <argument/> <!-- cdata -->
         </service>
         <service id="jms_serializer.form_error_handler" class="JMS\Serializer\Handler\FormErrorHandler" public="false">
             <argument type="service" id="translator" on-invalid="null" />
@@ -44,7 +48,9 @@
         </service>
 
         <!-- Metadata Drivers -->
-        <service id="jms_serializer.type_parser" class="JMS\Serializer\Type\Parser" public="false"/>
+        <service id="jms_serializer.type_parser" class="JMS\Serializer\Type\Parser" public="false">
+            <tag name="jms_serializer.instance_global"/>
+        </service>
 
         <service id="jms_serializer.metadata.file_locator" class="Metadata\Driver\FileLocator" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
@@ -125,7 +131,10 @@
                  abstract="true" />
 
         <!-- Naming Strategies -->
-        <service id="jms_serializer.camel_case_naming_strategy" class="JMS\Serializer\Naming\CamelCaseNamingStrategy" public="false" />
+        <service id="jms_serializer.camel_case_naming_strategy" class="JMS\Serializer\Naming\CamelCaseNamingStrategy" public="false">
+            <argument/> <!-- separator -->
+            <argument/> <!-- lowercase -->
+        </service>
         <service id="jms_serializer.identical_property_naming_strategy" class="JMS\Serializer\Naming\IdenticalPropertyNamingStrategy" public="false" />
         <service id="jms_serializer.serialized_name_annotation_strategy" class="JMS\Serializer\Naming\SerializedNameAnnotationStrategy" public="false">
             <argument type="service" id="jms_serializer.camel_case_naming_strategy" />
@@ -143,11 +152,14 @@
             <argument type="service" id="doctrine_phpcr"/>
             <argument type="service" id="jms_serializer.unserialize_object_constructor"/>
         </service>
-        <service id="jms_serializer.unserialize_object_constructor" class="JMS\Serializer\Construction\UnserializeObjectConstructor" public="false" />
+        <service id="jms_serializer.unserialize_object_constructor" class="JMS\Serializer\Construction\UnserializeObjectConstructor" public="false">
+            <tag name="jms_serializer.instance_global"/>
+        </service>
         <service id="jms_serializer.object_constructor" alias="jms_serializer.unserialize_object_constructor" public="false" />
 
         <!-- Serializer -->
         <service id="jms_serializer.serializer" class="JMS\Serializer\Serializer" public="false">
+
             <argument type="service" id="jms_serializer.metadata_factory" />
             <argument type="collection">
                 <argument key="2" type="service" id="jms_serializer.deserialization_graph_navigator_factory" />
@@ -190,8 +202,12 @@
             <argument type="collection">
                 <argument type="service" key="container" id="service_container"/>
             </argument>
+
+            <tag name="jms_serializer.instance_global" />
         </service>
-        <service id="jms_serializer.expression_language" class="Symfony\Component\ExpressionLanguage\ExpressionLanguage" public="false"/>
+        <service id="jms_serializer.expression_language" class="Symfony\Component\ExpressionLanguage\ExpressionLanguage" public="false">
+            <tag name="jms_serializer.instance_global" />
+        </service>
 
         <service id="jms_serializer.expression_language.function_provider" class="JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider" public="false">
             <tag name="jms.expression.function_provider"/>
@@ -201,23 +217,27 @@
         <service id="jms_serializer.twig_extension.serializer" class="JMS\Serializer\Twig\SerializerExtension" public="false">
             <argument type="service" id="jms_serializer" />
             <tag name="twig.extension" />
+            <tag name="jms_serializer.instance_global" />
         </service>
 
         <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="JMS\Serializer\Twig\SerializerRuntimeHelper" public="true">
             <argument type="service" id="jms_serializer" />
-            <tag name="twig.runtime" />
+            <tag name="jms_serializer.instance_global" />
         </service>
 
         <!-- PHP templating helper -->
         <service id="jms_serializer.templating.helper.serializer" class="JMS\SerializerBundle\Templating\SerializerHelper">
             <argument type="service" id="jms_serializer" />
             <tag name="templating.helper" alias="jms_serializer" />
+            <tag name="jms_serializer.instance_global" />
         </service>
 
 
         <!-- accessor strategy -->
         <service id="jms_serializer.accessor_strategy" public="false" alias="jms_serializer.accessor_strategy.default"/>
-        <service id="jms_serializer.accessor_strategy.default" public="false" class="JMS\Serializer\Accessor\DefaultAccessorStrategy"/>
+        <service id="jms_serializer.accessor_strategy.default" public="false" class="JMS\Serializer\Accessor\DefaultAccessorStrategy">
+            <argument type="constant">NULL</argument> <!-- -->
+        </service>
 
         <!-- Visitors -->
         <service id="jms_serializer.json_serialization_visitor" class="JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory" public="false">
@@ -234,9 +254,9 @@
         </service>
 
         <service id="jms_serializer.cache.cache_warmer" class="JMS\SerializerBundle\Cache\CacheWarmer" public="false">
-            <argument/> <!-- included dirs -->
+            <argument type="collection"/> <!-- included dirs -->
             <argument type="service" id="jms_serializer.metadata_factory"/>
-            <argument/> <!-- excluded dirs -->
+            <argument type="collection"/> <!-- excluded dirs -->
             <tag name="kernel.cache_warmer" />
         </service>
 

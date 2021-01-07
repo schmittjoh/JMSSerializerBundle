@@ -3,14 +3,13 @@
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\EventDispatcher\EventDispatcher;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
+class RegisterEventListenersAndSubscribersPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         $listeners = array();
         $listenerServices = array();
@@ -39,6 +38,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
         }
 
         foreach ($container->findTaggedServiceIds('jms_serializer.event_subscriber') as $id => $tags) {
+
             $subscriberClass = $container->getDefinition($id)->getClass();
 
             $subscriberClassReflectionObj = new \ReflectionClass($subscriberClass);
@@ -81,7 +81,7 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
         }
 
         if (class_exists(ServiceLocatorTagPass::class)) {
-            $serviceLocator = ServiceLocatorTagPass::register($container, $listenerServices);
+            $serviceLocator = ServiceLocatorTagPass::register($container->getInnerContainer(), $listenerServices);
             $container->getDefinition('jms_serializer.event_dispatcher')->replaceArgument(0, $serviceLocator);
         }
     }

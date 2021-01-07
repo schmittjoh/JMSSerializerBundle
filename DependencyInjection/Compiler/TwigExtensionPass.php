@@ -4,13 +4,17 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\Twig\SerializerRuntimeExtension;
 use JMS\Serializer\Twig\SerializerRuntimeHelper;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
-class TwigExtensionPass implements CompilerPassInterface
+class TwigExtensionPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
+        // todo allow multiple twig extensions
+        if ($container->getInstanceName() !== 'default') {
+            return;
+        }
+
         if (!$container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper')) {
             return;
         }

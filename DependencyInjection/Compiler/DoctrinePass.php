@@ -2,14 +2,12 @@
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DoctrinePass implements CompilerPassInterface
+class DoctrinePass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         if ($container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata')
             && $container->getParameter('jms_serializer.infer_types_from_doctrine_metadata') === false
@@ -29,15 +27,17 @@ class DoctrinePass implements CompilerPassInterface
         }
 
         foreach ($registries as $registry) {
-            $container->getDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))
-                ->setDecoratedService('jms_serializer.metadata_driver')
-                ->replaceArgument(0, new Reference(sprintf('jms_serializer.metadata.%s_type_driver.inner', $registry)))
+            $driver = sprintf('jms_serializer.metadata.%s_type_driver', $registry);
+            $container->getDefinition($driver)
+                ->setDecoratedService($container->getDefinitionRealId('jms_serializer.metadata_driver'))
+                ->replaceArgument(0, new Reference(sprintf($container->getDefinitionRealId($driver).'.inner', $registry)))
                 ->setPublic(false)
                 ;
 
-            $container->getDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))
-                ->setDecoratedService('jms_serializer.object_constructor')
-                ->replaceArgument(1, new Reference(sprintf('jms_serializer.%s_object_constructor.inner', $registry)))
+            $constructor = sprintf('jms_serializer.%s_object_constructor', $registry);
+            $container->getDefinition($constructor)
+                ->setDecoratedService($container->getDefinitionRealId('jms_serializer.object_constructor'))
+                ->replaceArgument(1, new Reference($container->getDefinitionRealId($constructor). '.inner'))
                 ->setPublic(false)
                 ;
         }
