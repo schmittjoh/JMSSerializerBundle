@@ -6,6 +6,10 @@
         {{- include('@JMSSerializer/icon.svg') }}
         <span class="sf-toolbar-label">S:</span>{{- collector.runs(1)|length }}
         <span class="sf-toolbar-label">D:</span>{{- collector.runs(2)|length }}
+        {% if collector.instance != 'default' %}
+            <span class="sf-toolbar-label">{{- collector.instance -}}</span>
+        {% endif %}
+
     {%- endset -%}
 
     {%- set text -%}
@@ -64,7 +68,12 @@
         <span class="icon">
             {{ include('@JMSSerializer/icon.svg') }}
         </span>
-        <strong>JMS Serializer</strong>
+        <strong>
+            JMS Serializer
+            {% if collector.instance != 'default' %}
+                ({{- collector.instance -}})
+            {% endif %}
+        </strong>
 
         <span class="count">
             <span>{{ total }}</span>
@@ -74,7 +83,12 @@
 {%- endblock -%}
 
 {%- block panel -%}
-    <h2>JMS Serializer</h2>
+    <h2>
+        JMS Serializer
+        {% if collector.instance != 'default' %}
+            ({{- collector.instance -}})
+        {% endif %}
+    </h2>
 
     <div class="metrics">
         <div class="metric">

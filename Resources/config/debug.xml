@@ -6,7 +6,8 @@
 
     <services>
 
-        <service id="data_collector.jms_serializer" class="JMS\SerializerBundle\Debug\DataCollector">
+        <service id="jms_serializer.data_collector" class="JMS\SerializerBundle\Debug\DataCollector">
+            <argument>default</argument>
             <argument type="collection" />
             <argument type="service" id="jms_serializer.event_dispatcher"/>
             <argument type="service" id="jms_serializer.traceable_handler_registry"/>
@@ -14,18 +15,20 @@
             <argument type="service" id="jms_serializer.metadata.file_locator"/>
             <argument type="service" id="jms_serializer.traceable_runs_listener"/>
 
+            <tag name="jms_serializer.profiler"/>
             <tag name="data_collector"
                  id="jms_serializer"
                  template="@JMSSerializer/Collector/panel.html.twig"
             />
         </service>
 
-        <service id="jms_serializer.traceable_event_dispatcher" class="JMS\SerializerBundle\Debug\TraceableEventDispatcher" public="false">
+        <service id="jms_serializer.event_dispatcher" class="JMS\SerializerBundle\Debug\TraceableEventDispatcher" public="false">
             <argument type="service" id="jms_serializer.event_dispatcher.service_locator" />
         </service>
 
         <service id="jms_serializer.traceable_runs_listener" class="JMS\SerializerBundle\Debug\RunsListener" public="false">
             <tag name="jms_serializer.event_listener"  event="serializer.pre_serialize" method="saveRunInfo"/>
+            <tag name="jms_serializer.profiler"/>
         </service>
 
         <service
@@ -36,6 +39,7 @@
             public="false">
 
             <argument type="service" id="jms_serializer.metadata.traceable_cache.inner"/>
+            <tag name="jms_serializer.profiler"/>
         </service>
 
         <service
@@ -45,16 +49,11 @@
             decoration-priority="-128"
             public="false">
             <argument type="service" id="jms_serializer.traceable_handler_registry.inner"/>
+            <tag name="jms_serializer.profiler"/>
         </service>
 
-        <service id="jms_serializer.metadata.traceable_file_locator" class="JMS\SerializerBundle\Debug\TraceableFileLocator" public="false">
+        <service id="jms_serializer.metadata.file_locator" class="JMS\SerializerBundle\Debug\TraceableFileLocator" public="false">
             <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
-        </service>
-
-        <service id="jms_serializer.metadata.file_locator" alias="jms_serializer.metadata.traceable_file_locator">
-        </service>
-
-        <service id="jms_serializer.event_dispatcher" alias="jms_serializer.traceable_event_dispatcher">
         </service>
 
     </services>

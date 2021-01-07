@@ -13,30 +13,46 @@ or the ``jms_serializer.subscribing_handler``.
                     method="serializeDateTimeToJson" />
     </service>
 
+
+The possible tag attributes are the following:
+
+- *format*: The format that you want to handle; defaults to all formats.
+- *type*: The type name that you want to handle; defaults to all types.
+- *direction*: The direction (serialization, or deserialization); defaults to both.
+- *method*: The method to invoke on the ``my_handler`` service.
+- *instance*: The specific serializer instance name; defaults to all types when not specified., ``default`` if you want to apply it only to
+the main instance.
+
 .. tip ::
 
     The ``direction`` attribute is not required if you want to support both directions. Likewise can the
     ``method`` attribute be omitted, then a default using the scheme ``serializeTypeToFormat``,
     or ``deserializeTypeFromFormat`` will be used for serialization or deserialization
     respectively.
+- *instance*: The specific serializer instance name; defaults to all types when not specified., ``default`` if you want to apply it only to
+the main instance.
+
 
 Event Dispatcher
 ----------------
 You can use the tags ``jms_serializer.event_listener``, or ``jms_serializer.event_subscriber``
 in order to register a listener.
 
-The semantics are mainly the same as registering a regular Symfony2 event listener
+The semantics are mainly the same as registering a regular Symfony event listener
 except that you can specify some additional attributes:
 
 - *format*: The format that you want to listen to; defaults to all formats.
 - *class*: The type name that you want to listen to; defaults to all types.
 - *direction*: The direction (serialization, or deserialization); defaults to both.
+- *instance*: The specific serializer instance name; defaults to all types., ``default`` if you want to apply it only to
+the main instance.
 
 .. note ::
 
-    Events are not dispatched by Symfony2's event dispatcher as such
+    Events are not dispatched by Symfony's event dispatcher as such
     you cannot register listeners with the ``kernel.event_listener`` tag,
     or the ``@DI\Observe`` annotation. Please see above.
+
 
 Expression Language
 -------------------
@@ -165,6 +181,7 @@ values:
 
         # config.yml
         jms_serializer:
+            profiler: %kernel.debug%
             handlers:
                 datetime:
                     default_format: "Y-m-d\\TH:i:sP" # ATOM
@@ -179,6 +196,7 @@ values:
 
             object_constructors:
                 doctrine:
+                    enabled: true
                     fallback_strategy: "null" # possible values ("null" | "exception" | "fallback")
 
             property_naming:
@@ -194,6 +212,7 @@ values:
 
                 include_interfaces: false
                 infer_types_from_doc_block: false
+                infer_types_from_doctrine_metadata: true
 
                 # Using auto-detection, the mapping files for each bundle will be
                 # expected in the Resources/config/serializer directory.
@@ -252,6 +271,17 @@ values:
                     external_entities: false
                     doctype_whitelist:
                         - '<!DOCTYPE authorized SYSTEM "http://some_url">' # an authorized document type for xml deserialization
+            instances:
+                foo: ~
+                    inherit: false
+                    # + all the configurations above, but for a independent 'jms_serializer.instances.foo' serializer instance
+                    # as example:
+                    property_naming:
+                        separator:  -
+                        lower_case: false # the `jms_serializer.instances.foo` will use a different naming strategy compared to `jms_serializer.instances.default`
+                bar: ~
+                    # all the configurations above, but for a independent 'jms_serializer.instances.bar' serializer instance
+                # more instances here ...
 
 
 .. _expression function providers: https://symfony.com/doc/current/components/expression_language/extending.html#using-expression-providers

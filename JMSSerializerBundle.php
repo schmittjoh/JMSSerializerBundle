@@ -2,14 +2,13 @@
 
 namespace JMS\SerializerBundle;
 
-use JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass;
-use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersLocatorPass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
+use JMS\SerializerBundle\DependencyInjection\Compiler\AssignVisitorsPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\ExpressionFunctionProviderPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\FormErrorHandlerTranslationDomainPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\RegisterEventListenersAndSubscribersPass;
-use JMS\SerializerBundle\DependencyInjection\Compiler\ServiceMapPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\TwigExtensionPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,16 +18,7 @@ class JMSSerializerBundle extends Bundle
 {
     public function build(ContainerBuilder $builder)
     {
-        $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.serialization_visitor', 'format',
-            function (ContainerBuilder $container, $def) {
-                $container->getDefinition('jms_serializer.serializer')->replaceArgument(2, $def);
-            }
-        ));
-        $builder->addCompilerPass($this->getServiceMapPass('jms_serializer.deserialization_visitor', 'format',
-            function (ContainerBuilder $container, $def) {
-                $container->getDefinition('jms_serializer.serializer')->replaceArgument(3, $def);
-            }
-        ));
+        $builder->addCompilerPass(new AssignVisitorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
 
         // Should run before Symfony\Bundle\TwigBundle\DependencyInjection\Compiler\TwigEnvironmentPass
         $builder->addCompilerPass(new TwigExtensionPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
@@ -39,14 +29,7 @@ class JMSSerializerBundle extends Bundle
 
         $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_OPTIMIZE);
         $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_OPTIMIZE);
-    }
 
-    private function getServiceMapPass($tagName, $keyAttributeName, $callable)
-    {
-        if (class_exists('JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceMapPass')) {
-            return new LazyServiceMapPass($tagName, $keyAttributeName, $callable);
-        }
-
-        return new ServiceMapPass($tagName, $keyAttributeName, $callable);
+        $builder->addCompilerPass(new AdjustDecorationPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -100);
     }
 }

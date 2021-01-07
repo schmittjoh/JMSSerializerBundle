@@ -10,7 +10,10 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
-class Configuration implements ConfigurationInterface
+/**
+ * @internal
+ */
+final class Configuration implements ConfigurationInterface
 {
     private $debug;
 
@@ -35,8 +38,24 @@ class Configuration implements ConfigurationInterface
             $root = $tb->root('jms_serializer')->children();
         }
 
-        $root->booleanNode('profiler')->defaultTrue($this->debug)->end();
+        $root->booleanNode('profiler')->defaultValue($this->debug)->end();
+        $this->addConfigNodes($root);
 
+        $instanceRoot = $root->arrayNode('instances')
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+            ->children();
+
+        $instanceRoot->booleanNode('inherit')->defaultFalse()->end();
+
+        $this->addProfilerSection($instanceRoot);
+        $this->addConfigNodes($instanceRoot);
+
+        return $tb;
+    }
+
+    private function addConfigNodes($root): void
+    {
         $this->addHandlersSection($root);
         $this->addSubscribersSection($root);
         $this->addObjectConstructorsSection($root);
@@ -44,8 +63,22 @@ class Configuration implements ConfigurationInterface
         $this->addMetadataSection($root);
         $this->addVisitorsSection($root);
         $this->addContextSection($root);
+    }
 
-        return $tb;
+    private function addProfilerSection(NodeBuilder $builder): void
+    {
+        $builder->scalarNode('profiler')
+            ->defaultValue(null)
+            ->validate()
+            ->always(static function ($v) {
+                if (!is_bool($v) && !is_null($v)) {
+                    throw new InvalidArgumentException('The profiler setting must be null or a boolean');
+                }
+
+                return $v;
+            })
+            ->end()
+            ->end();
     }
 
     private function addHandlersSection(NodeBuilder $builder)
@@ -96,6 +129,7 @@ class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('doctrine')
+                        ->canBeDisabled()
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->enumNode('fallback_strategy')
@@ -185,7 +219,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('file_cache')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/jms_serializer')->end()
+                            ->scalarNode('dir')->defaultValue(null)->end()
                         ->end()
                     ->end()
                     ->booleanNode('include_interfaces')->defaultFalse()->end()
