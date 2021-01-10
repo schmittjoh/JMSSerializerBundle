@@ -7,9 +7,12 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\AnotherSimpleObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSubscriber;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SubscribingHandler;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\TypedObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use PHPUnit\Framework\TestCase;
@@ -282,6 +285,52 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
 
         $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
+    }
+
+    public function testLoadWithOptionsForMultipleInstances()
+    {
+        $container = $this->getContainerForConfig(array(array(
+            'visitors' => [
+                'json_serialization' => [
+                    'options' => JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES
+                ]
+            ],
+            'instances' => [
+                'inheriting' => [
+                    'inherit' => true,
+                    'visitors' => [
+                        'json_serialization' => [
+                            'options' => \JSON_UNESCAPED_SLASHES
+                        ]
+                    ],
+                    'property_naming' => [
+                        'separator' => '-',
+                        'lower_case' => false,
+                    ]
+                ],
+                'not_inheriting' => [
+                    'inherit' => false,
+                    'default_context' => [
+                        'serialization' => ['serialize_null' => true]
+                    ]
+                ]
+            ]
+        )), function (ContainerBuilder $container) {
+            $def = new Definition(SubscribingHandler::class);
+            $def->addTag('jms_serializer.subscribing_handler', ['instance' => 'not_inheriting']);
+            $container->setDefinition('my_date_handler', $def);
+
+            $def = new Definition(CastDateToIntEventSubscriber::class);
+            $def->addTag('jms_serializer.event_subscriber', ['instance' => 'inheriting']);
+            $container->setDefinition('my_date_subscriber', $def);
+
+        });
+
+        $object = new AnotherSimpleObject(1.0, null, 'http://');
+
+        $this->assertSame('{"num":1.0,"camel_case":"http://","date":"2020-01-01"}', $container->get('jms_serializer.instances.default')->serialize($object, 'json'));
+        $this->assertSame('{"Num":1,"Camel-Case":"http://","Date":"01-01-2020"}', $container->get('jms_serializer.instances.inheriting')->serialize($object, 'json'));
+        $this->assertSame('{"num":1.0,"str":null,"camel_case":"http:\/\/","date":"foo"}', $container->get('jms_serializer.instances.not_inheriting')->serialize($object, 'json'));
     }
 
     public function testLoadExistentMetadataDir()
