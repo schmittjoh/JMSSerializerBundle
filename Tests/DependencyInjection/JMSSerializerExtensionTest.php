@@ -215,7 +215,6 @@ class JMSSerializerExtensionTest extends TestCase
     public function testLoad()
     {
         $container = $this->getContainerForConfig(array(array()), function (ContainerBuilder $container) {
-            $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
             $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
             $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
             $container->getAlias('JMS\Serializer\SerializerInterface')->setPublic(true);
@@ -238,8 +237,6 @@ class JMSSerializerExtensionTest extends TestCase
         // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
         $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
         $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
-
-        $this->assertEquals("null", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
 
         // test that all components have been wired correctly
         $this->assertEquals(json_encode(array('name' => 'bar')), $serializer->serialize($versionedObject, 'json'));
@@ -273,7 +270,6 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         )), function ($container) {
-            $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
             $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
             $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
         });
@@ -283,8 +279,6 @@ class JMSSerializerExtensionTest extends TestCase
         // the logic is inverted because arg 0 on doctrine_proxy_subscriber is $skipVirtualTypeInit = false
         $this->assertFalse($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(0));
         $this->assertTrue($container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->getArgument(1));
-
-        $this->assertEquals("exception", $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
     }
 
     public function testLoadWithOptionsForMultipleInstances()
