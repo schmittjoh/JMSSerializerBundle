@@ -8,6 +8,7 @@ php:
   - '7.2'
   - '7.3'
   - '7.4'
+  - '8.0'
 
 env:
   - SYMFONY_VERSION=^3.4
@@ -22,7 +23,7 @@ matrix:
 
 before_script:
   - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
-  - COMPOSER_MEMORY_LIMIT=-1 composer update ${COMPOSER_FLAGS} --no-interaction
+  - COMPOSER_MEMORY_LIMIT=-1 composer update ${COMPOSER_FLAGS} --no-interaction $(if [[ "$(phpenv version-name)" == "8.0snapshot" ]]; then --ignore-platform-req=php; fi)
 
 script:
   - vendor/bin/phpunit --coverage-clover clover
