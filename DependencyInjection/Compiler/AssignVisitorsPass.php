@@ -5,7 +5,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Reference;
 
-class AssignVisitorsPass extends PerInstancePass
+final class AssignVisitorsPass extends PerInstancePass
 {
     /**
      * {@inheritdoc}

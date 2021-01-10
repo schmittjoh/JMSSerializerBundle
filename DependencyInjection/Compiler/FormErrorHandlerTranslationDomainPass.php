@@ -4,7 +4,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
-class FormErrorHandlerTranslationDomainPass extends PerInstancePass
+final class FormErrorHandlerTranslationDomainPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
     {

@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-class ScopedContainer
+final class ScopedContainer
 {
     private $container;
     private $instance;

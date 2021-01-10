@@ -6,7 +6,7 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ExpressionFunctionProviderPass extends PerInstancePass
+final class ExpressionFunctionProviderPass extends PerInstancePass
 {
     /**
      * {@inheritdoc}

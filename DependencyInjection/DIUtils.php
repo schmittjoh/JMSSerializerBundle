@@ -7,7 +7,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DIUtils
+/**
+ * @internal
+ */
+final class DIUtils
 {
     public static function cloneDefinitions(ContainerBuilder $container, array $instances)
     {

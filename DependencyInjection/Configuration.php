@@ -7,8 +7,10 @@ use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
-
-class Configuration implements ConfigurationInterface
+/**
+ * @internal
+ */
+final class Configuration implements ConfigurationInterface
 {
     private $debug;
 

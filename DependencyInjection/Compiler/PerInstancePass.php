@@ -7,6 +7,9 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * @internal
+ */
 abstract class PerInstancePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

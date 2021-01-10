@@ -16,7 +16,10 @@ use Symfony\Component\Stopwatch\Stopwatch;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Templating\Helper\Helper;
 
-class JMSSerializerExtension extends Extension
+/**
+ * @internal
+ */
+final class JMSSerializerExtension extends Extension
 {
     /**
      * {@inheritdoc}

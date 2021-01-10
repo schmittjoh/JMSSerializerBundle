@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class CustomHandlersPass extends PerInstancePass
+final class CustomHandlersPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
     {

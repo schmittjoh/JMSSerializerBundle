@@ -7,7 +7,7 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RegisterEventListenersAndSubscribersPass extends PerInstancePass
+final class RegisterEventListenersAndSubscribersPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
     {

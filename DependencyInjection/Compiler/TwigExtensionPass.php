@@ -6,7 +6,7 @@ use JMS\Serializer\Twig\SerializerRuntimeExtension;
 use JMS\Serializer\Twig\SerializerRuntimeHelper;
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
-class TwigExtensionPass extends PerInstancePass
+final class TwigExtensionPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
     {
