@@ -232,7 +232,6 @@
             <tag name="jms_serializer.instance_global" />
         </service>
 
-
         <!-- accessor strategy -->
         <service id="jms_serializer.accessor_strategy" public="false" alias="jms_serializer.accessor_strategy.default"/>
         <service id="jms_serializer.accessor_strategy.default" public="false" class="JMS\Serializer\Accessor\DefaultAccessorStrategy">

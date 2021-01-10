@@ -23,116 +23,93 @@ final class DIUtils
             }
             foreach ($aliases as $alias => $aliasDef) {
 
-
-                if (!self::shouldHanlde($instance, (string)$alias, $container)) {
+                if (!self::shouldTranslateId($instance, (string)$alias)) {
                     continue;
                 }
 
-                if (!self::shouldHanlde($instance, (string)$aliasDef, $container)) {
+                if (!self::shouldTranslateId($instance, (string)$aliasDef)) {
                     $newAliasDef = $aliasDef;
-                }else{
-                    $newAliasDef = new Alias(self::getDefinitionRealIdOnly($instance, (string)$aliasDef), $aliasDef->isPublic());
+                } else {
+                    $newAliasDef = new Alias(self::translateId($instance, (string)$aliasDef), $aliasDef->isPublic());
                 }
-                $container->setAlias(self::getDefinitionRealIdOnly($instance, $alias), $newAliasDef);
+                $container->setAlias(self::translateId($instance, $alias), $newAliasDef);
             }
         }
     }
 
-    private static function handleRef(ContainerBuilder $container, Reference $argument, string $instance): Reference
+    private static function handleRef(Reference $argument, string $instance): Reference
     {
-        if (!self::shouldHanlde($instance, (string)$argument, $container)) {
+        if (!self::shouldTranslateId($instance, (string)$argument)) {
             return $argument;
         }
 
-        if ($container->hasAlias((string)self::getDefinitionRealId($instance, (string)$argument, $container)) &&
-            !self::shouldHanlde($instance, (string)$container->getAlias((string)$argument), $container)) {
-                return $argument;
-        } else {
-            $target = self::getDefinitionRealId($instance, (string)$argument, $container);
-        }
-
-
+        $target = self::getRealId($instance, (string)$argument);
         return new Reference($target, $argument->getInvalidBehavior());
     }
 
-    private static function shouldHanlde(string $instance, string $id, ContainerBuilder $container):bool
+    public static function getRealId(string $instance, string $id): string
     {
-        if (strpos($id, 'jms_serializer.instance.') === 0 || strpos($id, 'jms_serializer.') !== 0 || $instance === 'default') {
-            return false;
-        }
-
-        if ($container->hasDefinition($id) && $container->getDefinition($id)->hasTag('jms_serializer.instance_global')) {
-            return false;
-        }
-
-        return true;
-    }
-    public static function getDefinitionRealId(string $instance, string $id, ContainerBuilder $container):string
-    {
-        if (!self::shouldHanlde($instance, $id, $container)) {
+        if (!self::shouldTranslateId($instance, $id)) {
             return $id;
         }
 
+        return self::translateId($instance, $id);
+    }
+
+    private static function translateId(string $instance, string $id): string
+    {
         return sprintf('jms_serializer.instance.%s.%s', $instance, substr($id, 15));
     }
 
-
-    private static function getDefinitionRealIdOnly(string $instance, string $id):string
+    private static function shouldTranslateId(string $instance, string $id): bool
     {
-        return sprintf('jms_serializer.instance.%s.%s', $instance, substr($id, 15));
+        return !(
+            strpos($id, 'jms_serializer.instance.') === 0 ||
+            strpos($id, 'jms_serializer.') !== 0 ||
+            $instance === 'default'
+        );
     }
 
     private static function cloneDefinition(string $instance, string $id, Definition $parentDef, ContainerBuilder $container)
     {
-        if ($parentDef->hasTag('jms_serializer.instance_global') || strpos($id, 'jms_serializer.')!==0 || strpos($id, 'jms_serializer.instance.')===0) {
+        if (strpos($id, 'jms_serializer.') !== 0 || strpos($id, 'jms_serializer.instance.') === 0) {
             return;
-        } elseif ($instance === 'default') {
+        }
+
+        $name = self::translateId($instance, $id);
+
+        // add jms_serializer.instance.%s.%s for any jms service
+        $container->setAlias($name, new Alias((string)$id, false));
+
+        if ($parentDef->hasTag('jms_serializer.instance_global')) {
+            return;
+        }
+
+        if ($instance === 'default') {
             if (!$parentDef->hasTag('jms_serializer.instance')) {
                 $parentDef->addTag('jms_serializer.instance', ['name' => $instance]);
             }
             return;
         }
 
-        $name = self::getDefinitionRealIdOnly($instance, $id);
-        if (!$container->hasDefinition($name)) {
-            $newDef = new Definition($parentDef->getClass());
-            foreach ($parentDef->getTags() as $tagName => $tags){
-                if ($tagName === 'jms_serializer.instance') {
-                    continue;
-                }
-                foreach ($tags as $tag) {
-                    $newDef->addTag($tagName, $tag);
-                }
-            }
+        $newDef = new Definition($parentDef->getClass());
+        $container->setDefinition($name, $newDef);
 
-            $newDef->addTag('jms_serializer.instance', ['name' => $instance]);
+        $tags = $parentDef->getTags();
+        unset($tags['jms_serializer.instance']);
+        $newDef->setTags($tags);
+        $newDef->addTag('jms_serializer.instance', ['name' => $instance]);
 
-            $newDef->setArguments(self::handleArgs($parentDef->getArguments(), $container, $instance));
+        $newDef->setArguments(self::handleArgs($parentDef->getArguments(), $container, $instance));
 
-            $calls = [];
-            foreach ($parentDef->getMethodCalls() as $call) {
-                $calls[] =  [
-                    $call[0],
-                    self::handleArgs($call[1], $container, $instance)
-                ];
-            }
-            $newDef->setMethodCalls($calls);
-
-            $container->setDefinition($name, $newDef);
+        $calls = [];
+        foreach ($parentDef->getMethodCalls() as $call) {
+            $calls[] = [
+                $call[0],
+                self::handleArgs($call[1], $container, $instance)
+            ];
         }
-
-    }
-
-    public static function getSerializers(ContainerBuilder $container): array
-    {
-        $serializers = [];
-
-        foreach ($container->findTaggedServiceIds('jms_serializer.serializer') as $serializerId => $serializerAttributes) {
-            foreach ($serializerAttributes as $serializerAttribute) {
-                $serializers[$serializerAttribute['name']] = $serializerId;
-            }
-        }
-        return $serializers;
+        $newDef->setMethodCalls($calls);
     }
 
     private static function handleArgs(array $args, ContainerBuilder $container, string $instance): array
@@ -141,7 +118,7 @@ final class DIUtils
             if (is_array($arg)) {
                 $args[$n] = self::handleArgs($arg, $container, $instance);
             } elseif ($arg instanceof Reference) {
-                $args[$n] = self::handleRef($container, $arg, $instance);
+                $args[$n] = self::handleRef($arg, $instance);
             }
         }
         return $args;

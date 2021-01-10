@@ -14,10 +14,25 @@ abstract class PerInstancePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-         foreach (DIUtils::getSerializers($container) as $serializerName => $serializerId) {
-             $scopedContainer = new ScopedContainer($container, $serializerName);
+         foreach (self::getSerializers($container) as $scopedContainer) {
              $this->processInstance($scopedContainer);
          }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @return ScopedContainer[]
+     */
+    private static function getSerializers(ContainerBuilder $container): array
+    {
+        $serializers = [];
+
+        foreach ($container->findTaggedServiceIds('jms_serializer.serializer') as $serializerId => $serializerAttributes) {
+            foreach ($serializerAttributes as $serializerAttribute) {
+                $serializers[$serializerId] = new ScopedContainer($container, $serializerAttribute['name']);
+            }
+        }
+        return $serializers;
     }
 
     protected abstract function processInstance(ScopedContainer $container): void;
