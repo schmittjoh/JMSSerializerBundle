@@ -165,6 +165,8 @@ final class JMSSerializerExtension extends Extension
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService($container->getDefinitionRealId('jms_serializer.metadata_driver'))
                 ->setPublic(false);
+        } else {
+            $container->removeDefinition('jms_serializer.metadata.typed_properties_driver');
         }
 
         $container
