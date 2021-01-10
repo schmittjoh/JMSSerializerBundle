@@ -21,25 +21,23 @@ final class DoctrinePass extends PerInstancePass
         );
 
         foreach ($registries as $managerId => $registry) {
-            if (!$container->has($managerId)) {
-                unset($registries[$managerId]);
-            }
-        }
-
-        foreach ($registries as $registry) {
             $driver = sprintf('jms_serializer.metadata.%s_type_driver', $registry);
-            $container->getDefinition($driver)
-                ->setDecoratedService($container->getDefinitionRealId('jms_serializer.metadata_driver'))
-                ->replaceArgument(0, new Reference(sprintf($container->getDefinitionRealId($driver).'.inner', $registry)))
-                ->setPublic(false)
-                ;
-
             $constructor = sprintf('jms_serializer.%s_object_constructor', $registry);
-            $container->getDefinition($constructor)
-                ->setDecoratedService($container->getDefinitionRealId('jms_serializer.object_constructor'))
-                ->replaceArgument(1, new Reference($container->getDefinitionRealId($constructor). '.inner'))
-                ->setPublic(false)
-                ;
+            if (!$container->has($managerId)) {
+                $container->removeDefinition($driver);
+                $container->removeDefinition($constructor);
+            } else {
+                $container->getDefinition($driver)
+                    ->setDecoratedService($container->getDefinitionRealId('jms_serializer.metadata_driver'))
+                    ->replaceArgument(0, new Reference(sprintf($container->getDefinitionRealId($driver) . '.inner', $registry)))
+                    ->setPublic(false);
+
+                $constructor = sprintf('jms_serializer.%s_object_constructor', $registry);
+                $container->getDefinition($constructor)
+                    ->setDecoratedService($container->getDefinitionRealId('jms_serializer.object_constructor'))
+                    ->replaceArgument(1, new Reference($container->getDefinitionRealId($constructor) . '.inner'))
+                    ->setPublic(false);
+            }
         }
     }
 }
