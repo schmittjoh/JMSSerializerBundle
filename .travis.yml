@@ -26,11 +26,7 @@ before_script:
   - COMPOSER_MEMORY_LIMIT=-1 composer update ${COMPOSER_FLAGS} --no-interaction $(if [[ "$(phpenv version-name)" == "8.0snapshot" ]]; then --ignore-platform-req=php; fi)
 
 script:
-  - vendor/bin/phpunit --coverage-clover clover
-
-after_success:
-    - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover clover
+  - vendor/bin/phpunit
 
 
 
