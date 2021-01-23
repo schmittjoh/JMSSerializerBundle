@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.8.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.8.0) (2021-01-23)
+
+**Merged pull requests:**
+
+- PHP8 support [\#830](https://github.com/schmittjoh/JMSSerializerBundle/pull/830) ([jacekpl](https://github.com/jacekpl))
+- Drop extratypes from CacheWarmer [\#820](https://github.com/schmittjoh/JMSSerializerBundle/pull/820) ([simPod](https://github.com/simPod))
+- Suggest symfony/expression-language for opcache preloading a Symfony project. Closes \#764 [\#815](https://github.com/schmittjoh/JMSSerializerBundle/pull/815) ([ettoredn](https://github.com/ettoredn))
+- Fixed changelog entry for 3.6.0 [\#807](https://github.com/schmittjoh/JMSSerializerBundle/pull/807) ([MisatoTremor](https://github.com/MisatoTremor))
+
 ## [3.7.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.7.0) (2020-06-28)
 
 **Merged pull requests:**
@@ -29,7 +38,7 @@
 
 **Implemented enhancements:**
 
-- Add ^5.0 in composer.json for symfony dependencies [\#777](https://github.com/schmittjoh/JMSSerializerBundle/issues/777) 
+- Add ^5.0 in composer.json for symfony dependencies [\#777](https://github.com/schmittjoh/JMSSerializerBundle/issues/777)
 
 **Fixed bugs:**
 
