@@ -1,11 +1,9 @@
 JMSSerializerBundle
 ===================
 
-
-[![Build Status](https://api.travis-ci.org/schmittjoh/JMSSerializerBundle.svg)](https://travis-ci.org/schmittjoh/JMSSerializerBundle)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/badges/quality-score.png)](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/)
-[![Code Coverage](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/badges/coverage.png)](https://scrutinizer-ci.com/g/schmittjoh/JMSSerializerBundle/)
-[![Packagist](https://img.shields.io/packagist/v/jms/serializer-bundle.svg)](https://packagist.org/packages/jms/serializer-bundle)
+[![GitHub Actions][GA Image]][GA Link]
+[![Code Coverage][Coverage Image]][CodeCov Link]
+[![Packagist][Packagist Image]][Packagist Link]
 
 This bundle integrates the [serializer library](https://github.com/schmittjoh/serializer) into Symfony.
 
@@ -18,3 +16,15 @@ You can learn more about the bundle in its [documentation](http://jmsyst.com/bun
 ## Professional Support
 
 For eventual paid support please write an email to [goetas@gmail.com](mailto:goetas@gmail.com).
+
+[GA Image]: https://github.com/schmittjoh/JMSSerializerBundle/workflows/CI/badge.svg
+
+[GA Link]: https://github.com/schmittjoh/JMSSerializerBundle/actions?query=workflow%3A%22CI%22+branch%3Amaster
+
+[Coverage Image]: https://codecov.io/gh/schmittjoh/JMSSerializerBundle/branch/master/graph/badge.svg
+
+[CodeCov Link]: https://codecov.io/gh/schmittjoh/JMSSerializerBundle/branch/master
+
+[Packagist Image]: https://img.shields.io/packagist/v/jms/serializer-bundle.svg
+
+[Packagist Link]: https://packagist.org/packages/jms/serializer-bundle
