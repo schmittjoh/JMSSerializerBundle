@@ -87,7 +87,7 @@ class CacheWarmer implements CacheWarmerInterface
         }
 
         // return early if there is no chance of matching anything in this file
-        if (!preg_match('{\b(?:class|interface|trait)\s}i', $contents)) {
+        if (!preg_match('{\b(?:class|interface|trait|enum)\s}i', $contents)) {
             return array();
         }
 
@@ -112,7 +112,7 @@ class CacheWarmer implements CacheWarmerInterface
 
         preg_match_all('{
             (?:
-                 \b(?<![\$:>])(?P<type>class|interface|trait) \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
+                 \b(?<![\$:>])(?P<type>class|interface|trait|enum) \s++ (?P<name>[a-zA-Z_\x7f-\xff:][a-zA-Z0-9_\x7f-\xff:\-]*+)
                | \b(?<![\$:>])(?P<ns>namespace) (?P<nsname>\s++[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\s*+\\\\\s*+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+)? \s*+ [\{;]
             )
         }ix', $contents, $matches);
