@@ -117,6 +117,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->children()
                     ->scalarNode('id')->cannotBeEmpty()->end()
+                    ->booleanNode('allow_custom_serialized_name')->defaultValue(false)->end()
                     ->scalarNode('separator')->defaultValue('_')->end()
                     ->booleanNode('lower_case')->defaultTrue()->end()
                 ->end()
