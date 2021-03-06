@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\Cache;
 
 use JMS\SerializerBundle\Cache\CacheWarmer;
@@ -20,12 +22,11 @@ class CacheWarmerTest extends TestCase
 
     public function testWarmUpRecursive()
     {
-
         $this->metadataFactory->expects($this->exactly(3))
             ->method('getMetadataForClass');
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files"], $this->metadataFactory);
-        $warmer->warmUp("foo");
+        $warmer = new CacheWarmer([__DIR__ . '/Files'], $this->metadataFactory);
+        $warmer->warmUp('foo');
     }
 
     public function testWarmUpRecursiveWithInclusion()
@@ -33,8 +34,8 @@ class CacheWarmerTest extends TestCase
         $this->metadataFactory->expects($this->exactly(1))
             ->method('getMetadataForClass')->with(BarBar::class);
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files/Ba*"], $this->metadataFactory);
-        $warmer->warmUp("foo");
+        $warmer = new CacheWarmer([__DIR__ . '/Files/Ba*'], $this->metadataFactory);
+        $warmer->warmUp('foo');
     }
 
     public function testWarmUpRecursiveWithExclusion()
@@ -42,8 +43,7 @@ class CacheWarmerTest extends TestCase
         $this->metadataFactory->expects($this->exactly(2))
             ->method('getMetadataForClass');
 
-        $warmer = new CacheWarmer([__DIR__ . "/Files"], $this->metadataFactory, ["Bar"]);
-        $warmer->warmUp("foo");
+        $warmer = new CacheWarmer([__DIR__ . '/Files'], $this->metadataFactory, ['Bar']);
+        $warmer->warmUp('foo');
     }
 }
-

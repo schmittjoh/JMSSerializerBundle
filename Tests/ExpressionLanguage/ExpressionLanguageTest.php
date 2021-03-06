@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\ExpressionLanguage;
 
 use JMS\SerializerBundle\ExpressionLanguage\BasicSerializerFunctionsProvider;
@@ -49,7 +51,6 @@ class ExpressionLanguageTest extends TestCase
             ->method('isGranted')->with('foo')
             ->will($this->returnValue('bar'));
 
-
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
@@ -64,7 +65,5 @@ class AuthCheckerMock
 {
     public function isGranted()
     {
-
     }
 }
-
