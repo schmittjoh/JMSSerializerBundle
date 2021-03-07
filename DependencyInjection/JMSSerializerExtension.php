@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\DependencyInjection;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -13,7 +16,6 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
-use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Templating\Helper\Helper;
 
 class JMSSerializerExtension extends ConfigurableExtension
@@ -28,8 +30,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             ->registerForAutoconfiguration(SubscribingHandlerInterface::class)
             ->addTag('jms_serializer.subscribing_handler');
 
-        $loader = new XmlFileLoader($container, new FileLocator(array(
-            __DIR__ . '/../Resources/config/')));
+        $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
         $loader->load('services.xml');
 
         // Built-in handlers.
@@ -83,7 +84,6 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
                 ->setArgument(0, new Reference($config['expression_evaluator']['id']));
-
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
@@ -104,15 +104,14 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setAlias('jms_serializer.metadata.cache', new Alias($config['metadata']['cache'], false));
         }
 
-        if ($config['metadata']['infer_types_from_doctrine_metadata'] === false) {
+        if (false === $config['metadata']['infer_types_from_doctrine_metadata']) {
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
         }
 
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
-                ->setPublic(false)
-            ;
+                ->setPublic(false);
         }
 
         $container
@@ -130,7 +129,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
 
         // directories
-        $directories = array();
+        $directories = [];
         if ($config['metadata']['auto_detection']) {
             foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
@@ -141,6 +140,7 @@ class JMSSerializerExtension extends ConfigurableExtension
                 }
             }
         }
+
         foreach ($config['metadata']['directories'] as $directory) {
             $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
 
@@ -163,6 +163,7 @@ class JMSSerializerExtension extends ConfigurableExtension
 
             $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
         }
+
         $container
             ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
@@ -191,15 +192,19 @@ class JMSSerializerExtension extends ConfigurableExtension
             if (isset($config['default_context'][$configKey]['version'])) {
                 $contextFactory->addMethodCall('setVersion', [$config['default_context'][$configKey]['version']]);
             }
+
             if (isset($config['default_context'][$configKey]['serialize_null'])) {
                 $contextFactory->addMethodCall('setSerializeNulls', [$config['default_context'][$configKey]['serialize_null']]);
             }
+
             if (!empty($config['default_context'][$configKey]['attributes'])) {
                 $contextFactory->addMethodCall('setAttributes', [$config['default_context'][$configKey]['attributes']]);
             }
+
             if (!empty($config['default_context'][$configKey]['groups'])) {
                 $contextFactory->addMethodCall('setGroups', [$config['default_context'][$configKey]['groups']]);
             }
+
             if (!empty($config['default_context'][$configKey]['enable_max_depth_checks'])) {
                 $contextFactory->addMethodCall('enableMaxDepthChecks');
             }
@@ -218,6 +223,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->getDefinition('jms_serializer.json_serialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['json_serialization']['options']]);
         }
+
         if (isset($config['visitors']['json_serialization']['depth'])) {
             $container->getDefinition('jms_serializer.json_serialization_visitor')
                 ->addMethodCall('setDepth', [$config['visitors']['json_serialization']['depth']]);
@@ -237,14 +243,17 @@ class JMSSerializerExtension extends ConfigurableExtension
                     $config['visitors']['xml_serialization']['default_root_ns'],
                 ]);
         }
+
         if (!empty($config['visitors']['xml_serialization']['version'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
                 ->addMethodCall('setDefaultVersion', [$config['visitors']['xml_serialization']['version']]);
         }
+
         if (!empty($config['visitors']['xml_serialization']['encoding'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
                 ->addMethodCall('setDefaultEncoding', [$config['visitors']['xml_serialization']['encoding']]);
         }
+
         if (!empty($config['visitors']['xml_serialization']['format_output'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')
                 ->addMethodCall('setFormatOutput', [$config['visitors']['xml_serialization']['format_output']]);
@@ -255,10 +264,12 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
                 ->addMethodCall('setDoctypeWhitelist', [$config['visitors']['xml_deserialization']['doctype_whitelist']]);
         }
+
         if (!empty($config['visitors']['xml_deserialization']['external_entities'])) {
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
                 ->addMethodCall('enableExternalEntities', [$config['visitors']['xml_deserialization']['external_entities']]);
         }
+
         if (!empty($config['visitors']['xml_deserialization']['options'])) {
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['xml_deserialization']['options']]);

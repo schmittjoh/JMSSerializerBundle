@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\ExpressionLanguage;
 
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -10,21 +12,21 @@ class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInte
     public function getFunctions()
     {
         return [
-            new ExpressionFunction('service', function ($arg) {
+            new ExpressionFunction('service', static function ($arg) {
                 return sprintf('$this->get(%s)', $arg);
-            }, function (array $variables, $value) {
+            }, static function (array $variables, $value) {
                 return $variables['container']->get($value);
             }),
-            new ExpressionFunction('parameter', function ($arg) {
+            new ExpressionFunction('parameter', static function ($arg) {
                 return sprintf('$this->getParameter(%s)', $arg);
-            }, function (array $variables, $value) {
+            }, static function (array $variables, $value) {
                 return $variables['container']->getParameter($value);
             }),
-            new ExpressionFunction('is_granted', function ($attribute, $object = null) {
+            new ExpressionFunction('is_granted', static function ($attribute, $object = null) {
                 return sprintf('call_user_func_array(array($this->get(\'security.authorization_checker\'), \'isGranted\'), array(%s, %s))', $attribute, $object);
-            }, function (array $variables, $attribute, $object = null) {
+            }, static function (array $variables, $attribute, $object = null) {
                 return call_user_func_array(
-                    array($variables['container']->get('security.authorization_checker'), 'isGranted'),
+                    [$variables['container']->get('security.authorization_checker'), 'isGranted'],
                     [$attribute, $object]
                 );
             }),

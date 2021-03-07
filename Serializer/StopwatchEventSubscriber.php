@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Serializer;
 
 use JMS\Serializer\EventDispatcher\Events;
@@ -16,10 +18,10 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            array('event' => Events::PRE_SERIALIZE, 'method' => 'onPreSerialize', 'priority' => -1000),
-            array('event' => Events::POST_SERIALIZE, 'method' => 'onPostSerialize', 'priority' => 1000),
-        );
+        return [
+            ['event' => Events::PRE_SERIALIZE, 'method' => 'onPreSerialize', 'priority' => -1000],
+            ['event' => Events::POST_SERIALIZE, 'method' => 'onPostSerialize', 'priority' => 1000],
+        ];
     }
 
     /**

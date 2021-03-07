@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\ContextFactory;
 
 use JMS\Serializer\Context;
@@ -7,9 +9,6 @@ use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\ContextFactory\ConfiguredContextFactory;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ConfiguredContextFactoryTest
- */
 class ConfiguredContextFactoryTest extends TestCase
 {
     /**
@@ -24,6 +23,7 @@ class ConfiguredContextFactoryTest extends TestCase
      * @param string $factoryMethod
      *
      * @return void
+     *
      * @dataProvider contextConfigDataProvider
      */
     public function testCreateSerializationContext(
@@ -34,8 +34,7 @@ class ConfiguredContextFactoryTest extends TestCase
         $expectedInterface,
         $expectedContextClass,
         $factoryMethod
-    )
-    {
+    ) {
         $object = new ConfiguredContextFactory();
 
         $object->setVersion($version);
@@ -71,7 +70,7 @@ class ConfiguredContextFactoryTest extends TestCase
                 ['Default', 'Registration'],
                 'JMS\Serializer\ContextFactory\SerializationContextFactoryInterface',
                 'JMS\Serializer\SerializationContext',
-                'createSerializationContext'
+                'createSerializationContext',
             ],
             [
                 sprintf('%d.%d.%d', mt_rand(1, 10), mt_rand(1, 10), mt_rand(1, 10)),
@@ -82,7 +81,7 @@ class ConfiguredContextFactoryTest extends TestCase
                 ['Default', 'Registration'],
                 'JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface',
                 'JMS\Serializer\DeserializationContext',
-                'createDeserializationContext'
+                'createDeserializationContext',
             ],
         ];
     }

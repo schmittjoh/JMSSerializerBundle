@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Configuration;
@@ -11,13 +13,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ConfigurationTest extends TestCase
 {
-    private function getContainer(array $configs = array())
+    private function getContainer(array $configs = [])
     {
         $container = new ContainerBuilder();
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', array('JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle'));
+        $container->setParameter('kernel.bundles', ['JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle']);
 
         $bundle = new JMSSerializerBundle();
 
@@ -42,8 +44,8 @@ class ConfigurationTest extends TestCase
                             'namespace_prefix' => 'JMSSerializerBundleNs2',
                             'path' => '@JMSSerializerBundle/Resources/config',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
 
@@ -61,11 +63,9 @@ class ConfigurationTest extends TestCase
         $processor->processConfiguration(new Configuration(true), [
             'jms_serializer' => [
                 'object_constructors' => [
-                    'doctrine' => [
-                        'fallback_strategy' => "foo",
-                    ],
-                ]
-            ]
+                    'doctrine' => ['fallback_strategy' => 'foo'],
+                ],
+            ],
         ]);
     }
 
@@ -80,8 +80,8 @@ class ConfigurationTest extends TestCase
                             'namespace_prefix' => 'JMSSerializerBundleNs1',
                             'path' => '@JMSSerializerBundle',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'metadata' => [
@@ -91,8 +91,8 @@ class ConfigurationTest extends TestCase
                             'namespace_prefix' => 'JMSSerializerBundleNs2',
                             'path' => '@JMSSerializerBundle/Resources/config',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
 
@@ -126,28 +126,26 @@ class ConfigurationTest extends TestCase
 
     public function testContextValues()
     {
-        $configArray = array(
-            'serialization' => array(
+        $configArray = [
+            'serialization' => [
                 'version' => 3,
                 'serialize_null' => true,
                 'attributes' => ['foo' => 'bar'],
                 'groups' => ['Baz'],
                 'enable_max_depth_checks' => false,
-            ),
-            'deserialization' => array(
-                'version' => "5.5",
+            ],
+            'deserialization' => [
+                'version' => '5.5',
                 'serialize_null' => false,
                 'attributes' => ['foo' => 'bar'],
                 'groups' => ['Baz'],
                 'enable_max_depth_checks' => true,
-            )
-        );
+            ],
+        ];
 
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(true), [
-            'jms_serializer' => [
-                'default_context' => $configArray
-            ]
+            'jms_serializer' => ['default_context' => $configArray],
         ]);
 
         $this->assertArrayHasKey('default_context', $config);
@@ -177,9 +175,7 @@ class ConfigurationTest extends TestCase
         ];
 
         $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(true), [
-            'jms_serializer' => $configArray
-        ]);
+        $config = $processor->processConfiguration(new Configuration(true), ['jms_serializer' => $configArray]);
 
         $this->assertArrayHasKey('default_context', $config);
         $this->assertArrayHasKey('serialization', $config['default_context']);
@@ -200,26 +196,24 @@ class ConfigurationTest extends TestCase
 
     public function testContextNullValues()
     {
-        $configArray = array(
-            'serialization' => array(
+        $configArray = [
+            'serialization' => [
                 'version' => null,
                 'serialize_null' => null,
                 'attributes' => null,
                 'groups' => null,
-            ),
-            'deserialization' => array(
+            ],
+            'deserialization' => [
                 'version' => null,
                 'serialize_null' => null,
                 'attributes' => null,
                 'groups' => null,
-            )
-        );
+            ],
+        ];
 
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(true), [
-            'jms_serializer' => [
-                'default_context' => $configArray
-            ]
+            'jms_serializer' => ['default_context' => $configArray],
         ]);
 
         $this->assertArrayHasKey('default_context', $config);
@@ -253,6 +247,5 @@ class ConfigurationTest extends TestCase
         $config = $processor->processConfiguration(new Configuration(true), []);
 
         $this->assertEquals(1024 /*JSON_PRESERVE_ZERO_FRACTION*/, $config['visitors']['json_serialization']['options']);
-
     }
 }

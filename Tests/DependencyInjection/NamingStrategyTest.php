@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -11,32 +13,31 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class NamingStrategyTest extends TestCase
 {
     /**
-     *
      * @param array $configs
+     *
      * @return ContainerBuilder
      */
-    private function getContainer(array $configs = array())
+    private function getContainer(array $configs = [])
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', array());
+        $container->setParameter('kernel.bundles', []);
 
         $loader->load(['jms_serializer' => $configs], $container);
+
         return $container;
     }
 
     public function testCustomNamingStrategy()
     {
-        $container = $this->getContainer(array(
-            'property_naming' => array(
-                'id' => 'custom_naming_strategy',
-            )
-        ));
+        $container = $this->getContainer([
+            'property_naming' => ['id' => 'custom_naming_strategy'],
+        ]);
         $customNamingStrategy = new CustomNamingStrategy();
-        $container->set("custom_naming_strategy", $customNamingStrategy);
+        $container->set('custom_naming_strategy', $customNamingStrategy);
 
         $this->assertSame($customNamingStrategy, $container->get('jms_serializer.naming_strategy'));
     }
@@ -44,7 +45,7 @@ class NamingStrategyTest extends TestCase
 
 class CustomNamingStrategy implements PropertyNamingStrategyInterface
 {
-    public function translateName(PropertyMetadata $property):string
+    public function translateName(PropertyMetadata $property): string
     {
         return 'foo';
     }
