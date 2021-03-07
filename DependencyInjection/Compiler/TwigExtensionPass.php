@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\Twig\SerializerRuntimeExtension;
@@ -15,17 +17,19 @@ class TwigExtensionPass implements CompilerPassInterface
             return;
         }
 
-        if (!$container->hasDefinition('twig.runtime_loader')
+        if (
+            !$container->hasDefinition('twig.runtime_loader')
             || !class_exists(SerializerRuntimeExtension::class)
             || !(interface_exists('Twig\RuntimeLoader\RuntimeLoaderInterface') || interface_exists('Twig_RuntimeLoaderInterface'))
             || !class_exists(SerializerRuntimeHelper::class)
         ) {
             $container->removeDefinition('jms_serializer.twig_extension.serializer_runtime_helper');
+
             return;
         }
 
         $def = $container->findDefinition('jms_serializer.twig_extension.serializer');
         $def->setClass(SerializerRuntimeExtension::class);
-        $def->setArguments(array());
+        $def->setArguments([]);
     }
 }

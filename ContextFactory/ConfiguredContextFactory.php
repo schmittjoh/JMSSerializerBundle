@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\ContextFactory;
 
 use JMS\Serializer\Context;
@@ -8,15 +10,12 @@ use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 
-/**
- * Class ConfiguredContextFactory
- */
 class ConfiguredContextFactory implements SerializationContextFactoryInterface, DeserializationContextFactoryInterface
 {
     /**
      * Application version
      *
-     * @var null|string
+     * @var string|null
      */
     private $version;
 
@@ -39,17 +38,17 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
      *
      * @var array
      */
-    private $attributes = array();
+    private $attributes = [];
 
     /**
      * Serialization groups
      *
      * @var string[]
      */
-    private $groups = array();
+    private $groups = [];
 
     /**
-     * @param null|string $version
+     * @param string|null $version
      */
     public function setVersion($version)
     {
@@ -61,7 +60,7 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
      */
     public function setSerializeNulls($serializeNulls)
     {
-        $this->serializeNulls = (bool)$serializeNulls;
+        $this->serializeNulls = (bool) $serializeNulls;
     }
 
     public function enableMaxDepthChecks()
@@ -85,17 +84,11 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         $this->groups = $groups;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createDeserializationContext(): DeserializationContext
     {
         return $this->configureContext(new DeserializationContext());
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createSerializationContext(): SerializationContext
     {
         return $this->configureContext(new SerializationContext());
@@ -113,19 +106,20 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         foreach ($this->attributes as $key => $value) {
             $context->setAttribute($key, $value);
         }
+
         if (!empty($this->groups)) {
             $context->setGroups($this->groups);
         }
 
-        if (($context instanceof SerializationContext) && $this->serializeNulls !== null) {
+        if (($context instanceof SerializationContext) && null !== $this->serializeNulls) {
             $context->setSerializeNull($this->serializeNulls);
         }
 
-        if ($this->enableMaxDepthChecks === true) {
+        if (true === $this->enableMaxDepthChecks) {
             $context->enableMaxDepthChecks();
         }
 
-        if ($this->version !== null) {
+        if (null !== $this->version) {
             $context->setVersion($this->version);
         }
 

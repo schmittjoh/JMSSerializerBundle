@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Compiler\TwigExtensionPass;
@@ -13,7 +15,7 @@ class TwigExtensionPassTest extends TestCase
     /**
      * @return ContainerBuilder
      */
-    private function getContainer(array $bundles = array('TwigBundle' => TwigBundle::class))
+    private function getContainer(array $bundles = ['TwigBundle' => TwigBundle::class])
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
@@ -23,6 +25,7 @@ class TwigExtensionPassTest extends TestCase
         $container->setParameter('kernel.bundles', $bundles);
 
         $loader->load([[]], $container);
+
         return $container;
     }
 
@@ -53,8 +56,9 @@ class TwigExtensionPassTest extends TestCase
     public function testLazyExtension()
     {
         if (!interface_exists('Twig_RuntimeLoaderInterface')) {
-            $this->markTestSkipped("Lazy extensions are supported only by serializer 1.7.0");
+            $this->markTestSkipped('Lazy extensions are supported only by serializer 1.7.0');
         }
+
         $container = $this->getContainer();
 
         $container->register('twig.runtime_loader');
@@ -68,4 +72,3 @@ class TwigExtensionPassTest extends TestCase
         $this->assertTrue($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
     }
 }
-
