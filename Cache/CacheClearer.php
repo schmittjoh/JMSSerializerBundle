@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Cache;
 
+use Metadata\Cache\CacheInterface;
+use Metadata\Cache\ClearableCacheInterface;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 
+/**
+ * @author Alexander Strizhak <gam6itko@gmail.com>
+ */
 class CacheClearer implements CacheClearerInterface
 {
     /**
-     * @var ClearableCacheInterface
+     * @var CacheInterface|ClearableCacheInterface
      */
     private $cache;
 
     /**
-     * @param ClearableCacheInterface $cache
+     * @param CacheInterface|ClearableCacheInterface $cache
      */
-    public function __construct($cache)
+    public function __construct(CacheInterface $cache)
     {
         $this->cache = $cache;
     }
 
     public function clear(string $cacheDirectory): void
     {
-        if (method_exists($this->cache, 'clear')) { // $this->cache instanceof ClearableCacheInterface
-            call_user_func([$this->cache, 'clear']); // $this->cache->clear();
+        if ($this->cache instanceof ClearableCacheInterface) {
+            $this->cache->clear();
         }
     }
 }
