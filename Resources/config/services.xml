@@ -233,6 +233,11 @@
             <tag name="jms_serializer.deserialization_visitor" format="xml" />
         </service>
 
+        <service id="jms_serializer.cache.cache_clearer" class="JMS\SerializerBundle\Cache\CacheClearer" public="false">
+            <argument type="service" id="jms_serializer.metadata.cache"/>
+            <tag name="kernel.cache_clearer" />
+        </service>
+
         <service id="jms_serializer.cache.cache_warmer" class="JMS\SerializerBundle\Cache\CacheWarmer" public="false">
             <argument/> <!-- included dirs -->
             <argument type="service" id="jms_serializer.metadata_factory"/>
