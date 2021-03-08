@@ -26,7 +26,7 @@ class CacheClearer implements CacheClearerInterface
         $this->cache = $cache;
     }
 
-    public function clear(string $cacheDirectory): void
+    public function clear($cacheDir): void
     {
         if ($this->cache instanceof ClearableCacheInterface) {
             $this->cache->clear();
