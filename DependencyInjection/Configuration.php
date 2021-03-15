@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\DependencyInjection;
 
 use JMS\Serializer\Exception\InvalidArgumentException;
@@ -13,7 +15,7 @@ class Configuration implements ConfigurationInterface
     private $debug;
 
     /**
-     * @param boolean $debug
+     * @param bool $debug
      */
     public function __construct($debug = false)
     {
@@ -62,8 +64,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addSubscribersSection(NodeBuilder $builder)
@@ -80,8 +81,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addObjectConstructorsSection(NodeBuilder $builder)
@@ -94,14 +94,13 @@ class Configuration implements ConfigurationInterface
                         ->addDefaultsIfNotSet()
                         ->children()
                             ->enumNode('fallback_strategy')
-                                ->defaultValue("null")
-                                ->values(["null", "exception", "fallback"])
+                                ->defaultValue('null')
+                                ->values(['null', 'exception', 'fallback'])
                             ->end()
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addSerializersSection(NodeBuilder $builder)
@@ -111,8 +110,8 @@ class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                 ->beforeNormalization()
                     ->ifString()
-                    ->then(function ($id) {
-                        return array('id' => $id);
+                    ->then(static function ($id) {
+                        return ['id' => $id];
                     })
                 ->end()
                 ->children()
@@ -125,29 +124,30 @@ class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                 ->beforeNormalization()
                     ->ifString()
-                    ->then(function ($id) {
-                        return array('id' => $id);
+                    ->then(static function ($id) {
+                        return ['id' => $id];
                     })
                 ->end()
                 ->children()
                     ->scalarNode('id')
-                        ->defaultValue(function () {
+                        ->defaultValue(static function () {
                             if (interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
                                 return 'jms_serializer.expression_evaluator';
                             }
+
                             return null;
                         })
                         ->validate()
-                            ->always(function($v) {
+                            ->always(static function ($v) {
                                 if (!empty($v) && !interface_exists('Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface')) {
                                     throw new InvalidArgumentException('You need at least symfony/expression-language v2.6 or v3.0 to use the expression evaluator features');
                                 }
+
                                 return $v;
                             })
                         ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addMetadataSection(NodeBuilder $builder)
@@ -199,13 +199,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addVisitorsSection(NodeBuilder $builder)
     {
-        $arrayNormalization = function($v) {
+        $arrayNormalization = static function ($v) {
             $options = 0;
             foreach ($v as $option) {
                 if (is_numeric($option)) {
@@ -219,7 +218,7 @@ class Configuration implements ConfigurationInterface
 
             return $options;
         };
-        $stringNormalization = function($v) {
+        $stringNormalization = static function ($v) {
             if (is_numeric($v)) {
                 $value = (int) $v;
             } elseif (defined($v)) {
@@ -230,7 +229,7 @@ class Configuration implements ConfigurationInterface
 
             return $value;
         };
-        $arrayNormalizationXML = function($v) {
+        $arrayNormalizationXML = static function ($v) {
             $options = 0;
             foreach ($v as $option) {
                 if (is_numeric($option)) {
@@ -244,7 +243,7 @@ class Configuration implements ConfigurationInterface
 
             return $options;
         };
-        $stringNormalizationXML = function($v) {
+        $stringNormalizationXML = static function ($v) {
             if (is_numeric($v)) {
                 $value = (int) $v;
             } elseif (defined($v)) {
@@ -256,14 +255,14 @@ class Configuration implements ConfigurationInterface
             return $value;
         };
 
-        $jsonValidation = function($v) {
+        $jsonValidation = static function ($v) {
             if (!is_int($v)) {
                 throw new InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
             }
 
             return $v;
         };
-        $xmlValidation = function($v) {
+        $xmlValidation = static function ($v) {
             if (!is_int($v)) {
                 throw new InvalidArgumentException('Expected either integer value or a array of the LIBXML_ constants.');
             }
@@ -278,7 +277,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('json_serialization')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode("depth")->end()
+                            ->scalarNode('depth')->end()
                             ->scalarNode('options')
                                 ->defaultValue(1024 /*JSON_PRESERVE_ZERO_FRACTION*/)
                                 ->beforeNormalization()
@@ -353,8 +352,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     private function addContextSection(NodeBuilder $builder)
@@ -374,23 +372,25 @@ class Configuration implements ConfigurationInterface
                 ->addDefaultsIfNotSet()
                 ->beforeNormalization()
                     ->ifString()
-                    ->then(function ($id) {
-                        return array('id' => $id);
+                    ->then(static function ($id) {
+                        return ['id' => $id];
                     })
                 ->end()
-                ->validate()->always(function ($v) {
+                ->validate()->always(static function ($v) {
                     if (!empty($v['id'])) {
-                        return array('id' => $v['id']);
+                        return ['id' => $v['id']];
                     }
+
                     return $v;
                 })->end()
                 ->children()
                     ->scalarNode('id')->cannotBeEmpty()->end()
                     ->scalarNode('serialize_null')
-                        ->validate()->always(function ($v) {
-                            if (!in_array($v, array(true, false, NULL), true)){
-                                throw new InvalidTypeException("Expected boolean or NULL for the serialize_null option");
+                        ->validate()->always(static function ($v) {
+                            if (!in_array($v, [true, false, null], true)) {
+                                throw new InvalidTypeException('Expected boolean or NULL for the serialize_null option');
                             }
+
                             return $v;
                         })
                         ->ifNull()->thenUnset()

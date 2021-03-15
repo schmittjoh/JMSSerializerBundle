@@ -12,7 +12,7 @@
 >
 
     <testsuites>
-        <testsuite name="SerializerExtraBbundle Test Suite">
+        <testsuite name="SerializerExtraBundle Test Suite">
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>

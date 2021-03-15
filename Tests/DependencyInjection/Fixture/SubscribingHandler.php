@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection\Fixture;
 
 use JMS\Serializer\GraphNavigatorInterface;
@@ -9,14 +11,13 @@ class SubscribingHandler implements SubscribingHandlerInterface
 {
     public static function getSubscribingMethods()
     {
-        return array(
-            array(
+        return [
+            [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
                 'format' => 'json',
                 'type' => 'DateTime',
                 'method' => 'onDateTime',
-            ),
-        );
+            ],
+        ];
     }
 }
-

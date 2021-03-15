@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
@@ -11,18 +13,18 @@ use Symfony\Component\DependencyInjection\Definition;
 class DoctrinePassTest extends TestCase
 {
     /**
-     *
      * @param array $configs
+     *
      * @return ContainerBuilder
      */
-    private function getContainer(array $configs = array())
+    private function getContainer(array $configs = [])
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', array());
+        $container->setParameter('kernel.bundles', []);
 
         $pass = new DoctrinePass();
         $container->addCompilerPass($pass);
@@ -38,9 +40,9 @@ class DoctrinePassTest extends TestCase
 
     public function testDoctrineDisabled()
     {
-        $container = $this->getContainer(array(
-            'metadata' => array('infer_types_from_doctrine_metadata' => false)
-        ));
+        $container = $this->getContainer([
+            'metadata' => ['infer_types_from_doctrine_metadata' => false],
+        ]);
         $container->register('doctrine.orm.entity_manager', 'stdClass');
 
         $container->compile();
@@ -103,7 +105,6 @@ class DoctrinePassTest extends TestCase
 
         $this->assertTrue(self::assertDefinitionIsOfType($container, $constructor, 'JMS\Serializer\Construction\DoctrineObjectConstructor'));
         $this->assertTrue(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
-
     }
 
     private static function assertDefinitionIsOfType(ContainerBuilder $builder, Definition $definition, string $class)
@@ -121,4 +122,3 @@ class DoctrinePassTest extends TestCase
         return false;
     }
 }
-

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -44,7 +45,7 @@ class ServiceMapPass implements CompilerPassInterface, \Serializable
             throw new \RuntimeException('The callable is invalid. If you had serialized this pass, the original callable might not be available anymore.');
         }
 
-        $serviceMap = array();
+        $serviceMap = [];
         foreach ($container->findTaggedServiceIds($this->tagName) as $id => $tags) {
             foreach ($tags as $tag) {
                 if (!isset($tag[$this->keyAttributeName])) {
@@ -60,11 +61,11 @@ class ServiceMapPass implements CompilerPassInterface, \Serializable
 
     public function serialize()
     {
-        return serialize(array($this->tagName, $this->keyAttributeName));
+        return serialize([$this->tagName, $this->keyAttributeName]);
     }
 
     public function unserialize($str)
     {
-        list($this->tagName, $this->keyAttributeName) = unserialize($str);
+        [$this->tagName, $this->keyAttributeName] = unserialize($str);
     }
 }

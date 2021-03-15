@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection\Fixture;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -15,6 +17,5 @@ class SimpleHandler implements EventSubscriberInterface
 
     public function onEventName()
     {
-
     }
 }

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-use JMS\Serializer\Exception\RuntimeException;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -14,17 +16,18 @@ class CustomHandlerPassTest extends TestCase
 {
     /**
      * @param array $configs
+     *
      * @return ContainerBuilder
      */
-    private function getContainer(array $configs = array())
+    private function getContainer(array $configs = [])
     {
         $loader = new JMSSerializerExtension();
         $container = new ContainerBuilder();
 
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', array());
-        $container->setParameter('kernel.bundles', array());
+        $container->setParameter('kernel.bundles', []);
+        $container->setParameter('kernel.bundles', []);
 
         $loader->load(['jms_serializer' => $configs], $container);
 
@@ -32,6 +35,7 @@ class CustomHandlerPassTest extends TestCase
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.handler')) as $id) {
             $container->removeDefinition($id);
         }
+
         foreach (array_keys($container->findTaggedServiceIds('jms_serializer.subscribing_handler')) as $id) {
             $container->removeDefinition($id);
         }
@@ -57,7 +61,7 @@ class CustomHandlerPassTest extends TestCase
 
         $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_service', 'deserializeDateTimeFromjson']]],
-            1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]]
+            1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]],
         ], $args[1]);
     }
 
@@ -80,7 +84,7 @@ class CustomHandlerPassTest extends TestCase
 
         $this->assertEquals([
             2 => ['DateTime' => ['json' => [new Reference('my_service'), 'deserializeDateTimeFromjson']]],
-            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'serializeDateTimeTojson']]]
+            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'serializeDateTimeTojson']]],
         ], $args[1]);
     }
 
@@ -102,16 +106,15 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertSame([
-            1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]]
+            1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]],
         ], $args[1]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The direction "bar" of tag "jms_serializer.handler" of service "my_service" does not exist
-     */
     public function testHandlerIncorrectDirection()
     {
+        $this->expectExceptionMessage('The direction "bar" of tag "jms_serializer.handler" of service "my_service" does not exist');
+        $this->expectException(RuntimeException::class);
+
         $container = $this->getContainer();
 
         $def = new Definition('Foo');
@@ -126,12 +129,11 @@ class CustomHandlerPassTest extends TestCase
         $pass->process($container);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Each tag named "jms_serializer.handler" of service "my_service" must have at least two attributes: "type" and "format"
-     */
     public function testHandlerMustHaveTypeAndFormat()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Each tag named "jms_serializer.handler" of service "my_service" must have at least two attributes: "type" and "format"');
+
         $container = $this->getContainer();
 
         $def = new Definition('Foo');
@@ -167,7 +169,7 @@ class CustomHandlerPassTest extends TestCase
 
         $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_custom_service', 'deserializeDateTimeFromjson']]],
-            1 => ['DateTime' => ['json' => ['my_custom_service', 'serializeDateTimeTojson']]]
+            1 => ['DateTime' => ['json' => ['my_custom_service', 'serializeDateTimeTojson']]],
         ], $args[1]);
     }
 
@@ -193,7 +195,7 @@ class CustomHandlerPassTest extends TestCase
         $userExplicitDef->addTag('jms_serializer.handler', [
             'type' => 'DateTime',
             'format' => 'json',
-            'priority' => -100
+            'priority' => -100,
         ]);
         $container->setDefinition('my_custom_explicit_service', $userExplicitDef);
 
@@ -203,8 +205,8 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertSame([
-          2 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'deserializeDateTimeFromjson']]],
-          1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'serializeDateTimeTojson']]]
+            2 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'deserializeDateTimeFromjson']]],
+            1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'serializeDateTimeTojson']]],
         ], $args[1]);
     }
 
@@ -252,7 +254,7 @@ class CustomHandlerPassTest extends TestCase
             2 => [
                 'Custom' => ['json' => ['my_service', 'deserialize']],
                 'Custom<?>' => ['json' => ['my_service', 'deserialize']],
-            ]
+            ],
         ], $args[1]);
     }
 
@@ -270,7 +272,7 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertSame([
-            1 => ['DateTime' => ['json' => ['my_service', 'onDateTime']]]
+            1 => ['DateTime' => ['json' => ['my_service', 'onDateTime']]],
         ], $args[1]);
     }
 
@@ -289,16 +291,15 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertEquals([
-            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'onDateTime']]]
+            1 => ['DateTime' => ['json' => [new Reference('my_service'), 'onDateTime']]],
         ], $args[1]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The service "my_service" must implement the SubscribingHandlerInterface
-     */
     public function testSubscribingHandlerInterface()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The service "my_service" must implement the SubscribingHandlerInterface');
+
         $container = $this->getContainer();
 
         $def = new Definition('JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject');
@@ -327,7 +328,7 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertSame([
-            1 => ['DateTime' => ['json' => ['my_custom_service', 'onDateTime']]]
+            1 => ['DateTime' => ['json' => ['my_custom_service', 'onDateTime']]],
         ], $args[1]);
     }
 
@@ -353,8 +354,7 @@ class CustomHandlerPassTest extends TestCase
         $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
 
         $this->assertSame([
-            1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'onDateTime']]]
+            1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'onDateTime']]],
         ], $args[1]);
     }
-
 }
