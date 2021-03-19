@@ -10,13 +10,8 @@
     <arg name="colors"/>
     <arg value="nps"/>
 
-    <file>Cache/</file>
-    <file>ContextFactory/</file>
-    <file>DependencyInjection/</file>
-    <file>ExpressionLanguage/</file>
-    <file>Serializer/</file>
-    <file>Templating/</file>
-    <file>Tests/</file>
+    <file>src/</file>
+    <file>tests/</file>
 
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>

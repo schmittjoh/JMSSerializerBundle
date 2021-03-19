@@ -54,15 +54,15 @@
     },
     "autoload": {
         "psr-4": {
-            "JMS\\SerializerBundle\\": ""
+            "JMS\\SerializerBundle\\": "src/"
         },
         "exclude-from-classmap": [
-            "/Tests/"
+            "/tests/"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "JMS\\SerializerBundle\\Tests\\": "Tests"
+            "JMS\\SerializerBundle\\Tests\\": "tests/"
         }
     }
 }

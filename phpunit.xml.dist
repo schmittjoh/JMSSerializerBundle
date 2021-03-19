@@ -8,12 +8,12 @@
          processIsolation="false"
          stopOnFailure="false"
          colors="true"
-         bootstrap="Tests/bootstrap.php"
+         bootstrap="tests/bootstrap.php"
 >
 
     <testsuites>
         <testsuite name="SerializerExtraBundle Test Suite">
-            <directory>./Tests</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
@@ -24,11 +24,7 @@
     </groups>
     <filter>
         <whitelist>
-            <directory>DependencyInjection</directory>
-            <directory>Templating</directory>
-            <directory>ExpressionLanguage</directory>
-            <directory>Serializer</directory>
-            <file>JMSSerializerBundle.php</file>
+            <directory>src</directory>
         </whitelist>
     </filter>
 </phpunit>
