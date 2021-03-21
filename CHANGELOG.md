@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.9.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.9.0) (2021-03-21)
+
+**Merged pull requests:**
+
+- Add option to include interface metadata [\#817](https://github.com/schmittjoh/JMSSerializerBundle/pull/817) ([marein](https://github.com/marein))
+- rewrite CacheClearerTest according to --prefer-lowest tests [\#842](https://github.com/schmittjoh/JMSSerializerBundle/pull/842) ([gam6itko](https://github.com/gam6itko))
+- copy issue templates from schmittjoh/serializer [\#841](https://github.com/schmittjoh/JMSSerializerBundle/pull/841) ([gam6itko](https://github.com/gam6itko))
+- add CONTRIBUTING.md and code fixing by phpcbf [\#840](https://github.com/schmittjoh/JMSSerializerBundle/pull/840) ([gam6itko](https://github.com/gam6itko))
+- add CacheClearer [\#839](https://github.com/schmittjoh/JMSSerializerBundle/pull/839) ([gam6itko](https://github.com/gam6itko))
+- Partially revert \#820 for support PHP 8.1 Enum [\#836](https://github.com/schmittjoh/JMSSerializerBundle/pull/836) ([michaljusiega](https://github.com/michaljusiega))
+- Migrate CI to Github Actions [\#833](https://github.com/schmittjoh/JMSSerializerBundle/pull/833) ([simPod](https://github.com/simPod))
+
 ## [3.8.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.8.0) (2021-01-23)
 
 **Merged pull requests:**
