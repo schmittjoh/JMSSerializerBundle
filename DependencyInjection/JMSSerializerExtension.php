@@ -109,7 +109,7 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->setParameter('jms_serializer.infer_types_from_doctrine_metadata', false);
         }
 
-        if (class_exists(DocBlockDriver::class)) {
+        if ($config['metadata']['doc_block_driver'] && class_exists(DocBlockDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.doc_block_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false)

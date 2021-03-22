@@ -184,6 +184,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->booleanNode('include_interfaces')->defaultFalse()->end()
+                    ->booleanNode('doc_block_driver')->defaultFalse()->end()
                     ->booleanNode('auto_detection')->defaultTrue()->end()
                     ->booleanNode('infer_types_from_doctrine_metadata')
                         ->info('Infers type information from Doctrine metadata if no explicit type has been defined for a property.')
