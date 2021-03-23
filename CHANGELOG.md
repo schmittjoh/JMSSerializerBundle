@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.9.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.9.1) (2021-03-23)
+
+**Merged pull requests:**
+
+- Fix problem with automatically registered DocBlockDriver [\#845](https://github.com/schmittjoh/JMSSerializerBundle/pull/845) ([alexander-schranz](https://github.com/alexander-schranz))
+
 ## [3.9.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.9.0) (2021-03-21)
 
 **Merged pull requests:**
