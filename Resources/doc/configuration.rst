@@ -192,7 +192,8 @@ values:
                 file_cache:
                     dir: "%kernel.cache_dir%/serializer"
 
-                include_interfaces: true
+                include_interfaces: false
+                infer_types_from_doc_block: false
 
                 # Using auto-detection, the mapping files for each bundle will be
                 # expected in the Resources/config/serializer directory.
