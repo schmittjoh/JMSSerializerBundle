@@ -1,6 +1,17 @@
 Configuration
 =============
 
+Camel case
+----------
+By default, the serialization is done in snake_case format. To switch to camelCase
+format, please add the following configuration parameters to jms_serializer.yaml file:
+
+.. code-block :: yaml
+    jms_serializer:
+        ...
+        property_naming:
+            id: 'jms_serializer.identical_property_naming_strategy'
+        
 Handlers
 --------
 You can register any service as a handler by adding either the ``jms_serializer.handler``,
