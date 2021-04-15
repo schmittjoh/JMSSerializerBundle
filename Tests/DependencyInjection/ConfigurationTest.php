@@ -55,6 +55,20 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
 
+    public function testCacheServicesRemovedWhenMetadataCachingIsDisabled(): void
+    {
+        $container = $this->getContainer([
+            [
+                'metadata' => [
+                    'cache' => 'none',
+                ],
+            ]
+        ]);
+
+        self::assertFalse($container->has('jms_serializer.metadata.cache'));
+        self::assertFalse($container->has('jms_serializer.cache.cache_clearer'));
+    }
+
     public function testWrongObjectConstructorFallbackStrategyTriggersException()
     {
         $this->expectException(InvalidConfigurationException::class);

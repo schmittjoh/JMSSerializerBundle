@@ -92,6 +92,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         // metadata
         if ('none' === $config['metadata']['cache']) {
             $container->removeAlias('jms_serializer.metadata.cache');
+            $container->removeDefinition('jms_serializer.cache.cache_clearer');
         } elseif ('file' === $config['metadata']['cache']) {
             $container
                 ->getDefinition('jms_serializer.metadata.cache.file_cache')
