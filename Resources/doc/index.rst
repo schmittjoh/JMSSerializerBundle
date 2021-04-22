@@ -6,36 +6,40 @@ Introduction
 JMSSerializerBundle allows you to serialize your data into a requested
 output format such as JSON, XML, or YAML, and vice versa.
 
-You can learn more in the `documentation <http://jmsyst.com/libs/serializer>`_ for the standalone library.
+.. tip::
+    You can learn more in the `documentation <http://jmsyst.com/libs/serializer>`_ for the standalone library.
 
 Installation
 ------------
 You can install this bundle using composer
 
-.. code-block :: bash
+.. code-block:: bash
 
     composer require jms/serializer-bundle
 
 or add the package to your ``composer.json`` file directly.
 
-After you have installed the package, you just need to add the bundle to your ``AppKernel.php`` file::
+After you have installed the package, you just need to add the bundle to your ``config/bundles.php`` file
 
-    // in AppKernel::registerBundles()
-    $bundles = array(
+.. code-block:: php
+
+    // config/bundles.php
+    return [
         // ...
-        new JMS\SerializerBundle\JMSSerializerBundle(),
-        // ...
-    );
+        JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
+    ];
 
 Configuration
 -------------
 JMSSerializerBundle requires no initial configuration to get you started.
 
-For all available configuration options, please see the :doc:`configuration reference <configuration>`.
+For all available configuration options, please see the :doc:`configuration reference <configuration/config_reference>`.
 
 Usage
 -----
-The configured serializer is available as ``jms_serializer`` service::
+The configured serializer is available as ``jms_serializer`` service
+
+.. code-block:: php
 
     $serializer = $container->get('jms_serializer');
     $serializer->serialize($data, $format);
@@ -43,13 +47,22 @@ The configured serializer is available as ``jms_serializer`` service::
 
 In templates, you may also use the ``serialize`` filter:
 
-.. code-block :: html+jinja
+.. code-block:: html+jinja
 
     {{ data | serialize }} {# serializes to JSON #}
     {{ data | serialize('json') }}
     {{ data | serialize('xml') }}
 
 Learn more in the `documentation for the dedicated library <http://jmsyst.com/libs/serializer/master/usage>`_.
+
+Documentation
+-------------
+
+.. toctree::
+    :maxdepth: 2
+
+    configuration
+    cookbook
 
 License
 -------
