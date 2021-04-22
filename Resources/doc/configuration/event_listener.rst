@@ -11,6 +11,18 @@ except that you can specify some additional attributes:
 - *class*: The type name that you want to listen to; defaults to all types.
 - *direction*: The direction (serialization, or deserialization); defaults to both.
 
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        Acme\MyEventSubscriber:
+            tags:
+                - name: jms_serializer.event_listener
+                  event: serializer.pre_deserialize
+                  class: 'Acme\BarClass'
+                  format: json
+                  method: doStuff
+
 .. note::
 
     Events are not dispatched by Symfony2's event dispatcher as such
@@ -20,3 +32,31 @@ except that you can specify some additional attributes:
 You can read more about it on the  `standalone library documentation`_.
 
 .. _standalone library documentation: https://jmsyst.com/libs/serializer/master/event_system
+
+
+Autowiring
+^^^^^^^^^^
+To register event subscriber automatically the class should implement `JMS\Serializer\EventDispatcher\EventSubscriberInterface`.
+
+.. code-block:: php
+
+    namespace Acme;
+
+    use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+
+    class MyEventSubscriber implements EventSubscriberInterface
+    {
+        public static function getSubscribedEvents()
+        {
+            return [
+                [
+                    'event' => 'serializer.pre_deserialize',
+                    'class' => 'Acme\BarClass',
+                    'format' => 'json',
+                    'method' => 'doStuff',
+                ],
+            ];
+        }
+    }
+
+Learn more in the `autowiring documentation <https://symfony.com/doc/current/service_container/autowiring.html>`_.

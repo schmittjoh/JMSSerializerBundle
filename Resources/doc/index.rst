@@ -45,6 +45,30 @@ The configured serializer is available as ``jms_serializer`` service
     $serializer->serialize($data, $format);
     $data = $serializer->deserialize($inputStr, $typeName, $format);
 
+Autowiring
+^^^^^^^^^^
+To inject serializer automatically use ``JMS\Serializer\SerializerInterface``
+or ``JMS\Serializer\ArrayTransformerInterface`` interfaces in class constructor.
+
+.. code-block:: php
+
+    namespace Acme;
+
+    use JMS\Serializer\ArrayTransformerInterface;
+    use JMS\Serializer\SerializerInterface;
+
+    class FooClass
+    {
+        public function __construct(ArrayTransformerInterface $arrayTransformer, SerializerInterface $serializer)
+        {
+        }
+    }
+
+Learn more in the `autowiring documentation <https://symfony.com/doc/current/service_container/autowiring.html>`_.
+
+Template
+^^^^^^^^
+
 In templates, you may also use the ``serialize`` filter:
 
 .. code-block:: html+jinja
@@ -52,6 +76,8 @@ In templates, you may also use the ``serialize`` filter:
     {{ data | serialize }} {# serializes to JSON #}
     {{ data | serialize('json') }}
     {{ data | serialize('xml') }}
+
+    {{ data | serialize('json', serialization_context().setGroups(["group1", "group2"])) }}
 
 Learn more in the `documentation for the dedicated library <http://jmsyst.com/libs/serializer/master/usage>`_.
 
