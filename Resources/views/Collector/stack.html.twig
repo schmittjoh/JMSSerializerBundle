@@ -1,0 +1,75 @@
+<div class="httplug-stack-header httplug-toggle" data-toggle="#httplug-{{ client }}-{{ id }}-details">
+    <div>
+        {% if stack.failed %}
+            <span class="httplug-stack-failed">✘</span>
+        {% else %}
+            <span class="httplug-stack-success">✔</span>
+        {% endif %}
+        <span class="label httplug-method httplug-method-{{ stack.requestMethod|lower }}">{{ stack.requestMethod }}</span>
+    </div>
+    <div class="label httplug-stack-header-target">
+        <span class="httplug-scheme">{{ stack.requestScheme }}://</span>
+        <span class="httplug-host">{{ stack.requestHost }}</span>
+        <span class="httplug-target">{{ stack.requestTarget }}</span>
+    </div>
+    <div>
+        <span class="label httplug-duration">{{ stack.duration|number_format }} ms</span>
+        {% if stack.responseCode >= 400 and stack.responseCode <= 599 %}
+            <span class="label status-error">{{ stack.responseCode }}</span>
+        {% elseif stack.responseCode >= 300 and stack.responseCode <= 399 %}
+            <span class="label status-warning">{{ stack.responseCode }}</span>
+        {% else %}
+            <span class="label status-success">{{ stack.responseCode }}</span>
+        {% endif %}
+    </div>
+</div>
+<div id="httplug-{{ client }}-{{ id }}-details" class="httplug-hidden">
+    <div class="httplug-toolbar">
+        <div class="httplug-copy-as-curl">
+            <input readonly="readonly" type="text" value="{{ stack.curlCommand }}" />
+            <button class="btn tooltip-toggle" aria-label="Copy to clipboard">Copy to clipboard</button>
+        </div>
+        <button data-toggle="#httplug-{{ client }}-{{ id }}-stack" class="httplug-toggle btn" >Toggle plugin stack</button>
+        <button data-toggle="#httplug-{{ client }}-{{ id }}-details .httplug-http-body" class="httplug-toggle btn">Toggle body</button>
+    </div>
+    <div class="httplug-messages">
+        <div class="httplug-message card">
+            <h4>Request</h4>
+            {{ stack.clientRequest|httplug_markup|nl2br }}
+        </div>
+        <div class="httplug-message card">
+            <h4>Response</h4>
+            {{ stack.clientResponse|httplug_markup|nl2br }}
+        </div>
+    </div>
+    {% if stack.profiles %}
+        <div id="httplug-{{ client }}-{{ id }}-stack" class="httplug-hidden card">
+            {% for profile in stack.profiles %}
+                <h3 class="httplug-plugin-name">{{ profile.plugin }}</h3>
+                <div class="httplug-messages">
+                    <div class="httplug-message">
+                        <h4>Request</h4>
+                        {{ profile.request|httplug_markup|nl2br }}
+                    </div>
+                    <div class="httplug-message">
+                        <h4>Response</h4>
+                        {{ profile.response|httplug_markup|nl2br }}
+                    </div>
+                </div>
+                {% if not loop.last %}
+                    <hr />
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% for child in collector.childrenStacks(stack) %}
+    <div class="httplug-stack">
+        {% include '@Httplug/stack.html.twig' with {
+            'collector': collector,
+            'client': client,
+            'stack': child,
+            'id': id ~ '-' ~ loop.index
+        } only %}
+    </div>
+{% endfor %}

@@ -1,0 +1,33 @@
+<h2>Loaded metadata</h2>
+
+{%- if collector.loadedMetadata is empty -%}
+    <div class="empty">
+        <p>No metadata have been loaded.</p>
+    </div>
+{%- else -%}
+    <div>
+        <div class="sf-toolbar-info-piece">
+            <b>Runs</b>
+            <span class="sf-toolbar-status">{{ collector.loadedMetadata|length }}</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>Format</th>
+            <th>File</th>
+            <th>Duration</th>
+        </tr>
+        </thead>
+        {%- for md in collector.loadedMetadata -%}
+            <tr>
+                <td>{{ md.class }}</td>
+                <td>{{ md.format }}</td>
+                <td>{{ md.file|default }}</td>
+                <td>{{ (md.duration * 1000)|number_format(4) }}ms</td>
+            </tr>
+        {%- endfor -%}
+    </table>
+{%- endif -%}

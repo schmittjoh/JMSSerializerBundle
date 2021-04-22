@@ -1,0 +1,115 @@
+{%- import _self as helper -%}
+
+<h2>Runs</h2>
+
+{%- if 0 == collector.runs|length -%}
+    <div class="empty">
+        <p>No serializer runs.</p>
+    </div>
+{%- else -%}
+
+    <div class="sf-tabs">
+        {%- for i, run in collector.runs -%}
+            <div class="tab">
+                <h3 class="tab-title jms-toggle" data-toggle="#jms-run-{{ i }}">
+                    {{ run.direction == constant('JMS\\Serializer\\GraphNavigatorInterface::DIRECTION_SERIALIZATION') ? 'serialization' : 'deserialization' }}
+                    {{ run.format }}
+                    <span class="badge">{{ run.duration ? (run.duration * 1000)|number_format(2) : '' }}ms</span>
+                </h3>
+
+                <div class="tab-content">
+                    <div id="jms-run-{{ i }}">
+                        <h4>
+                            <code>{{ run.type.name }} </code>
+                            <code class="sf-dump-str">{{ (run.duration * 1000)|number_format(2) }}ms</code>
+                        </h4>
+
+                        {{- helper.eventListenersCard(run) -}}
+                        {{- helper.handlersCard(run) -}}
+                        {{- helper.metadataCard(run) -}}
+
+                        <ul>
+                            {%- for propertyName, child in run.properties -%}
+                                <li>{{ helper.render_node(propertyName, child, run.duration) }}</li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endif -%}
+
+{%- macro render_node(propertyName, run, totalDuration) -%}
+    <div class="margin-bottom">
+        <strong class="sf-dump-note">{{ propertyName }}</strong>: {{ run.type.name|default }}
+        <code class="sf-dump-str">
+            {{- (run.duration * 1000)|number_format(2) }}ms/{{ (run.duration / totalDuration * 100)|number_format(2) -}}
+            %
+        </code>
+    </div>
+
+    {{- helper.eventListenersCard(run) -}}
+    {{- helper.handlersCard(run) -}}
+    {{- helper.metadataCard(run) -}}
+
+    {%- if run.properties|default -%}
+        <ul>
+            {%- for propertyName, child in run.properties -%}
+                <li>{{ helper.render_node(propertyName, child, totalDuration) }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro eventListenersCard(run) -%}
+    {%- if run.eventListeners|default -%}
+        <div class="card">
+            <div class="label">Event listeners</div>
+            {%- for el in run.eventListeners -%}
+                <div class="margin-top">
+                    <span class="sf-dump-key">{{ el.event }}</span>
+                    <span class="sf-dump-ellipsis sf-dump-ellipsis-class">{{ el.class }}</span>::{{ el.method }}
+                    <code class="sf-dump-str">{{ (el.duration * 1000)|number_format(2) }}ms</code>
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro handlersCard(run) -%}
+    {%- if run.handlers|default -%}
+        <div class="card">
+            <div class="label">Handlers</div>
+            {%- for handler in run.handlers -%}
+                <div class="margin-top">
+                    <span class="sf-dump-ellipsis sf-dump-ellipsis-class">{{ handler.class }}</span>
+                    <code class="sf-dump-str">{{ (handler.duration * 1000)|number_format(2) }}ms</code>
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro metadataCard(run) -%}
+    {%- if run.metadata|default -%}
+        <div class="card">
+            <div class="label">Metadata</div>
+            {%- for md in run.metadata -%}
+                <div  class="margin-top">
+                    <div>
+                        <span class="sf-dump-ellipsis sf-dump-ellipsis-class">{{ md.class }}</span>
+                        <span>{{ md.format }}</span>
+                        <code class="sf-dump-str">{{ (md.duration * 1000)|number_format(2) }}ms</code>
+                    </div>
+                    {%- if md.file|default -%}
+                        <div class="margin-bottom">
+                            <code>{{ md.file }}</code>
+                        </div>
+                    {%- endif -%}
+                </div>
+            {%- endfor -%}
+        </div>
+    {%- endif -%}
+{%- endmacro -%}

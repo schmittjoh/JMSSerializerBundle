@@ -272,9 +272,9 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function ($container) {
-                $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
-                $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
-                $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
+            $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
         });
 
         $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
@@ -300,7 +300,7 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function ($container) {
-                $container->getDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
+            $container->getDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
         $fileLocatorDef = $container->getDefinition('jms_serializer.metadata.file_locator');
@@ -322,7 +322,7 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function ($container) {
-                $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
+            $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
         });
 
         $this->assertTrue($container->hasDefinition('jms_serializer.cache.cache_warmer'));

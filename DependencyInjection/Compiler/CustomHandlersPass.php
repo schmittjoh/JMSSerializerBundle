@@ -6,6 +6,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\SerializerBundle\Debug\Handler\TraceableHandler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -131,5 +132,25 @@ class CustomHandlersPass implements CompilerPassInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Decorates event listener to collect information for profiler.
+     */
+    private function decorateForTracing(ContainerBuilder $container, string $id): string
+    {
+        if (!$container->getParameter('kernel.debug')) {
+            return $id;
+        }
+
+        if (0 === strpos($id, $prefix = 'debug.handler')) {
+            return $id;
+        }
+
+        $container
+            ->register($newId = "$prefix.$id", TraceableHandler::class)
+            ->addArgument(new Reference($id));
+
+        return $newId;
     }
 }

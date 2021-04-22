@@ -16,13 +16,8 @@
             <tag name="jms_serializer.event_subscriber" />
         </service>
 
-        <service id="jms_serializer.stopwatch_subscriber" class="JMS\SerializerBundle\Serializer\StopwatchEventSubscriber" public="false">
-            <tag name="jms_serializer.event_subscriber" />
-            <argument type="service" id="debug.stopwatch" />
-        </service>
-
         <!-- Handlers -->
-        <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
+        <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry" public="false">
             <argument type="service" id="service_container" />
         </service>
         <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
