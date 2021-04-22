@@ -1,0 +1,26 @@
+name: 'Build docs'
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build_docs:
+    name: "Build docs"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 2
+
+      - name: "Install Python"
+        uses: "actions/setup-python@v2"
+
+      - name: "Install dependencies"
+        run: "pip install -r Resources/doc/requirements.txt"
+
+      - name: "Build docs"
+        run: "cd Resources/doc && sphinx-build -W -b html -d _build/doctrees . _build/html"
