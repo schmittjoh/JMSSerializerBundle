@@ -24,5 +24,10 @@ class ExpressionFunctionProviderPass implements CompilerPassInterface
             }
         } catch (ServiceNotFoundException $exception) {
         }
+
+        if ($container->has('security.authorization_checker')) {
+            $container->setAlias('jms_serializer.authorization_checker', 'security.authorization_checker')
+                ->setPublic(true);
+        }
     }
 }

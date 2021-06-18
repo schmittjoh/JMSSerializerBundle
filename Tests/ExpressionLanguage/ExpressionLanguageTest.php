@@ -19,7 +19,7 @@ class ExpressionLanguageTest extends TestCase
 
         $this->assertEquals('$this->get("foo")', $exp->compile("service('foo')"));
         $this->assertEquals('$this->getParameter("foo")', $exp->compile("parameter('foo')"));
-        $this->assertEquals('call_user_func_array(array($this->get(\'security.authorization_checker\'), \'isGranted\'), array("foo", ))', $exp->compile("is_granted('foo')"));
+        $this->assertEquals('call_user_func_array(array($this->get(\'jms_serializer.authorization_checker\'), \'isGranted\'), array("foo", ))', $exp->compile("is_granted('foo')"));
     }
 
     public function testFunctionProviderEvaluation()
@@ -54,7 +54,7 @@ class ExpressionLanguageTest extends TestCase
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
             ->expects($this->once())
-            ->method('get')->with('security.authorization_checker')
+            ->method('get')->with('jms_serializer.authorization_checker')
             ->will($this->returnValue($authChecker));
 
         $this->assertEquals('bar', $exp->evaluate("is_granted('foo')", ['container' => $container]));
