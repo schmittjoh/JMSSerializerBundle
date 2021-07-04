@@ -29,7 +29,7 @@ final class TraceableHandlerRegistry implements HandlerRegistryInterface
 
     public function getHandler(int $direction, string $typeName, string $format)
     {
-        $this->registry->getHandler($direction, $typeName, $format);
+        return $this->registry->getHandler($direction, $typeName, $format);
     }
 
     public function getTriggeredHandlers(): array

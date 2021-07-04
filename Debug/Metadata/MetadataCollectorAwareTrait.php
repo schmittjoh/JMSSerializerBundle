@@ -2,14 +2,12 @@
 
 namespace JMS\SerializerBundle\Debug\Metadata;
 
-use JMS\SerializerBundle\Debug\RunsCollector;
-
 trait MetadataCollectorAwareTrait
 {
-    /** @var RunsCollector */
+    /** @var MetadataCollector */
     private $collector;
 
-    public function setCollector(RunsCollector $collector)
+    public function setCollector(MetadataCollector $collector)
     {
         $this->collector = $collector;
     }

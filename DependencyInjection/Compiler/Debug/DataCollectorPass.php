@@ -24,9 +24,9 @@ class DataCollectorPass implements CompilerPassInterface
 
         $collector = $container->register($id = 'data_collector.jms_serializer', DataCollector::class);
         $collector
-            ->addArgument(new Reference('debug.jms_serializer.runs_collector'))
             ->addArgument(new Reference('debug.jms_serializer.event_dispatcher'))
-            ->addArgument(new Reference('debug.jms_serializer.handler_registry'));
+            ->addArgument(new Reference('debug.jms_serializer.handler_registry'))
+            ->addArgument(new Reference('debug.jms_serializer.metadata_collector'));
 
         $profiler->addMethodCall('add', [new Reference($id)]);
 

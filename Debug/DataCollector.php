@@ -14,15 +14,18 @@ use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 
 final class DataCollector extends BaseDataCollector implements LateDataCollectorInterface
 {
-    private $runsCollector;
     private $eventDispatcher;
     private $handler;
+    private $metadataCollector;
 
-    public function __construct(RunsCollector $runsCollector, TraceableEventDispatcher $eventDispatcher, TraceableHandlerRegistry $handler)
-    {
-        $this->runsCollector = $runsCollector;
+    public function __construct(
+        TraceableEventDispatcher $eventDispatcher,
+        TraceableHandlerRegistry $handler,
+        MetadataCollector $metadataCollector
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->handler = $handler;
+        $this->metadataCollector = $metadataCollector;
 
         $this->reset();
     }
@@ -68,33 +71,13 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
         return $this->data['handlers']['not_called'];
     }
 
-
     public function getLoadedMetadata(): array
     {
         return $this->data['metadata'];
     }
 
-    public function getRuns(): array
-    {
-        return $this->data['runs'];
-    }
-
-    /**
-     * @return float|int In milliseconds
-     */
-    public function getRunsDuration()
-    {
-        if (empty($this->data['runs'])) {
-            return 0;
-        }
-
-        return array_sum(array_column($this->data['runs'], 'duration')) * 1000;
-    }
-
     public function lateCollect(): void
     {
-        $this->data['runs'] = $this->runsCollector->getRuns();
-
         $this->data['listeners'] = [
             'called'     => $this->eventDispatcher->getTriggeredListeners(),
             'not_called' => $this->eventDispatcher->getNotTriggeredListeners(),
@@ -105,6 +88,6 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
             'not_called' => $this->handler->getNotTriggeredHandlers(),
         ];
 
-        $this->data['metadata'] = $this->runsCollector->getLoadedMetadata();
+        $this->data['metadata'] = $this->metadataCollector->getLoadedMetadata();
     }
 }

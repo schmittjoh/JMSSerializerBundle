@@ -3,18 +3,13 @@
 {%- block toolbar -%}
 
     {%- set icon -%}
-        {{ include('@JMSSerializer/icon.svg') }}
-        <span class="sf-toolbar-value">{{ collector.runs|length }}</span>
-        <span class="sf-toolbar-label">in</span>
-        <span class="sf-toolbar-value">{{ collector.runsDuration|number_format(2) }}</span>
-        <span class="sf-toolbar-label">ms</span>
+        {{- include('@JMSSerializer/icon.svg') }}
+        <span class="sf-toolbar-label">E:</span>{{- collector.triggeredListeners|length }}
+        <span class="sf-toolbar-label">H:</span>{{- collector.triggeredHandlers|length }}
+        <span class="sf-toolbar-label">M:</span>{{- collector.loadedMetadata|length }}
     {%- endset -%}
 
     {%- set text -%}
-        <div class="sf-toolbar-info-piece">
-            <b>Runs</b>
-            <span class="sf-toolbar-status">{{ collector.runs|length }}</span>
-        </div>
         <div class="sf-toolbar-info-piece">
             <b>Events</b>
             <span class="sf-toolbar-status">{{ collector.triggeredListeners|length }}</span>
@@ -57,14 +52,15 @@
 
 {%- block menu -%}
     {# This left-hand menu appears when using the full-screen profiler. #}
-    <span class="label {{ collector.runs is empty ? 'disabled' : '' }}">
+    {% set total = collector.triggeredListeners|length + collector.triggeredHandlers|length + collector.loadedMetadata|length %}
+    <span class="label {{ total == 0 ? 'disabled' : '' }} {{ collector.loadedMetadata|length > 0 ? 'label-status-warning' : '' }}">
         <span class="icon">
             {{ include('@JMSSerializer/icon.svg') }}
         </span>
         <strong>JMS Serializer</strong>
-        {%- if collector.runs is not empty -%}
+        {%- if collector.loadedMetadata|length > 0 -%}
             <span class="count">
-                <span>{{ collector.runs|length }}</span>
+                <span>{{ collector.loadedMetadata|length }}</span>
             </span>
         {%- endif -%}
     </span>
@@ -73,57 +69,31 @@
 {%- block panel -%}
     <h2>JMS Serializer</h2>
 
-    <div class="metrics">
-        <div class="metric">
-            <span class="value">{{ collector.runsDuration|number_format(2) }} <span class="unit">ms</span></span>
-            <span class="label">Total execution time</span>
-        </div>
-
-        <div class="metric">
-            <span class="value">{{ collector.runs|length }}</span>
-            <span class="label">Serializer runs</span>
-        </div>
-    </div>
-
     <div class="sf-tabs">
-        <div class="tab">
-            <h3 class="tab-title jms-toggle" data-toggle="#jms-runs">Runs <span
-                        class="badge">{{ collector.runs|length }}</span></h3>
-
-            <div class="tab-content">
-                <p class="help">Serializer calls</p>
-
-                <div id="jms-runs">
-                    {%- include '@JMSSerializer/Collector/runs.html.twig' -%}
-                </div>
-
-            </div>
-        </div>
 
         <div class="tab">
-            <h3 class="tab-title jms-toggle" data-toggle="#jms-events">Events <span
-                        class="badge">{{ collector.triggeredListeners|length }}</span></h3>
+            <h3 class="tab-title jms-toggle" data-toggle="#jms-events">
+                Events
+                <span class="badge">{{ collector.triggeredListeners|length }}</span>
+            </h3>
 
             <div class="tab-content">
-                <p class="help">
-                    These messages are sent by client named
-                </p>
+                <p class="help">Triggered event listeners</p>
 
                 <div id="jms-events">
                     {%- include '@JMSSerializer/Collector/events.html.twig' -%}
                 </div>
-
             </div>
         </div>
 
         <div class="tab">
-            <h3 class="tab-title jms-toggle" data-toggle="#jms-handlers">Handlers <span
-                        class="badge">{{ collector.triggeredHandlers|length }}</span></h3>
+            <h3 class="tab-title jms-toggle" data-toggle="#jms-handlers">
+                Handlers
+                <span class="badge">{{ collector.triggeredHandlers|length }}</span>
+            </h3>
 
             <div class="tab-content">
-                <p class="help">
-                    These messages are sent by client named
-                </p>
+                <p class="help">Triggered event handlers</p>
 
                 <div id="jms-handlers">
                     {%- include '@JMSSerializer/Collector/handlers.html.twig' -%}
@@ -132,12 +102,15 @@
         </div>
 
         <div class="tab">
-            <h3 class="tab-title">Metadata <span class="badge">{{ collector.loadedMetadata|length }}</span></h3>
+            <h3 class="tab-title">
+                Metadata
+                <span class="badge {{ collector.loadedMetadata|length > 0 ? 'status-warning' : '' }}">
+                    {{- collector.loadedMetadata|length -}}
+                </span>
+            </h3>
 
             <div class="tab-content">
-                <p class="help">
-                    These messages are sent by client named
-                </p>
+                <p class="help">Loaded metadata</p>
 
                 <div id="jms-metadata">
                     {%- include '@JMSSerializer/Collector/metadata.html.twig' -%}
