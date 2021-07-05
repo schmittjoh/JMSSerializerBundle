@@ -75,6 +75,10 @@ class EventListenerPass implements CompilerPassInterface
      */
     private function decorateListener(ContainerBuilder $container, string $id): string
     {
+        if (in_array($id, $this->getExcludedServiceIds())) {
+            return $id;
+        }
+
         if (0 === strpos($id, $prefix = 'debug.event_listener')) {
             return $id;
         }
@@ -84,5 +88,13 @@ class EventListenerPass implements CompilerPassInterface
             ->addArgument(new Reference($id));
 
         return $newId;
+    }
+
+    private function getExcludedServiceIds(): array
+    {
+        return [
+            'jms_serializer.stopwatch_subscriber',
+            'JMS\SerializerBundle\Serializer\StopwatchEventSubscriber',
+        ];
     }
 }
