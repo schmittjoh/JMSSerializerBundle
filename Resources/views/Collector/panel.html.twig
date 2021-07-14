@@ -1,0 +1,121 @@
+{%- extends '@WebProfiler/Profiler/layout.html.twig' -%}
+
+{%- block toolbar -%}
+
+    {%- set icon -%}
+        {{- include('@JMSSerializer/icon.svg') }}
+        <span class="sf-toolbar-label">E:</span>{{- collector.triggeredListeners|length }}
+        <span class="sf-toolbar-label">H:</span>{{- collector.triggeredHandlers|length }}
+        <span class="sf-toolbar-label">M:</span>{{- collector.loadedMetadata|length }}
+    {%- endset -%}
+
+    {%- set text -%}
+        <div class="sf-toolbar-info-piece">
+            <b>Events</b>
+            <span class="sf-toolbar-status">{{ collector.triggeredListeners|length }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Handlers</b>
+            <span class="sf-toolbar-status">{{ collector.triggeredHandlers|length }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Metadata</b>
+            <span class="sf-toolbar-status {{ collector.loadedMetadata|length > 0 ? 'sf-toolbar-status-yellow' : '' }}">{{ collector.loadedMetadata|length }}</span>
+        </div>
+    {%- endset -%}
+
+    {%- include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } -%}
+{%- endblock -%}
+
+{%- block head -%}
+    <style>
+        {{ include('@JMSSerializer/Collector/style/httplug.css.twig') }}
+    </style>
+    <style>
+        .margin-left {
+            margin-left: 10px;
+        }
+
+        .margin-top {
+            margin-top: 10px;
+        }
+
+        .margin-bottom {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        {{ include('@JMSSerializer/Collector/script/httplug.js.twig') }}
+    </script>
+    {{ parent() }}
+{%- endblock -%}
+
+{%- block menu -%}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    {% set total = collector.triggeredListeners|length + collector.triggeredHandlers|length + collector.loadedMetadata|length %}
+    <span class="label {{ total == 0 ? 'disabled' : '' }} {{ collector.loadedMetadata|length > 0 ? 'label-status-warning' : '' }}">
+        <span class="icon">
+            {{ include('@JMSSerializer/icon.svg') }}
+        </span>
+        <strong>JMS Serializer</strong>
+        {%- if collector.loadedMetadata|length > 0 -%}
+            <span class="count">
+                <span>{{ collector.loadedMetadata|length }}</span>
+            </span>
+        {%- endif -%}
+    </span>
+{%- endblock -%}
+
+{%- block panel -%}
+    <h2>JMS Serializer</h2>
+
+    <div class="sf-tabs">
+
+        <div class="tab">
+            <h3 class="tab-title jms-toggle" data-toggle="#jms-events">
+                Events
+                <span class="badge">{{ collector.triggeredListeners|length }}</span>
+            </h3>
+
+            <div class="tab-content">
+                <p class="help">Triggered event listeners</p>
+
+                <div id="jms-events">
+                    {%- include '@JMSSerializer/Collector/events.html.twig' -%}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title jms-toggle" data-toggle="#jms-handlers">
+                Handlers
+                <span class="badge">{{ collector.triggeredHandlers|length }}</span>
+            </h3>
+
+            <div class="tab-content">
+                <p class="help">Triggered event handlers</p>
+
+                <div id="jms-handlers">
+                    {%- include '@JMSSerializer/Collector/handlers.html.twig' -%}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3 class="tab-title">
+                Metadata
+                <span class="badge {{ collector.loadedMetadata|length > 0 ? 'status-warning' : '' }}">
+                    {{- collector.loadedMetadata|length -}}
+                </span>
+            </h3>
+
+            <div class="tab-content">
+                <p class="help">Loaded metadata</p>
+
+                <div id="jms-metadata">
+                    {%- include '@JMSSerializer/Collector/metadata.html.twig' -%}
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endblock -%}

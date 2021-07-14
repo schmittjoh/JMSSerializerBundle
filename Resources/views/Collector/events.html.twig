@@ -1,0 +1,59 @@
+{%- import _self as helper -%}
+
+<h2>Event Dispatcher</h2>
+
+<div class="sf-tabs">
+    <div class="tab">
+        <div class="tab-title">Triggered Listeners <span class="badge">{{ collector.triggeredListeners|length }}</span></div>
+
+        <div class="tab-content">
+            {%- if 0 == collector.triggeredListeners|length -%}
+                <div class="empty">
+                    <p>No triggered listeners.</p>
+                </div>
+            {%- else -%}
+                {{- helper.render_table(collector.triggeredListeners, true) -}}
+            {%- endif -%}
+        </div>
+    </div>
+
+    <div class="tab">
+        <div class="tab-title">Not Called Listeners <span class="badge">{{ collector.notTriggeredListeners|length }}</span></div>
+        <div class="tab-content">
+            {{ helper.render_table(collector.notTriggeredListeners, false) }}
+        </div>
+    </div>
+</div>
+
+{%- macro render_table(listeners, called) -%}
+    {%- for eventName, calls in listeners -%}
+        <h3>{{ eventName }}</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Listener</th>
+                <th>Method</th>
+                <th>interface</th>
+                <th>Format</th>
+                {%- if called|default(false) -%}
+                    <th>Calls</th>
+                    <th>Total duration (ms)</th>
+                {%- endif -%}
+            </tr>
+            </thead>
+
+            {%- for call in calls -%}
+                <tr>
+                    <td>{{ call.listener }}</td>
+                    <td>{{ call.method }}</td>
+                    <td>{{ call.interface }}</td>
+                    <td>{{ call.format }}</td>
+                    {%- if called|default(false) -%}
+                        <td class="text-right">{{ call.calls|length }}</td>
+                        <td class="text-right">{{ call.totalDuration ? (call.totalDuration * 1000)|number_format(4) : '' }}</td>
+                    {%- endif -%}
+                </tr>
+            {%- endfor -%}
+        </table>
+    {%- endfor -%}
+{%- endmacro -%}

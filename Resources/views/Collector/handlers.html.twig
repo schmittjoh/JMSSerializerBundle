@@ -1,0 +1,64 @@
+{%- import _self as helper -%}
+
+<h2>Type Handlers</h2>
+
+<div class="sf-tabs">
+    <div class="tab">
+        <h3 class="tab-title">Triggered Handlers <span class="badge">{{ collector.triggeredHandlers|length }}</span></h3>
+
+        <div class="tab-content">
+            {%- if 0 == collector.triggeredHandlers|length -%}
+                <div class="empty">
+                    <p>No triggered handlers.</p>
+                </div>
+            {%- else -%}
+                {{- helper.render_table(collector.triggeredHandlers, true) -}}
+            {%- endif -%}
+        </div>
+    </div>
+
+    <div class="tab">
+        <div class="tab-title">Not Triggered Handlers <span class="badge">{{ collector.notTriggeredHandlers|length }}</span></div>
+        <div class="tab-content">
+            {{ helper.render_table(collector.notTriggeredHandlers, false) }}
+        </div>
+    </div>
+</div>
+
+{%- macro render_table(listeners, called) -%}
+    {%- for direction, calls in listeners -%}
+        <h3>
+            {%- if direction == constant('JMS\\Serializer\\GraphNavigatorInterface::DIRECTION_SERIALIZATION') -%}
+                Serialization
+            {%- else -%}
+                Deserialization
+            {%- endif -%}
+        </h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Handler</th>
+                <th>Class</th>
+                <th>Method</th>
+                <th>Format</th>
+                {%- if called|default(false) -%}
+                    <th>Calls</th>
+                    <th>Total duration (ms)</th>
+                {%- endif -%}
+            </tr>
+            </thead>
+            {%- for call in calls -%}
+                <tr>
+                    <td>{{ call.handler }}</td>
+                    <td>{{ call.class }}</td>
+                    <td>{{ call.method }}</td>
+                    <td>{{ call.format }}</td>
+                    {%- if called|default(false) -%}
+                        <td class="text-right">{{ call.calls|length }}</td>
+                        <td class="text-right">{{ call.totalDuration ?  (call.totalDuration * 1000)|number_format(4) : '' }}</td>
+                    {%- endif -%}
+                </tr>
+            {%- endfor -%}
+        </table>
+    {%- endfor -%}
+{%- endmacro -%}

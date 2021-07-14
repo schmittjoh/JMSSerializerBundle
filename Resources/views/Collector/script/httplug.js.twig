@@ -1,0 +1,27 @@
+/**
+ * Toggle visibility on elements.
+ */
+document.addEventListener("DOMContentLoaded", function() {
+    Array.prototype.forEach.call(document.getElementsByClassName('jms-toggle'), function (source) {
+        source.addEventListener('click', function() {
+            Array.prototype.forEach.call(document.querySelectorAll(source.getAttribute('data-toggle')), function (target) {
+                target.classList.toggle('jms-hidden');
+            });
+        });
+    });
+});
+
+/**
+ * Copy as cURL.
+ */
+document.addEventListener("DOMContentLoaded", function () {
+    Array.prototype.forEach.call(document.getElementsByClassName('jms-toolbar'), function (toolbar) {
+        var button = toolbar.querySelector('.jms-copy-as-curl>button');
+        button.addEventListener('click', function() {
+            var input = toolbar.querySelector('.jms-copy-as-curl>input');
+            input.select();
+            document.execCommand('copy');
+            input.setSelectionRange(0, 0);
+       });
+    });
+})
