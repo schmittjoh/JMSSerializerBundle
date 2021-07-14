@@ -87,8 +87,8 @@ final class TraceableEventDispatcher implements EventDispatcherInterface
                     yield $event => [
                         'listener'  => $object->getInnerClass(),
                         'method'    => $method,
-                        'format'    => $listener[2],
-                        'interface' => $listener[3],
+                        'format'    => $listener[2] ?? null,
+                        'interface' => $listener[3] ?? null,
                         'calls'     => $object->getCalls(),
                     ];
                 }
