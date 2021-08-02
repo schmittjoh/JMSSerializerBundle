@@ -21,7 +21,7 @@
         </service>
 
         <service id="jms_serializer.traceable_event_dispatcher" class="JMS\SerializerBundle\Debug\TraceableEventDispatcher" public="false">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="jms_serializer.event_dispatcher.service_locator" />
         </service>
 
         <service id="jms_serializer.traceable_runs_listener" class="JMS\SerializerBundle\Debug\RunsListener" public="false">

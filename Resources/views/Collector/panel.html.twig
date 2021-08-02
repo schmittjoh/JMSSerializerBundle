@@ -88,11 +88,11 @@
         <div class="metric-divider"></div>
         <div class="metric">
             <span class="value">{{- collector.triggeredEvents.count }}</span>
-            <span class="label">Triggered events</span>
+            <span class="label">Triggered event listeners</span>
         </div>
         <div class="metric">
             <span class="value">{{- collector.triggeredEvents.duration|round(2) }} <span class="unit">ms</span></span>
-            <span class="label">Triggered events (time)</span>
+            <span class="label">Triggered event listeners (time)</span>
         </div>
     </div>
 
@@ -100,7 +100,12 @@
         <div class="tab">
             <h3 class="tab-title jms-toggle" data-toggle="#jms-events">
                 Events
-                <span class="badge">{{ collector.triggeredListeners|length }}</span>
+                <span class="badge">
+                    {{ collector.triggeredListeners|length }}
+                    ({{ collector.getNumListeners('called') }} listeners)
+                </span>
+
+
             </h3>
 
             <div class="tab-content">
@@ -115,7 +120,10 @@
         <div class="tab">
             <h3 class="tab-title jms-toggle" data-toggle="#jms-handlers">
                 Handlers
-                <span class="badge">{{ collector.triggeredHandlers|length }}</span>
+                <span class="badge">
+                    {{ collector.triggeredHandlers|length }}
+                    ({{ collector.getNumHandlers('called') }} types)
+                </span>
             </h3>
 
             <div class="tab-content">

@@ -34,8 +34,8 @@ final class TraceableHandlerRegistry implements HandlerRegistryInterface
         $this->registry->registerHandler($direction, $typeName, $format, $handler);
         $name = $this->findNameForHandler($handler);
         $this->registeredHandlers[$direction][$typeName][$name] = $name;
-        print_r($this->registeredHandlers);
-        exit;
+        $a = &$this->registeredHandlers[$direction];
+        ksort($a);
     }
 
     public function getHandler(int $direction, string $typeName, string $format)
@@ -95,15 +95,20 @@ final class TraceableHandlerRegistry implements HandlerRegistryInterface
     public function getNotTriggeredHandlers(): array
     {
         $registered = $this->registeredHandlers;
-   
-        foreach ($this->storage as $handlersByType) {
-            foreach ($handlersByType as $calls) {
+
+        foreach ($this->storage as $direction => $handlersByType) {
+            foreach ($handlersByType as $type => $calls) {
                 foreach ($calls as $call) {
                     $handlerName = $this->findNameForHandler($call['handler']);
-                    unset($registered[$handlerName]);
+                    unset($registered[$direction][$type][$handlerName]);
+                }
+
+                if (!count($registered[$direction][$type])) {
+                    unset($registered[$direction][$type]);
                 }
             }
         }
-        return array_values($registered);
+
+        return $registered;
     }
 }

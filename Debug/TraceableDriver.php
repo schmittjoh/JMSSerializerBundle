@@ -8,7 +8,7 @@ use Metadata\ClassMetadata;
 /**
  * @internal
  */
-class TraceableDriver implements CacheInterface
+final class TraceableDriver implements CacheInterface
 {
     /**
      * @var CacheInterface

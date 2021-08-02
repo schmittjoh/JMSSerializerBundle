@@ -7,7 +7,7 @@ use JMS\Serializer\EventDispatcher\Event;
 /**
  * @internal
  */
-class RunsListener
+final class RunsListener
 {
     private $runs = [];
 

@@ -7,7 +7,7 @@ use Metadata\Driver\FileLocator;
 /**
  * @internal
  */
-class TraceableFileLocator extends FileLocator
+final class TraceableFileLocator extends FileLocator
 {
     private $files = [];
 
