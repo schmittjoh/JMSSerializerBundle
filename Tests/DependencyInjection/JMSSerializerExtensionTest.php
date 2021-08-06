@@ -650,10 +650,8 @@ class JMSSerializerExtensionTest extends TestCase
     {
         $container = $this->getContainerForConfig([
             [
-                'metadata' => [
-                    'include_interfaces' => true,
-                ],
-            ]
+                'metadata' => ['include_interfaces' => true],
+            ],
         ]);
         $serializer = $container->get('jms_serializer');
 
