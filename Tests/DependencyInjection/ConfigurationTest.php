@@ -59,10 +59,8 @@ class ConfigurationTest extends TestCase
     {
         $container = $this->getContainer([
             [
-                'metadata' => [
-                    'cache' => 'none',
-                ],
-            ]
+                'metadata' => ['cache' => 'none'],
+            ],
         ]);
 
         self::assertFalse($container->has('jms_serializer.metadata.cache'));

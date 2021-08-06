@@ -7,6 +7,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Config\FileLocator;
@@ -113,14 +114,21 @@ class JMSSerializerExtension extends ConfigurableExtension
         if ($config['metadata']['infer_types_from_doc_block'] && class_exists(DocBlockDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.doc_block_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
-                ->setPublic(false)
-            ;
+                ->setPublic(false);
         }
 
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false);
+        }
+
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeReader::class)) {
+            $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
+                ->setArgument(0, new Reference('annotation_reader'));
+
+            $container->findDefinition('jms_serializer.metadata.annotation_driver')
+                ->setArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
         }
 
         $container
