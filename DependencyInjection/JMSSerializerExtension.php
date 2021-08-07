@@ -146,44 +146,10 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->removeDefinition('jms_serializer.cache.cache_warmer');
         }
 
-        // directories
-        $directories = [];
-        if ($config['metadata']['auto_detection']) {
-            foreach ($bundles as $name => $class) {
-                $ref = new \ReflectionClass($class);
-
-                $dir = dirname($ref->getFileName()) . '/Resources/config/serializer';
-                if (file_exists($dir)) {
-                    $directories[$ref->getNamespaceName()] = $dir;
-                }
-            }
-        }
-
-        foreach ($config['metadata']['directories'] as $directory) {
-            $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
-
-            if ('@' === $directory['path'][0]) {
-                $pathParts = explode('/', $directory['path']);
-                $bundleName = substr($pathParts[0], 1);
-
-                if (!isset($bundles[$bundleName])) {
-                    throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
-                }
-
-                $ref = new \ReflectionClass($bundles[$bundleName]);
-                $directory['path'] = dirname($ref->getFileName()) . substr($directory['path'], strlen('@' . $bundleName));
-            }
-
-            $dir = rtrim($directory['path'], '\\/');
-            if (!file_exists($dir)) {
-                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist for the namespace "%s"', $dir, $directory['namespace_prefix']));
-            }
-
-            $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
-        }
+        $directories = $this->detectMetadataDirectories($config['metadata'], $bundles);
 
         $container
-            ->getDefinition('jms_serializer.metadata.file_locator')
+            ->findDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
 
         $this->setVisitorOptions($config, $container);
@@ -292,5 +258,45 @@ class JMSSerializerExtension extends ConfigurableExtension
             $container->getDefinition('jms_serializer.xml_deserialization_visitor')
                 ->addMethodCall('setOptions', [$config['visitors']['xml_deserialization']['options']]);
         }
+    }
+
+    private function detectMetadataDirectories($metadata, $bundles): array
+    {
+        $directories = [];
+        if ($metadata['auto_detection']) {
+            foreach ($bundles as $name => $class) {
+                $ref = new \ReflectionClass($class);
+
+                $dir = dirname($ref->getFileName()) . '/Resources/config/serializer';
+                if (file_exists($dir)) {
+                    $directories[$ref->getNamespaceName()] = $dir;
+                }
+            }
+        }
+
+        foreach ($metadata['directories'] as $directory) {
+            $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
+
+            if ('@' === $directory['path'][0]) {
+                $pathParts = explode('/', $directory['path']);
+                $bundleName = substr($pathParts[0], 1);
+
+                if (!isset($bundles[$bundleName])) {
+                    throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
+                }
+
+                $ref = new \ReflectionClass($bundles[$bundleName]);
+                $directory['path'] = dirname($ref->getFileName()) . substr($directory['path'], strlen('@' . $bundleName));
+            }
+
+            $dir = rtrim($directory['path'], '\\/');
+            if (!file_exists($dir)) {
+                throw new RuntimeException(sprintf('The metadata directory "%s" does not exist for the namespace "%s"', $dir, $directory['namespace_prefix']));
+            }
+
+            $directories[rtrim($directory['namespace_prefix'], '\\')] = $dir;
+        }
+
+        return $directories;
     }
 }

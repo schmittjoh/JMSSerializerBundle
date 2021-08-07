@@ -49,7 +49,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
 
-        $directories = $container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
+        $directories = $container->findDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
 
         $this->assertEquals($ref->getPath(), $directories['JMSSerializerBundleNs1']);
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
@@ -108,7 +108,7 @@ class ConfigurationTest extends TestCase
             ],
         ]);
 
-        $directories = $container->getDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
+        $directories = $container->findDefinition('jms_serializer.metadata.file_locator')->getArgument(0);
 
         $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);

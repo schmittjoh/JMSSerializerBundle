@@ -7,7 +7,10 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class FormErrorHandlerTranslationDomainPass implements CompilerPassInterface
+/**
+ * @internal
+ */
+final class FormErrorHandlerTranslationDomainPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {

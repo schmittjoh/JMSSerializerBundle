@@ -7,16 +7,40 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class CustomHandlersPass implements CompilerPassInterface
+/**
+ * @internal
+ */
+final class CustomHandlersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $handlers = [];
+        $handlersByDirection = $this->findHandlers($container);
+        $handlerRegistryDef = $container->findDefinition('jms_serializer.handler_registry');
+
         $handlerServices = [];
+        foreach ($handlersByDirection as $direction => $handlersByType) {
+            foreach ($handlersByType as $type => $handlersByFormat) {
+                foreach ($handlersByFormat as $format => $handlerCallable) {
+                    $id = (string) $handlerCallable[0];
+
+                    $handlerServices[$id] = $handlerCallable[0];
+                    $handlerCallable[0] = $id;
+
+                    $handlerRegistryDef->addMethodCall('registerHandler', [$direction, $type, $format, $handlerCallable]);
+                }
+            }
+        }
+
+        $container->findDefinition('jms_serializer.handler_registry.service_locator')
+            ->setArgument(0, $handlerServices);
+    }
+
+    private function findHandlers(ContainerBuilder $container): array
+    {
+        $handlers = [];
         foreach ($container->findTaggedServiceIds('jms_serializer.handler') as $id => $tags) {
             foreach ($tags as $attrs) {
                 if (!isset($attrs['type'], $attrs['format'])) {
@@ -35,13 +59,8 @@ class CustomHandlersPass implements CompilerPassInterface
                 foreach ($directions as $direction) {
                     $method = $attrs['method'] ?? HandlerRegistry::getDefaultMethod($direction, $attrs['type'], $attrs['format']);
                     $priority = isset($attrs['priority']) ? intval($attrs['priority']) : 0;
-                    $ref = new Reference($id);
-                    if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
-                        $handlerServices[$id] = $ref;
-                        $handlers[] = [$direction, $attrs['type'], $attrs['format'], $priority, $id, $method];
-                    } else {
-                        $handlers[] = [$direction, $attrs['type'], $attrs['format'], $priority, $ref, $method];
-                    }
+
+                    $handlers[] = [$direction, $attrs['type'], $attrs['format'], $priority, new Reference($id), $method];
                 }
             }
         }
@@ -69,26 +88,12 @@ class CustomHandlersPass implements CompilerPassInterface
                     $priority = isset($methodData['priority']) ? intval($methodData['priority']) : 0;
                     $method = $methodData['method'] ?? HandlerRegistry::getDefaultMethod($direction, $methodData['type'], $methodData['format']);
 
-                    $ref = new Reference($id);
-                    if (class_exists(ServiceLocatorTagPass::class) || $def->isPublic()) {
-                        $handlerServices[$id] = $ref;
-                        $handlers[] = [$direction, $methodData['type'], $methodData['format'], $priority, $id, $method];
-                    } else {
-                        $handlers[] = [$direction, $methodData['type'], $methodData['format'], $priority, $ref, $method];
-                    }
+                    $handlers[] = [$direction, $methodData['type'], $methodData['format'], $priority, new Reference($id), $method];
                 }
             }
         }
 
-        $handlers = $this->sortAndFlattenHandlersList($handlers);
-
-        $container->findDefinition('jms_serializer.handler_registry')
-            ->addArgument($handlers);
-
-        if (class_exists(ServiceLocatorTagPass::class)) {
-            $serviceLocator = ServiceLocatorTagPass::register($container, $handlerServices);
-            $container->findDefinition('jms_serializer.handler_registry')->replaceArgument(0, $serviceLocator);
-        }
+        return $this->sortAndFlattenHandlersList($handlers);
     }
 
     private function sortAndFlattenHandlersList(array $allHandlers)
@@ -110,11 +115,11 @@ class CustomHandlersPass implements CompilerPassInterface
      * Performs stable sorting. Copied from http://php.net/manual/en/function.uasort.php#121283
      *
      * @param array $array
-     * @param $value_compare_func
+     * @param callable $value_compare_func
      *
      * @return bool
      */
-    private static function stable_uasort(array &$array, $value_compare_func)
+    private static function stable_uasort(array &$array, callable $value_compare_func)
     {
         $index = 0;
         foreach ($array as &$item) {

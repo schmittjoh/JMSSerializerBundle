@@ -24,9 +24,11 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * In the example above, we convert the visitors into a map service.
  *
+ * @internal
+ *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ServiceMapPass implements CompilerPassInterface, \Serializable
+final class ServiceMapPass implements CompilerPassInterface, \Serializable
 {
     private $tagName;
     private $keyAttributeName;
