@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -29,7 +30,7 @@ final class RegisterEventListenersAndSubscribersPass implements CompilerPassInte
             foreach ($listenersPerEvent as $singleListener) {
                 $id = (string) $singleListener[0][0];
 
-                $listenerServices[$id] = $singleListener[0][0];
+                $listenerServices[$id] = new ServiceClosureArgument($singleListener[0][0]);
                 $singleListener[0][0] = $id;
 
                 $dispatcherDef->addMethodCall('addListener', array_merge([$event], $singleListener));

@@ -6,6 +6,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,7 +27,7 @@ final class CustomHandlersPass implements CompilerPassInterface
                 foreach ($handlersByFormat as $format => $handlerCallable) {
                     $id = (string) $handlerCallable[0];
 
-                    $handlerServices[$id] = $handlerCallable[0];
+                    $handlerServices[$id] = new ServiceClosureArgument($handlerCallable[0]);
                     $handlerCallable[0] = $id;
 
                     $handlerRegistryDef->addMethodCall('registerHandler', [$direction, $type, $format, $handlerCallable]);

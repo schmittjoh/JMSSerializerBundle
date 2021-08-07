@@ -35,8 +35,8 @@ class JMSSerializerBundle extends Bundle
         $builder->addCompilerPass(new ExpressionFunctionProviderPass());
         $builder->addCompilerPass(new DoctrinePass());
 
-        $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -256);
-        $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -256);
+        $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_OPTIMIZE);
+        $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_OPTIMIZE);
     }
 
     private function getServiceMapPass($tagName, $keyAttributeName, $callable)
