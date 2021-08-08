@@ -9,7 +9,10 @@ use JMS\Serializer\Twig\SerializerRuntimeHelper;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class TwigExtensionPass implements CompilerPassInterface
+/**
+ * @internal
+ */
+final class TwigExtensionPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {

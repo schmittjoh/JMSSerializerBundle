@@ -5,17 +5,46 @@ declare(strict_types=1);
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
+/**
+ * @internal
+ */
+final class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $listeners = [];
+        $listeners = $this->findListeners($container);
+
+        $dispatcherDef = $container->findDefinition('jms_serializer.event_dispatcher');
         $listenerServices = [];
+
+        foreach ($listeners as &$events) {
+            $events = array_merge(...$events);
+        }
+
+        foreach ($listeners as $event => $listenersPerEvent) {
+            foreach ($listenersPerEvent as $singleListener) {
+                $id = (string) $singleListener[0][0];
+
+                $listenerServices[$id] = new ServiceClosureArgument($singleListener[0][0]);
+                $singleListener[0][0] = $id;
+
+                $dispatcherDef->addMethodCall('addListener', array_merge([$event], $singleListener));
+            }
+        }
+
+        $container->findDefinition('jms_serializer.event_dispatcher.service_locator')
+            ->setArgument(0, $listenerServices);
+    }
+
+    private function findListeners(ContainerBuilder $container): array
+    {
+        $listeners = [];
+
         foreach ($container->findTaggedServiceIds('jms_serializer.event_listener') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['event'])) {
@@ -29,13 +58,9 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $format = $attributes['format'] ?? null;
                 $method = $attributes['method'] ?? EventDispatcher::getDefaultMethodName($attributes['event']);
                 $priority = isset($attributes['priority']) ? (int) $attributes['priority'] : 0;
+                $interface = $attributes['interface'] ?? null;
 
-                if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
-                    $listenerServices[$id] = new Reference($id);
-                    $listeners[$attributes['event']][$priority][] = [[$id, $method], $class, $format];
-                } else {
-                    $listeners[$attributes['event']][$priority][] = [[new Reference($id), $method], $class, $format];
-                }
+                $listeners[$attributes['event']][$priority][] = [[new Reference($id), $method], $class, $format, $interface];
             }
         }
 
@@ -59,31 +84,14 @@ class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
                 $priority = isset($eventData['priority']) ? (int) $eventData['priority'] : 0;
                 $interface = $eventData['interface'] ?? null;
 
-                if (class_exists(ServiceLocatorTagPass::class) || $container->getDefinition($id)->isPublic()) {
-                    $listenerServices[$id] = new Reference($id);
-                    $listeners[$eventData['event']][$priority][] = [[$id, $method], $class, $format, $interface];
-                } else {
-                    $listeners[$eventData['event']][$priority][] = [[new Reference($id), $method], $class, $format, $interface];
-                }
+                $listeners[$eventData['event']][$priority][] = [[new Reference($id), $method], $class, $format, $interface];
             }
         }
 
-        if ($listeners) {
-            array_walk($listeners, static function (&$value, $key) {
-                ksort($value);
-            });
+        array_walk($listeners, static function (&$value, $key) {
+            ksort($value);
+        });
 
-            foreach ($listeners as &$events) {
-                $events = call_user_func_array('array_merge', $events);
-            }
-
-            $container->findDefinition('jms_serializer.event_dispatcher')
-                ->addMethodCall('setListeners', [$listeners]);
-        }
-
-        if (class_exists(ServiceLocatorTagPass::class)) {
-            $serviceLocator = ServiceLocatorTagPass::register($container, $listenerServices);
-            $container->getDefinition('jms_serializer.event_dispatcher')->replaceArgument(0, $serviceLocator);
-        }
+        return $listeners;
     }
 }

@@ -91,6 +91,13 @@
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
+    <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps">
+        <exclude-pattern>DependencyInjection/Compiler/CustomHandlersPass.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+            <exclude-pattern>DependencyInjection/Compiler/CustomHandlersPass.php</exclude-pattern>
+    </rule>
+
     <rule ref="PSR2.Classes.PropertyDeclaration.Multiple">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>

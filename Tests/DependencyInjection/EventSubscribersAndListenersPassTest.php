@@ -73,28 +73,38 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass = new RegisterEventListenersAndSubscribersPass();
         $pass->process($container);
 
-        $dispatcher = $container->getDefinition('jms_serializer.event_dispatcher');
-        $methodCalls = $dispatcher->getMethodCalls();
+        $this->assertEquals([
+            'serializer.pre_serialize' => [
+                [
+                    ['my_listener', 'onserializerpreserialize'],
+                    null,
+                    null,
+                    null,
+                ],
+            ],
+        ], $this->getRegisteredListeners($container));
+    }
 
-        $called = false;
-        foreach ($methodCalls as $call) {
-            if ('setListeners' === $call[0]) {
-                $called = true;
-                $this->assertEquals([
-                    'serializer.pre_serialize' => [
-                        [
-                            ['my_listener', 'onserializerpreserialize'],
-                            null,
-                            null,
-                        ],
-                    ],
-                ], $call[1][0]);
+    private function buildListenersFromCalls(array $calls): array
+    {
+        $listeners = [];
+        foreach ($calls as $callData) {
+            if ('addListener' !== $callData[0]) {
+                continue;
             }
+
+            [$eventName, $callable, $class, $format, $interface] = $callData[1];
+            $listeners[$eventName][] = [$callable, $class, $format, $interface];
         }
 
-        if (!$called) {
-            $this->fail('The method setListeners was not invoked on the jms_serializer.event_dispatcher');
-        }
+        return $listeners;
+    }
+
+    private function getRegisteredListeners(ContainerBuilder $containerBuilder): array
+    {
+        $calls = $containerBuilder->findDefinition('jms_serializer.event_dispatcher')->getMethodCalls();
+
+        return $this->buildListenersFromCalls($calls);
     }
 
     public function testEventListener()
@@ -112,28 +122,16 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass = new RegisterEventListenersAndSubscribersPass();
         $pass->process($container);
 
-        $dispatcher = $container->getDefinition('jms_serializer.event_dispatcher');
-        $methodCalls = $dispatcher->getMethodCalls();
-
-        $called = false;
-        foreach ($methodCalls as $call) {
-            if ('setListeners' === $call[0]) {
-                $called = true;
-                $this->assertEquals([
-                    'serializer.pre_serialize' => [
-                        [
-                            ['my_listener', 'onserializerpreserialize'],
-                            'Bar',
-                            null,
-                        ],
-                    ],
-                ], $call[1][0]);
-            }
-        }
-
-        if (!$called) {
-            $this->fail('The method setListeners was not invoked on the jms_serializer.event_dispatcher');
-        }
+        $this->assertEquals([
+            'serializer.pre_serialize' => [
+                [
+                    ['my_listener', 'onserializerpreserialize'],
+                    'Bar',
+                    null,
+                    null,
+                ],
+            ],
+        ], $this->getRegisteredListeners($container));
     }
 
     public function testEventListenerWithParams()
@@ -153,28 +151,16 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass = new RegisterEventListenersAndSubscribersPass();
         $pass->process($container);
 
-        $dispatcher = $container->getDefinition('jms_serializer.event_dispatcher');
-        $methodCalls = $dispatcher->getMethodCalls();
-
-        $called = false;
-        foreach ($methodCalls as $call) {
-            if ('setListeners' === $call[0]) {
-                $called = true;
-                $this->assertEquals([
-                    'serializer.pre_serialize' => [
-                        [
-                            ['my_listener', 'onserializerpreserialize'],
-                            'Bar',
-                            null,
-                        ],
-                    ],
-                ], $call[1][0]);
-            }
-        }
-
-        if (!$called) {
-            $this->fail('The method setListeners was not invoked on the jms_serializer.event_dispatcher');
-        }
+        $this->assertEquals([
+            'serializer.pre_serialize' => [
+                [
+                    ['my_listener', 'onserializerpreserialize'],
+                    'Bar',
+                    null,
+                    null,
+                ],
+            ],
+        ], $this->getRegisteredListeners($container));
     }
 
     public function testEventSubscriber()
@@ -189,29 +175,16 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass = new RegisterEventListenersAndSubscribersPass();
         $pass->process($container);
 
-        $dispatcher = $container->getDefinition('jms_serializer.event_dispatcher');
-        $methodCalls = $dispatcher->getMethodCalls();
-
-        $called = false;
-        foreach ($methodCalls as $call) {
-            if ('setListeners' === $call[0]) {
-                $called = true;
-                $this->assertEquals([
-                    'serializer.pre_serialize' => [
-                        [
-                            ['my_listener', 'onserializerpreserialize'],
-                            'Bar',
-                            'json',
-                            null,
-                        ],
-                    ],
-                ], $call[1][0]);
-            }
-        }
-
-        if (!$called) {
-            $this->fail('The method setListeners was not invoked on the jms_serializer.event_dispatcher');
-        }
+        $this->assertEquals([
+            'serializer.pre_serialize' => [
+                [
+                    ['my_listener', 'onserializerpreserialize'],
+                    'Bar',
+                    'json',
+                    null,
+                ],
+            ],
+        ], $this->getRegisteredListeners($container));
     }
 
     public function testEventSubscriberInterface()
@@ -243,28 +216,15 @@ class EventSubscribersAndListenersPassTest extends TestCase
         $pass = new RegisterEventListenersAndSubscribersPass();
         $pass->process($container);
 
-        $dispatcher = $container->getDefinition('jms_serializer.event_dispatcher');
-        $methodCalls = $dispatcher->getMethodCalls();
-
-        $called = false;
-        foreach ($methodCalls as $call) {
-            if ('setListeners' === $call[0]) {
-                $called = true;
-                $this->assertEquals([
-                    'the-event-name' => [
-                        [
-                            ['my_subscriber', 'onEventName'],
-                            'some-class',
-                            'json',
-                            null,
-                        ],
-                    ],
-                ], $call[1][0]);
-            }
-        }
-
-        if (!$called) {
-            $this->fail('The method setListeners was not invoked on the jms_serializer.event_dispatcher');
-        }
+        $this->assertEquals([
+            'the-event-name' => [
+                [
+                    ['my_subscriber', 'onEventName'],
+                    'some-class',
+                    'json',
+                    null,
+                ],
+            ],
+        ], $this->getRegisteredListeners($container));
     }
 }

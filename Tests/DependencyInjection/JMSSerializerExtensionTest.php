@@ -272,9 +272,9 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function ($container) {
-                $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
-                $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
-                $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_object_constructor')->setPublic(true);
+            $container->getDefinition('jms_serializer.array_collection_handler')->setPublic(true);
+            $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')->setPublic(true);
         });
 
         $this->assertTrue($container->getDefinition('jms_serializer.array_collection_handler')->getArgument(0));
@@ -299,11 +299,11 @@ class JMSSerializerExtensionTest extends TestCase
                     ],
                 ],
             ],
-        ], static function ($container) {
-                $container->getDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
+        ], static function (ContainerBuilder $container) {
+            $container->findDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
-        $fileLocatorDef = $container->getDefinition('jms_serializer.metadata.file_locator');
+        $fileLocatorDef = $container->findDefinition('jms_serializer.metadata.file_locator');
         $directories = $fileLocatorDef->getArgument(0);
         $this->assertEquals(['foo_ns' => __DIR__], $directories);
     }
@@ -322,7 +322,7 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function ($container) {
-                $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
+            $container->getDefinition('jms_serializer.cache.cache_warmer')->setPublic(true);
         });
 
         $this->assertTrue($container->hasDefinition('jms_serializer.cache.cache_warmer'));
@@ -688,6 +688,7 @@ class JMSSerializerExtensionTest extends TestCase
         $container->setDefinition('doctrine', new Definition(Registry::class));
         $container->set('translator', $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock());
         $container->set('debug.stopwatch', $this->getMockBuilder('Symfony\\Component\\Stopwatch\\Stopwatch')->getMock());
+
         $container->registerExtension($extension);
         $extension->load($configs, $container);
 
@@ -698,7 +699,8 @@ class JMSSerializerExtensionTest extends TestCase
 
     private function getContainerForConfig(array $configs, ?callable $configurator = null)
     {
-        $container = $this->getContainerForConfigLoad($configs);
+        $container = $this->getContainerForConfigLoad($configs, $configurator);
+
         if ($configurator) {
             call_user_func($configurator, $container);
         }

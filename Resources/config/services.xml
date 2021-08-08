@@ -7,7 +7,20 @@
     <services>
         <!-- Event Dispatcher -->
         <service id="jms_serializer.event_dispatcher" class="JMS\Serializer\EventDispatcher\LazyEventDispatcher" public="false">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="jms_serializer.event_dispatcher.service_locator" />
+        </service>
+
+        <service id="jms_serializer.event_dispatcher.service_locator" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+            <argument type="collection">
+                <!--
+               this argument is not needed and uses a not existing service.
+               at some point symfony tries to replace/merge service locators by replacing them with their hashes
+               and since is common service locators, it is common to have collisions.
+               But somehow symfony does not detect that we change the arguments if it in a compiler pass
+                -->
+                <argument key="jms_serializer.event_dispatcher.service_locator" id="jms_serializer.event_dispatcher.service_locator" type="service"/>
+            </argument>
+            <tag name="container.service_locator" />
         </service>
 
         <service id="jms_serializer.doctrine_proxy_subscriber" class="JMS\Serializer\EventDispatcher\Subscriber\DoctrineProxySubscriber" public="false">
@@ -23,8 +36,22 @@
 
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="jms_serializer.handler_registry.service_locator" />
         </service>
+
+        <service id="jms_serializer.handler_registry.service_locator" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+            <argument type="collection">
+                <!--
+                this argument is not needed and uses a not existing service.
+                at some point symfony tries to replace/merge service locators by replacing them with their hashes
+                and since is common service locators, it is common to have collisions.
+                But somehow symfony does not detect that we change the arguments if it in a compiler pass
+                 -->
+                <argument key="jms_serializer.handler_registry.service_locator" id="jms_serializer.handler_registry.service_locator" type="service"/>
+            </argument>
+            <tag name="container.service_locator" />
+        </service>
+
         <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
             <argument type="constant">false</argument>
             <tag name="jms_serializer.subscribing_handler" />

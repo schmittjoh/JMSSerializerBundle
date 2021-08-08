@@ -8,7 +8,10 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DoctrinePass implements CompilerPassInterface
+/**
+ * @internal
+ */
+final class DoctrinePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {

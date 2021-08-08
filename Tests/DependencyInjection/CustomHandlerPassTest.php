@@ -43,7 +43,7 @@ class CustomHandlerPassTest extends TestCase
         return $container;
     }
 
-    public function testHandler()
+    public function testHandlerx()
     {
         $container = $this->getContainer();
 
@@ -57,12 +57,12 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
+        $handlers = $this->getRegisteredHandlers($container);
 
         $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_service', 'deserializeDateTimeFromjson']]],
             1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]],
-        ], $args[1]);
+        ], $handlers);
     }
 
     public function testHandlerCanBePrivate()
@@ -80,12 +80,10 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertEquals([
             2 => ['DateTime' => ['json' => [new Reference('my_service'), 'deserializeDateTimeFromjson']]],
             1 => ['DateTime' => ['json' => [new Reference('my_service'), 'serializeDateTimeTojson']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testHandlerDirection()
@@ -103,11 +101,9 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_service', 'serializeDateTimeTojson']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testHandlerIncorrectDirection()
@@ -165,12 +161,10 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_custom_service', 'deserializeDateTimeFromjson']]],
             1 => ['DateTime' => ['json' => ['my_custom_service', 'serializeDateTimeTojson']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testHandlerMustRespectPriorities()
@@ -202,12 +196,10 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             2 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'deserializeDateTimeFromjson']]],
             1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'serializeDateTimeTojson']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testHandlerCanBeRegisteredForMultipleTypesOrDirections()
@@ -244,8 +236,6 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             1 => [
                 'Custom' => ['json' => ['my_service', 'serialize']],
@@ -255,7 +245,7 @@ class CustomHandlerPassTest extends TestCase
                 'Custom' => ['json' => ['my_service', 'deserialize']],
                 'Custom<?>' => ['json' => ['my_service', 'deserialize']],
             ],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testSubscribingHandler()
@@ -269,11 +259,9 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_service', 'onDateTime']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testSubscribingHandlerCanBePrivate()
@@ -288,11 +276,9 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertEquals([
             1 => ['DateTime' => ['json' => [new Reference('my_service'), 'onDateTime']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testSubscribingHandlerInterface()
@@ -325,11 +311,9 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_custom_service', 'onDateTime']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
     }
 
     public function testSubscribingHandlerMustRespectPriorities()
@@ -351,10 +335,30 @@ class CustomHandlerPassTest extends TestCase
         $pass = new CustomHandlersPass();
         $pass->process($container);
 
-        $args = $container->getDefinition('jms_serializer.handler_registry')->getArguments();
-
         $this->assertSame([
             1 => ['DateTime' => ['json' => ['my_custom_explicit_service', 'onDateTime']]],
-        ], $args[1]);
+        ], $this->getRegisteredHandlers($container));
+    }
+
+    private function buildHandlersFromCalls(array $calls): array
+    {
+        $handlers = [];
+        foreach ($calls as $callData) {
+            if ('registerHandler' !== $callData[0]) {
+                continue;
+            }
+
+            [$direction, $type, $format, $handler] = $callData[1];
+            $handlers[$direction][$type][$format] = $handler;
+        }
+
+        return $handlers;
+    }
+
+    private function getRegisteredHandlers(ContainerBuilder $containerBuilder): array
+    {
+        $calls = $containerBuilder->findDefinition('jms_serializer.handler_registry')->getMethodCalls();
+
+        return $this->buildHandlersFromCalls($calls);
     }
 }
