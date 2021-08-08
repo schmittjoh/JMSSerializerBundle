@@ -1,0 +1,75 @@
+{%- import _self as helper -%}
+
+<h2>Event Dispatcher</h2>
+
+<div class="sf-tabs">
+    <div class="tab">
+        <div class="tab-title">Triggered Listeners <span class="badge">{{ collector.getNumListeners('called') }}</span></div>
+
+        <div class="tab-content">
+            {%- if 0 == collector.getNumListeners('called') -%}
+                <div class="empty">
+                    <p>No triggered listeners.</p>
+                </div>
+            {%- else -%}
+                {{- helper.render_table(collector.triggeredListeners) -}}
+            {%- endif -%}
+        </div>
+    </div>
+
+    <div class="tab">
+        <div class="tab-title">Not Called Listeners <span class="badge">{{ collector.getNumListeners('not_called') }}</span></div>
+        <div class="tab-content">
+            {{ helper.render_table_not_triggered_listeners(collector.notTriggeredListeners) }}
+        </div>
+    </div>
+</div>
+
+{%- macro render_table_not_triggered_listeners(notCalledListenersPerEvent) -%}
+
+    {%- for eventName, listeners in notCalledListenersPerEvent -%}
+        <h3>{{ eventName }}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Listener</th>
+                    </tr>
+                </thead>
+                {%- for listener in listeners -%}
+                    <tr>
+                        <th class="colored font-normal" colspan="4">{{ dump(listener) }}</th>
+                    </tr>
+                {%- endfor -%}
+            </table>
+    {%- endfor -%}
+{%- endmacro -%}
+
+
+{%- macro render_table(listeners) -%}
+
+    {%- for eventName, callsPerlistener in listeners -%}
+        <h3>{{ eventName }}</h3>
+        <table>
+            <thead>
+            <tr>
+                <th colspan="2">Class</th>
+                <th class="text-right">Calls</th>
+                <th class="text-right">Total duration (ms)</th>
+            </tr>
+            </thead>
+            {%- for listener, callsPerClass in callsPerlistener -%}
+                <tr>
+                    <th class="colored font-normal" colspan="4">{{ dump(listener) }}</th>
+                </tr>
+                {%- for className, callsInfo in callsPerClass -%}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>{{ className }}</td>
+                        <td class="text-right">{{ callsInfo.calls }}</td>
+                        <td class="text-right">{{ callsInfo.duration ? (callsInfo.duration * 1000)|number_format(4) : '' }}</td>
+                    </tr>
+                {%- endfor -%}
+            {%- endfor -%}
+        </table>
+    {%- endfor -%}
+{%- endmacro -%}

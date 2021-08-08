@@ -1,0 +1,80 @@
+<h2>Loaded metadata</h2>
+
+{%- if collector.loadedMetadata is empty -%}
+    <div class="empty">
+        <p>No metadata have been loaded.</p>
+    </div>
+{%- else -%}
+{#    <div>#}
+{#        <div class="sf-toolbar-info-piece">#}
+{#            <b>Runs</b>#}
+{#            <span class="sf-toolbar-status">{{ collector.loadedMetadata|length }}</span>#}
+{#        </div>#}
+{#    </div>#}
+
+    <table>
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>File</th>
+        </tr>
+        </thead>
+        {%- for class, files in collector.loadedMetadata -%}
+            <tr>
+                <td>{{ class }}</td>
+                <td nowrap="nowrap">
+                    {%- for file in files -%}
+                        {{ file }}<br/>
+                    {% endfor %}
+                </td>
+            </tr>
+        {%- endfor -%}
+    </table>
+{%- endif -%}
+
+
+<h3>Attempted files</h3>
+{%- if collector.metadataFiles is empty -%}
+    <div class="empty">
+        <p>No metadata files attempted (if this list is empty, probably all the data are cached as expected)</p>
+    </div>
+{%- else -%}
+
+
+    <table>
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>Files</th>
+        </tr>
+        </thead>
+        {%- for class, files in collector.metadataFiles -%}
+            <tr>
+                <td>{{ class }}</td>
+                <td nowrap="nowrap">
+                    {%- for file, found in files -%}
+                        <span style="color: {{ found ? 'green': 'red' }}">
+                        {{ file }} ({{ found ? 'found': 'not found' }})<br/>
+                        </span>
+                    {% endfor %}
+                </td>
+            </tr>
+        {%- endfor -%}
+    </table>
+{%- endif -%}
+
+<h3>Configured metadata directories</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Prefix</th>
+        <th>Path</th>
+    </tr>
+    </thead>
+    {%- for prefix, path in collector.loadedDirs -%}
+        <tr>
+            <td>{{ prefix }}</td>
+            <td>{{ path }}</td>
+        </tr>
+    {%- endfor -%}
+</table>

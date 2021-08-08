@@ -300,7 +300,7 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function (ContainerBuilder $container) {
-            $container->findDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
+            $container->getAlias('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
         $fileLocatorDef = $container->findDefinition('jms_serializer.metadata.file_locator');
