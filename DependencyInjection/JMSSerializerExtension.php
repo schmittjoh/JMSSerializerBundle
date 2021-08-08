@@ -35,6 +35,10 @@ class JMSSerializerExtension extends ConfigurableExtension
         $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
         $loader->load('services.xml');
 
+        if ($config['profiler']) {
+            $loader->load('debug.xml');
+        }
+
         // Built-in handlers.
         $container->getDefinition('jms_serializer.datetime_handler')
             ->addArgument($config['handlers']['datetime']['default_format'])
@@ -151,6 +155,12 @@ class JMSSerializerExtension extends ConfigurableExtension
         $container
             ->findDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
+
+        if ($config['profiler']) {
+            $container
+                ->getDefinition('data_collector.jms_serializer')
+                ->replaceArgument(0, $directories);
+        }
 
         $this->setVisitorOptions($config, $container);
 

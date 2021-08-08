@@ -1,0 +1,95 @@
+{%- import _self as helper -%}
+
+<h2>Type Handlers</h2>
+
+<div class="sf-tabs">
+    <div class="tab">
+        <h3 class="tab-title">Triggered Handlers <span class="badge">{{ collector.getNumHandlers('called') }}</span></h3>
+
+        <div class="tab-content">
+            {%- if 0 == collector.getNumHandlers('called') -%}
+                <div class="empty">
+                    <p>No triggered handlers.</p>
+                </div>
+            {%- else -%}
+                {{- helper.render_table_triggered_handlers(collector.triggeredHandlers) -}}
+            {%- endif -%}
+        </div>
+    </div>
+
+    <div class="tab">
+        <div class="tab-title">Not Triggered Handlers <span class="badge">{{ collector.getNumHandlers('not_called') }}</span></div>
+        <div class="tab-content">
+            {{ helper.render_not_table_triggered_handlers(collector.notTriggeredHandlers) }}
+        </div>
+    </div>
+</div>
+
+{%- macro render_not_table_triggered_handlers(handlers) -%}
+    {%- for direction, callsByType in handlers -%}
+        <h3>
+            {%- if direction == constant('JMS\\Serializer\\GraphNavigatorInterface::DIRECTION_SERIALIZATION') -%}
+                Serialization
+            {%- else -%}
+                Deserialization
+            {%- endif -%}
+        </h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Date type</th>
+                <th>Handler</th>
+                {%- if called|default(false) -%}
+                    <th>Calls</th>
+                    <th>Total duration (ms)</th>
+                {%- endif -%}
+            </tr>
+            </thead>
+            {%- for type, handlers in callsByType -%}
+                <tr>
+                    <td>{{ type }}</td>
+                    <td>
+                        {%- for handler in handlers -%}
+                            {{ dump(handler) }}<br>
+                        {%- endfor -%}
+                    </td>
+                </tr>
+            {%- endfor -%}
+
+        </table>
+    {%- endfor -%}
+{%- endmacro -%}
+
+{%- macro render_table_triggered_handlers(handlers) -%}
+    {%- for direction, callsByType in handlers -%}
+        <h3>
+            {%- if direction == constant('JMS\\Serializer\\GraphNavigatorInterface::DIRECTION_SERIALIZATION') -%}
+                Serialization
+            {%- else -%}
+                Deserialization
+            {%- endif -%}
+        </h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Date type</th>
+                <th>Handler</th>
+                <th>Calls</th>
+                <th>Total duration (ms)</th>
+            </tr>
+            </thead>
+            {%- for type, calls in callsByType -%}
+                {%- for call in calls -%}
+                    <tr>
+                        <td>{{ type }}</td>
+                        <td>{{ dump(call.handler) }}</td>
+
+                        <td class="text-right">{{ call.calls }}</td>
+                        <td class="text-right">{{ call.duration ?  (call.duration * 1000)|number_format(4) : '' }}</td>
+                    </tr>
+                {%- endfor -%}
+            {%- endfor -%}
+
+        </table>
+    {%- endfor -%}
+{%- endmacro -%}

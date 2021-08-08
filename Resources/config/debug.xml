@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="data_collector.jms_serializer" class="JMS\SerializerBundle\Debug\DataCollector">
+            <argument type="collection" />
+            <argument type="service" id="jms_serializer.event_dispatcher"/>
+            <argument type="service" id="jms_serializer.traceable_handler_registry"/>
+            <argument type="service" id="jms_serializer.metadata.traceable_cache"/>
+            <argument type="service" id="jms_serializer.metadata.file_locator"/>
+            <argument type="service" id="jms_serializer.traceable_runs_listener"/>
+
+            <tag name="data_collector"
+                 id="jms_serializer"
+                 template="@JMSSerializer/Collector/panel.html.twig"
+            />
+        </service>
+
+        <service id="jms_serializer.traceable_event_dispatcher" class="JMS\SerializerBundle\Debug\TraceableEventDispatcher" public="false">
+            <argument type="service" id="jms_serializer.event_dispatcher.service_locator" />
+        </service>
+
+        <service id="jms_serializer.traceable_runs_listener" class="JMS\SerializerBundle\Debug\RunsListener" public="false">
+            <tag name="jms_serializer.event_listener"  event="serializer.pre_serialize" method="saveRunInfo"/>
+        </service>
+
+        <service
+            id="jms_serializer.metadata.traceable_cache"
+            class="JMS\SerializerBundle\Debug\TraceableDriver"
+            decorates="jms_serializer.metadata.cache"
+            decoration-priority="-128"
+            public="false">
+
+            <argument type="service" id="jms_serializer.metadata.traceable_cache.inner"/>
+        </service>
+
+        <service
+            id="jms_serializer.traceable_handler_registry"
+            class="\JMS\SerializerBundle\Debug\TraceableHandlerRegistry"
+            decorates="jms_serializer.handler_registry"
+            decoration-priority="-128"
+            public="false">
+            <argument type="service" id="jms_serializer.traceable_handler_registry.inner"/>
+        </service>
+
+        <service id="jms_serializer.metadata.traceable_file_locator" class="JMS\SerializerBundle\Debug\TraceableFileLocator" public="false">
+            <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
+        </service>
+
+        <service id="jms_serializer.metadata.file_locator" alias="jms_serializer.metadata.traceable_file_locator">
+        </service>
+
+        <service id="jms_serializer.event_dispatcher" alias="jms_serializer.traceable_event_dispatcher">
+        </service>
+
+    </services>
+</container>
