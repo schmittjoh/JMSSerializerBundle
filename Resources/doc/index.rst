@@ -45,9 +45,9 @@ In templates, you may also use the ``serialize`` filter:
 
 .. code-block :: html+jinja
 
-    {{ data | serialize }} {# serializes to JSON #}
-    {{ data | serialize('json') }}
-    {{ data | serialize('xml') }}
+    {{ data | jms_serialize }} {# serializes to JSON #}
+    {{ data | jms_serialize('json') }}
+    {{ data | jms_serialize('xml') }}
 
 Learn more in the `documentation for the dedicated library <http://jmsyst.com/libs/serializer/master/usage>`_.
 

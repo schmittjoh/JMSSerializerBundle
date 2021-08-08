@@ -231,10 +231,16 @@
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="JMS\Serializer\Twig\SerializerExtension" public="false">
             <argument type="service" id="jms_serializer" />
+            <argument>jms_</argument>
             <tag name="twig.extension" />
         </service>
 
-        <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="JMS\Serializer\Twig\SerializerRuntimeHelper" public="true">
+        <service id="jms_serializer.twig_extension.runtime_serializer" class="JMS\Serializer\Twig\SerializerRuntimeExtension" public="false">
+            <argument>jms_</argument>
+            <tag name="twig.extension" />
+        </service>
+
+        <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="JMS\Serializer\Twig\SerializerRuntimeHelper" public="false">
             <argument type="service" id="jms_serializer" />
             <tag name="twig.runtime" />
         </service>

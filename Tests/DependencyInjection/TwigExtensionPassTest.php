@@ -40,25 +40,8 @@ class TwigExtensionPassTest extends TestCase
         $this->assertFalse($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
     }
 
-    public function testStandardExtension()
-    {
-        $container = $this->getContainer();
-
-        $pass = new TwigExtensionPass();
-        $pass->process($container);
-
-        $extension = $container->getDefinition('jms_serializer.twig_extension.serializer');
-        $this->assertCount(1, $extension->getArguments());
-
-        $this->assertFalse($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
-    }
-
     public function testLazyExtension()
     {
-        if (!interface_exists('Twig_RuntimeLoaderInterface')) {
-            $this->markTestSkipped('Lazy extensions are supported only by serializer 1.7.0');
-        }
-
         $container = $this->getContainer();
 
         $container->register('twig.runtime_loader');
@@ -69,6 +52,7 @@ class TwigExtensionPassTest extends TestCase
         $extension = $container->getDefinition('jms_serializer.twig_extension.serializer');
         $this->assertCount(0, $extension->getArguments());
 
+        $this->assertTrue($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
         $this->assertTrue($container->hasDefinition('jms_serializer.twig_extension.serializer_runtime_helper'));
     }
 }
