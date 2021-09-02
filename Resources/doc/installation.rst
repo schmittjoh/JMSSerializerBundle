@@ -18,8 +18,30 @@ of the Composer documentation.
 Step 2: Enable the Bundle
 -------------------------
 
-Then, enable the bundle by adding the following line in the ``app/AppKernel.php``
-file of your project:
+Symfony Flex Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For an application using Symfony Flex, the bundle should be automatically
+enabled. If it is not, you will need to add it to the ``config/bundles.php``
+file in your project:
+
+.. code-block:: php
+
+    <?php
+    // config/bundles.php
+
+    return [
+        // ...
+        JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
+    ];
+
+
+Symfony Standard Applications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For an application based on the Symfony Standard structure, you will need to
+enable the bundle in your Kernel by adding the following line in the
+``app/AppKernel.php`` file in your project:
 
 .. code-block:: php
 
