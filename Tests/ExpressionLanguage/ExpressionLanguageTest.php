@@ -33,9 +33,9 @@ class ExpressionLanguageTest extends TestCase
         $container
             ->expects($this->once())
             ->method('get')->with('foo', 1)
-            ->will($this->returnValue('bar'));
+            ->will($this->returnValue($object = new \stdClass()));
 
-        $this->assertEquals('bar', $exp->evaluate("service('foo')", ['container' => $container]));
+        $this->assertEquals($object, $exp->evaluate("service('foo')", ['container' => $container]));
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')->getMock();
         $container
