@@ -61,11 +61,21 @@ class ServiceMapPass implements CompilerPassInterface, \Serializable
 
     public function serialize()
     {
-        return serialize([$this->tagName, $this->keyAttributeName]);
+        return serialize($this->__serialize());
     }
 
     public function unserialize($str)
     {
-        [$this->tagName, $this->keyAttributeName] = unserialize($str);
+        $this->__unserialize((array) unserialize((string) $str));
+    }
+
+    public function __serialize(): array
+    {
+        return [$this->tagName, $this->keyAttributeName];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        [$this->tagName, $this->keyAttributeName] = $data;
     }
 }
