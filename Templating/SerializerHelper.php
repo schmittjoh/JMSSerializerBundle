@@ -18,7 +18,7 @@ class SerializerHelper extends Helper
 {
     protected $serializer;
 
-    public function getName()
+    public function getName(): string
     {
         return 'jms_serializer';
     }
