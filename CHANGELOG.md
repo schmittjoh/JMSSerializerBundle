@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.0](https://github.com/schmittjoh/JMSSerializerBundle/tree/4.0.0) (2021-10-14)
+
+**Merged pull requests:**
+
+- Fix compatibility with PHP 8.1 [\#872](https://github.com/schmittjoh/JMSSerializerBundle/pull/872) ([W0rma](https://github.com/W0rma))
+- Add support for Symfony 6 [\#869](https://github.com/schmittjoh/JMSSerializerBundle/pull/869) ([mbabker](https://github.com/mbabker))
+- Update installation guide to include Flex based apps [\#866](https://github.com/schmittjoh/JMSSerializerBundle/pull/866) ([mbabker](https://github.com/mbabker))
+- add "jms\_" prefix to serializer functions to avoid collisions with th… [\#862](https://github.com/schmittjoh/JMSSerializerBundle/pull/862) ([goetas](https://github.com/goetas))
+- Allow to decorate handler registry and event dispatcher [\#861](https://github.com/schmittjoh/JMSSerializerBundle/pull/861) ([goetas](https://github.com/goetas))
+
 ## [3.9.1](https://github.com/schmittjoh/JMSSerializerBundle/tree/3.9.1) (2021-03-23)
 
 **Merged pull requests:**
