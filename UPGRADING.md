@@ -1,6 +1,25 @@
 This document details the changes that you need to make to your code
 when upgrading from one version to another.
 
+Upgrading From 3.x to 4.0
+==========================
+
+- The twig filter has been renamed from `serialzie` to `jms_serialize`.
+
+Before:
+```jinja
+  {{ data | serialize }}
+```
+After:
+```jinja
+  {{ data | jms_serialize }}
+```
+
+- The services `jms_serializer.handler_registry` and `jms_serializer.event_dispatcher` now can be decorated using the Symfony 
+decoration strategy. If you were doing something particular with such services, there could be a BC break.
+- If you are using `friendsofsymfony/rest-bundle`, the `jms_serializer.handler_registry` is not decorated anymore, 
+it will not look anymore for handlers belonging to parent classes.
+
 Upgrading From 2.x to 3.0
 ==========================
 
