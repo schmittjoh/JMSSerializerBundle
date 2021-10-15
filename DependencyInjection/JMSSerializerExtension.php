@@ -10,6 +10,7 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -205,6 +206,9 @@ class JMSSerializerExtension extends ConfigurableExtension
         }
     }
 
+    /**
+     * @return ConfigurationInterface
+     */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));

@@ -9,6 +9,9 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInterface
 {
+    /**
+     * @return ExpressionFunction[]
+     */
     public function getFunctions()
     {
         return [
