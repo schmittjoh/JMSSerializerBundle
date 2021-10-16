@@ -35,6 +35,8 @@ class CacheWarmer implements CacheWarmerInterface
 
     /**
      * @param string $cacheDir
+     *
+     * @return string[] A list of classes or files to preload on PHP 7.4+
      */
     public function warmUp($cacheDir)
     {
@@ -52,6 +54,8 @@ class CacheWarmer implements CacheWarmerInterface
                 $this->metadataFactory->getMetadataForClass($class);
             }
         }
+
+        return [];
     }
 
     public function isOptional(): bool
