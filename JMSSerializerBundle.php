@@ -30,8 +30,10 @@ class JMSSerializerBundle extends Bundle
             }
         ));
 
+        // Should run before Symfony\Bundle\TwigBundle\DependencyInjection\Compiler\TwigEnvironmentPass
+        $builder->addCompilerPass(new TwigExtensionPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
+
         $builder->addCompilerPass(new FormErrorHandlerTranslationDomainPass());
-        $builder->addCompilerPass(new TwigExtensionPass());
         $builder->addCompilerPass(new ExpressionFunctionProviderPass());
         $builder->addCompilerPass(new DoctrinePass());
 
