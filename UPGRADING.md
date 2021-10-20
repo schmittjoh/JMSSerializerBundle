@@ -4,7 +4,7 @@ when upgrading from one version to another.
 Upgrading From 3.x to 4.0
 ==========================
 
-- The twig filter has been renamed from `serialzie` to `jms_serialize`.
+- The twig filter has been renamed from `serialize` to `jms_serialize`.
 
 Before:
 ```jinja
