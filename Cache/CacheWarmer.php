@@ -33,6 +33,9 @@ class CacheWarmer implements CacheWarmerInterface
         $this->excludePaths = $excludePaths;
     }
 
+    /**
+     * @param string $cacheDir
+     */
     public function warmUp($cacheDir)
     {
         $finder = Finder::create()
@@ -51,7 +54,7 @@ class CacheWarmer implements CacheWarmerInterface
         }
     }
 
-    public function isOptional()
+    public function isOptional(): bool
     {
         return true;
     }

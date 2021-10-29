@@ -22,6 +22,9 @@ class Configuration implements ConfigurationInterface
         $this->debug = $debug;
     }
 
+    /**
+     * @return TreeBuilder
+     */
     public function getConfigTreeBuilder()
     {
         $tb = new TreeBuilder('jms_serializer');
