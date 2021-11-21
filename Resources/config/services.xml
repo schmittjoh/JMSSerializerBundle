@@ -221,8 +221,8 @@
 
         <service id="jms_serializer" alias="jms_serializer.serializer" public="true"/><!-- Preferred Alias -->
 
-        <service id="JMS\Serializer\SerializerInterface" alias="jms_serializer" public="false" />
-        <service id="JMS\Serializer\ArrayTransformerInterface" alias="jms_serializer" public="false" />
+        <service id="JMS\Serializer\SerializerInterface" alias="jms_serializer.serializer" public="false" />
+        <service id="JMS\Serializer\ArrayTransformerInterface" alias="jms_serializer.serializer" public="false" />
 
         <!-- expression language components -->
         <service id="jms_serializer.expression_evaluator" class="JMS\Serializer\Expression\ExpressionEvaluator">
@@ -243,10 +243,9 @@
 
         <!-- Twig Extension -->
         <service id="jms_serializer.twig_extension.serializer" class="JMS\Serializer\Twig\SerializerExtension" public="false">
-            <argument type="service" id="jms_serializer" />
+            <argument type="service" id="jms_serializer.serializer" />
             <argument>jms_</argument>
             <tag name="twig.extension" />
-            <tag name="jms_serializer.instance_global" />
         </service>
 
         <service id="jms_serializer.twig_extension.runtime_serializer" class="JMS\Serializer\Twig\SerializerRuntimeExtension" public="false">
@@ -255,15 +254,13 @@
         </service>
 
         <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="JMS\Serializer\Twig\SerializerRuntimeHelper" public="false">
-            <argument type="service" id="jms_serializer" />
-            <tag name="jms_serializer.instance_global" />
+            <argument type="service" id="jms_serializer.serializer" />
         </service>
 
         <!-- PHP templating helper -->
         <service id="jms_serializer.templating.helper.serializer" class="JMS\SerializerBundle\Templating\SerializerHelper">
-            <argument type="service" id="jms_serializer" />
+            <argument type="service" id="jms_serializer.serializer" />
             <tag name="templating.helper" alias="jms_serializer" />
-            <tag name="jms_serializer.instance_global" />
         </service>
 
         <!-- accessor strategy -->

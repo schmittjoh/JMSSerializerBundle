@@ -39,6 +39,7 @@ final class Configuration implements ConfigurationInterface
         }
 
         $root->booleanNode('profiler')->defaultValue($this->debug)->end();
+        $root->scalarNode('twig_enabled')->defaultValue('default')->end();
         $this->addConfigNodes($root);
 
         $instanceRoot = $root->arrayNode('instances')
@@ -70,7 +71,7 @@ final class Configuration implements ConfigurationInterface
         $builder->scalarNode('profiler')
             ->defaultValue(null)
             ->validate()
-            ->always(static function ($v) {
+            ->always(static function ($v): ?bool {
                 if (!is_bool($v) && !is_null($v)) {
                     throw new InvalidArgumentException('The profiler setting must be null or a boolean');
                 }

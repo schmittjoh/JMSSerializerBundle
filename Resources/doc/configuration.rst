@@ -182,6 +182,7 @@ values:
         # config.yml
         jms_serializer:
             profiler: %kernel.debug%
+            twig_enabled: 'default' # on which instance is twig enabled
             handlers:
                 datetime:
                     default_format: "Y-m-d\\TH:i:sP" # ATOM

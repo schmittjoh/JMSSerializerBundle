@@ -13,8 +13,7 @@ final class TwigExtensionPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
     {
-        // todo allow to choose which serializer is injected into twig
-        if ('default' !== $container->getInstanceName()) {
+        if ($container->getParameter('jms_serializer.twig_enabled') !== $container->getInstanceName()) {
             return;
         }
 

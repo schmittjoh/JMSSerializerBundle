@@ -42,6 +42,9 @@ final class JMSSerializerExtension extends Extension
 
         DIUtils::cloneDefinitions($container, array_keys($configs['instances']));
 
+        // twig can be enabled only on one instance at the time
+        $container->setParameter('jms_serializer.twig_enabled', $configs['twig_enabled']);
+
         foreach ($configs['instances'] as $name => $instanceConfigs) {
             if (!$configs['profiler'] && $instanceConfigs['profiler']) {
                 throw new \LogicException('The profiler config for the %s instance is not valid. The profiler for a single jms/serializer instance can not be enabled if the default instance does not have it enabled.');
@@ -51,7 +54,7 @@ final class JMSSerializerExtension extends Extension
             $scopedContainer->getDefinition('jms_serializer.serializer')
                 ->addTag('jms_serializer.serializer', ['name' => $name]);
 
-            $this->loadInternal($instanceConfigs, $scopedContainer);
+            $this->loadInternal($instanceConfigs, $scopedContainer, $configs);
         }
 
         $container
@@ -79,7 +82,7 @@ final class JMSSerializerExtension extends Extension
         return $configs;
     }
 
-    private function loadInternal(array $config, ScopedContainer $container): void
+    private function loadInternal(array $config, ScopedContainer $container, array $mainConfig): void
     {
         // Built-in handlers.
         $container->getDefinition('jms_serializer.datetime_handler')
@@ -114,9 +117,12 @@ final class JMSSerializerExtension extends Extension
 
         $bundles = $container->getParameter('kernel.bundles');
 
-        if (!isset($bundles['TwigBundle']) || 'default' !== $container->getInstanceName()) {
+        // remove twig services if the bundle is not loaded or if we are configuring an instance fof which twig is not enabled
+        // only one instance can have twig enabled
+        if (!isset($bundles['TwigBundle']) || $mainConfig['twig_enabled'] !== $container->getInstanceName()) {
             $container->removeDefinition('jms_serializer.twig_extension.serializer');
             $container->removeDefinition('jms_serializer.twig_extension.runtime_serializer');
+            $container->removeDefinition('jms_serializer.twig_extension.serializer_runtime_helper');
         }
 
         if (!empty($config['expression_evaluator']['id'])) {
@@ -142,6 +148,7 @@ final class JMSSerializerExtension extends Extension
         } elseif ('file' === $config['metadata']['cache']) {
             $instance = $container->getInstanceName();
 
+            // make sure that the cache dir is different for each instance
             $dirParam = $config['metadata']['file_cache']['dir'] ?: '%kernel.cache_dir%/jms_serializer' . ($instance ? '_' . $instance : '');
 
             $container->getDefinition('jms_serializer.metadata.cache.file_cache')
@@ -173,6 +180,7 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.metadata.doc_block_driver');
         }
 
+        // enable the typed props reader on php 7.4
         if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
@@ -181,6 +189,7 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.metadata.typed_properties_driver');
         }
 
+        // enable the attribute reader on php 8
         if (PHP_VERSION_ID >= 80000 && class_exists(AttributeReader::class)) {
             $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
                 ->setArgument(0, new Reference('annotation_reader'));
@@ -216,6 +225,7 @@ final class JMSSerializerExtension extends Extension
                 ->replaceArgument(0, $container->getInstanceName())
                 ->replaceArgument(1, $directories);
         } else {
+            // remove profiler DI defintions if the profiler is not enabled
             array_map([$container, 'removeDefinition'], array_keys($container->findTaggedServiceIds('jms_serializer.profiler')));
         }
 
@@ -228,6 +238,53 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.stopwatch_subscriber');
         }
 
+        $this->setContextFactories($container, $config);
+    }
+
+    /**
+     * @return ConfigurationInterface
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
+    }
+
+    private function processNestedConfigs(array $rawConfigs, ContainerBuilder $container): array
+    {
+        $configs = $this->loadConfigArray($rawConfigs, $container);
+
+        $needReConfig = false;
+        foreach ($configs['instances'] as $name => $value) {
+            // if we inherit from the default configs, we merge/append the default confs into the current instance
+            if (!empty($value['inherit'])) {
+                // the twig setting is not per instance, so we need to remove it before merging the configs
+                unset($configs['instances']['default']['twig_enabled']);
+                array_unshift($rawConfigs, [
+                    'instances' => [$name => $configs['instances']['default']],
+                ]);
+                $needReConfig = true;
+            }
+        }
+
+        // if we had to merge at least one config, we need to re-merge them
+        if ($needReConfig) {
+            $configs = $this->loadConfigArray($rawConfigs, $container);
+        }
+
+        // if the profiler setting is null, we inherit its valid from the main instance
+        foreach ($configs['instances'] as &$value) {
+            if (null === $value['profiler']) {
+                $value['profiler'] = $configs['profiler'];
+            }
+        }
+
+        unset($value);
+
+        return $configs;
+    }
+
+    private function setContextFactories(ScopedContainer $container, array $config): void
+    {
         // context factories
         $services = [
             'serialization' => 'jms_serializer.configured_serialization_context_factory',
@@ -263,43 +320,6 @@ final class JMSSerializerExtension extends Extension
                 $contextFactory->addMethodCall('enableMaxDepthChecks');
             }
         }
-    }
-
-    /**
-     * @return ConfigurationInterface
-     */
-    public function getConfiguration(array $config, ContainerBuilder $container)
-    {
-        return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));
-    }
-
-    private function processNestedConfigs(array $rawConfigs, ContainerBuilder $container): array
-    {
-        $configs = $this->loadConfigArray($rawConfigs, $container);
-
-        $needReConfig = false;
-        foreach ($configs['instances'] as $name => $value) {
-            if (!empty($value['inherit'])) {
-                array_unshift($rawConfigs, [
-                    'instances' => [$name => $configs['instances']['default']],
-                ]);
-                $needReConfig = true;
-            }
-        }
-
-        if ($needReConfig) {
-            $configs = $this->loadConfigArray($rawConfigs, $container);
-        }
-
-        foreach ($configs['instances'] as &$value) {
-            if (null === $value['profiler']) {
-                $value['profiler'] = $configs['profiler'];
-            }
-        }
-
-        unset($value);
-
-        return $configs;
     }
 
     private function setVisitorOptions(array $config, ScopedContainer $container): void

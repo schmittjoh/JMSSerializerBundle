@@ -62,7 +62,7 @@ final class ScopedContainer
         return $serviceIds;
     }
 
-    private function getDefinitionRealId($id): string
+    private function getDefinitionRealId(string $id): string
     {
         return DIUtils::getRealId($this->instance, $id);
     }

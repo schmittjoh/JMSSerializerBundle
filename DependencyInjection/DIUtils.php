@@ -9,12 +9,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-ini_set('xdebug.overload_var_dump', 'off');
 /**
  * @internal
  */
 final class DIUtils
 {
+    /**
+     * @see \JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass
+     */
     public static function adjustDecorators(ContainerBuilder $container): void
     {
         foreach ($container->getDefinitions() as $definition) {
@@ -145,6 +147,7 @@ final class DIUtils
         $tags = $parentDef->getTags();
         unset($tags['jms_serializer.instance']);
 
+        // we have one data collector for each serializer instance
         if (!empty($tags['data_collector'])) {
             $tags['data_collector'][0]['id'] = 'jms_serializer_' . $instance;
         }
