@@ -29,6 +29,8 @@ final class TraceableDriver implements CacheInterface
 
     public function load($class): ?ClassMetadata
     {
+        $metadata = null;
+            
         try{
             return $metadata = $this->driver->load($class);
         } finally {
