@@ -37,6 +37,7 @@
         "symfony/stopwatch": "^3.0 || ^4.0 || ^5.0 || ^6.0",
         "symfony/templating": "^3.0 || ^4.0 || ^5.0 || ^6.0",
         "symfony/twig-bundle": "^3.0 || ^4.0 || ^5.0 || ^6.0",
+        "symfony/uid": "^5.1 || ^6.0",
         "symfony/validator": "^3.0 || ^4.0 || ^5.0 || ^6.0",
         "symfony/yaml": "^3.0 || ^4.0 || ^5.0 || ^6.0"
     },
@@ -46,6 +47,9 @@
         "symfony/finder": "Required for cache warmup, supported versions ^3.0|^4.0"
     },
     "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
         "sort-packages": true
     },
     "extra": {

@@ -253,6 +253,15 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(\DateTime::ATOM, $config['handlers']['datetime']['default_format']);
     }
 
+    public function testDefaultUidFormat()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        // Same as JMS\Serializer\Handler\SymfonyUidHandler::FORMAT_CANONICAL
+        $this->assertEquals('canonical', $config['handlers']['symfony_uid']['default_format']);
+    }
+
     public function testJsonSerializationVisitorDefaultOptions()
     {
         $processor = new Processor();

@@ -171,6 +171,9 @@ values:
                     default_timezone: "UTC" # defaults to whatever timezone set in php.ini or via date_default_timezone_set
                 array_collection:
                     initialize_excluded: false
+                symfony_uid:
+                    default_format: "canonical"
+                    cdata: true
 
             subscribers:
                 doctrine_proxy:
