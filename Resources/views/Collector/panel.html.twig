@@ -4,8 +4,10 @@
 
     {%- set icon -%}
         {{- include('@JMSSerializer/icon.svg') }}
-        <span class="sf-toolbar-label">S:</span>{{- collector.runs(1)|length }}
-        <span class="sf-toolbar-label">D:</span>{{- collector.runs(2)|length }}
+        <span class="sf-toolbar-label">S:</span>
+        <span class="sf-toolbar-value">{{- collector.runs(1)|length }}</span>
+        <span class="sf-toolbar-label">D:</span>
+        <span class="sf-toolbar-value">{{- collector.runs(2)|length }}</span>
     {%- endset -%}
 
     {%- set text -%}
