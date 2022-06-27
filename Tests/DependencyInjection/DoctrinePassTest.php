@@ -25,6 +25,7 @@ class DoctrinePassTest extends TestCase
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', []);
+        $container->setParameter('kernel.bundles_metadata', []);
 
         $pass = new DoctrinePass();
         $container->addCompilerPass($pass);
