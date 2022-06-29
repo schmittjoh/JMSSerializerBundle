@@ -2,32 +2,42 @@
 
 namespace JMS\SerializerBundle\Debug;
 
-use Metadata\Driver\FileLocator;
+use Metadata\Driver\AdvancedFileLocatorInterface;
 
 /**
  * @internal
  */
-final class TraceableFileLocator extends FileLocator
+final class TraceableFileLocator implements AdvancedFileLocatorInterface
 {
+    /**
+     * @var AdvancedFileLocatorInterface
+     */
+    private $decorated;
     private $files = [];
 
-    public function __construct(array $dirs)
+    public function __construct(AdvancedFileLocatorInterface $decorated)
     {
-        parent::__construct($dirs);
+        $this->decorated = $decorated;
     }
 
-    public function getAttemptedFiles()
+    public function getAttemptedFiles(): array
     {
         return $this->files;
     }
 
-    protected function loadFileIfFound($prefix, $dir, \ReflectionClass $class, $extension)
+    public function findFileForClass(\ReflectionClass $class, string $extension): ?string
     {
-        $pathData = parent::loadFileIfFound($prefix, $dir, $class, $extension);
+        $path = $this->decorated->findFileForClass($class, $extension);
 
-        if ($pathData[0] !== null) {
-            $this->files[$class->getName()][$pathData[0]] = $pathData[1];
+        if ($path !== null) {
+            $this->files[$class->getName()][] = $path;
         }
-        return $pathData;
+
+        return $path;
+    }
+
+    public function findAllClasses(string $extension): array
+    {
+        return $this->decorated->findAllClasses($extension);
     }
 }
