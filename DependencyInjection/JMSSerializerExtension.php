@@ -243,6 +243,11 @@ class JMSSerializerExtension extends ConfigurableExtension
                 ->addMethodCall('setOptions', [$config['visitors']['json_deserialization']['options']]);
         }
 
+        if (isset($config['visitors']['json_deserialization']['strict'])) {
+            $container->getDefinition('jms_serializer.json_deserialization_visitor')
+                ->setArgument('$strict', $config['visitors']['json_deserialization']['strict']);
+        }
+
         // xml (serialization)
         if (!empty($config['visitors']['xml_serialization']['default_root_name'])) {
             $container->getDefinition('jms_serializer.xml_serialization_visitor')

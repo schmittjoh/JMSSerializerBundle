@@ -17,7 +17,7 @@ class ConfigurationTest extends TestCase
     private function getContainer(array $configs = [])
     {
         $container = new ContainerBuilder();
-        
+
         $container->set('annotation_reader', new AnnotationReader());
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
@@ -27,7 +27,7 @@ class ConfigurationTest extends TestCase
 
         $extension = $bundle->getContainerExtension();
         $extension->load($configs, $container);
-        
+
         return $container;
     }
 
@@ -132,10 +132,10 @@ class ConfigurationTest extends TestCase
             ],
         ]);
         $container->compile();
-        
+
         $this->assertNotEmpty($container->get('jms_serializer'));
     }
-    
+
     public function testContextDefaults()
     {
         $processor = new Processor();
@@ -303,5 +303,22 @@ class ConfigurationTest extends TestCase
         $config = $processor->processConfiguration(new Configuration(false), []);
 
         $this->assertSame(false, $config['profiler']);
+    }
+
+    public function testEnableStrictJsonDeserializer(): void
+    {
+        $container = $this->getContainer([
+            [
+                'visitors' => [
+                    'json_deserialization' => [
+                        'strict' => true,
+                    ],
+                ],
+            ],
+        ]);
+
+        $strict = $container->findDefinition('jms_serializer.json_deserialization_visitor')->getArgument('$strict');
+
+        $this->assertTrue($strict);
     }
 }
