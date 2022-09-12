@@ -16,7 +16,7 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
 {
     private $eventDispatcher;
     private $handler;
-    private $metadataDriver;
+    private $metadataFactory;
     private $locator;
     private $loadedDirs;
     private $runsListener;
@@ -25,13 +25,13 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
         array $loadedDirs,
         TraceableEventDispatcher $eventDispatcher,
         TraceableHandlerRegistry $handler,
-        TraceableDriver $metadataDriver,
+        TraceableMetadataFactory $metadataFactory,
         TraceableFileLocator $locator,
         RunsListener $runsListener
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->handler = $handler;
-        $this->metadataDriver = $metadataDriver;
+        $this->metadataFactory = $metadataFactory;
         $this->locator = $locator;
         $this->loadedDirs = $loadedDirs;
         $this->runsListener = $runsListener;
@@ -130,7 +130,7 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
             'not_called' => $this->handler->getNotTriggeredHandlers(),
         ];
 
-        $this->data['metadata'] = $this->metadataDriver->getLoadedMetadata();
+        $this->data['metadata'] = $this->metadataFactory->getLoadedMetadata();
         $this->data['metadata_files'] = $this->locator->getAttemptedFiles();
         $this->data['loaded_dirs'] = $this->loadedDirs;
         $this->data['runs'] = $this->runsListener->getRuns();
