@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\SerializerBundle\DependencyInjection\Configuration;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +17,8 @@ class ConfigurationTest extends TestCase
     private function getContainer(array $configs = [])
     {
         $container = new ContainerBuilder();
-
+        
+        $container->set('annotation_reader', new AnnotationReader());
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', ['JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle']);
@@ -25,7 +27,7 @@ class ConfigurationTest extends TestCase
 
         $extension = $bundle->getContainerExtension();
         $extension->load($configs, $container);
-
+        
         return $container;
     }
 
@@ -113,7 +115,27 @@ class ConfigurationTest extends TestCase
         $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
-
+    public function testDebugWithoutCache()
+    {
+        $container = $this->getContainer([
+            [
+                'metadata' => [
+                    'cache' => 'none',
+                    'directories' => [
+                        'foo' => [
+                            'namespace_prefix' => 'JMSSerializerBundleNs1',
+                            'path' => '@JMSSerializerBundle',
+                        ],
+                    ],
+                ],
+                'profiler' => true,
+            ],
+        ]);
+        $container->compile();
+        
+        $this->assertNotEmpty($container->get('jms_serializer'));
+    }
+    
     public function testContextDefaults()
     {
         $processor = new Processor();

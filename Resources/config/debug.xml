@@ -10,7 +10,7 @@
             <argument type="collection" />
             <argument type="service" id="jms_serializer.event_dispatcher"/>
             <argument type="service" id="jms_serializer.traceable_handler_registry"/>
-            <argument type="service" id="jms_serializer.metadata.traceable_cache"/>
+            <argument type="service" id="jms_serializer.traceable_metadata_factory"/>
             <argument type="service" id="jms_serializer.metadata.file_locator"/>
             <argument type="service" id="jms_serializer.traceable_runs_listener"/>
 
@@ -29,13 +29,13 @@
         </service>
 
         <service
-            id="jms_serializer.metadata.traceable_cache"
-            class="JMS\SerializerBundle\Debug\TraceableDriver"
-            decorates="jms_serializer.metadata.cache"
+            id="jms_serializer.traceable_metadata_factory"
+            class="JMS\SerializerBundle\Debug\TraceableMetadataFactory"
+            decorates="jms_serializer.metadata_factory"
             decoration-priority="-128"
             public="false">
 
-            <argument type="service" id="jms_serializer.metadata.traceable_cache.inner"/>
+            <argument type="service" id="jms_serializer.traceable_metadata_factory.inner"/>
         </service>
 
         <service
