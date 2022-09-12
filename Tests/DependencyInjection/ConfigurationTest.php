@@ -282,4 +282,17 @@ class ConfigurationTest extends TestCase
 
         $this->assertEquals(1024 /*JSON_PRESERVE_ZERO_FRACTION*/, $config['visitors']['json_serialization']['options']);
     }
+
+    public function testDefaultProfiler()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertSame(true, $config['profiler']);
+
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(false), []);
+
+        $this->assertSame(false, $config['profiler']);
+    }
 }

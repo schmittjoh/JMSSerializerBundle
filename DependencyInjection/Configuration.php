@@ -35,7 +35,7 @@ class Configuration implements ConfigurationInterface
             $root = $tb->root('jms_serializer')->children();
         }
 
-        $root->booleanNode('profiler')->defaultTrue($this->debug)->end();
+        $root->booleanNode('profiler')->defaultValue($this->debug)->end();
 
         $this->addHandlersSection($root);
         $this->addSubscribersSection($root);
