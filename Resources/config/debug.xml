@@ -26,6 +26,7 @@
 
         <service id="jms_serializer.traceable_runs_listener" class="JMS\SerializerBundle\Debug\RunsListener" public="false">
             <tag name="jms_serializer.event_listener"  event="serializer.pre_serialize" method="saveRunInfo"/>
+            <tag name="jms_serializer.event_listener"  event="serializer.pre_deserialize" method="saveRunInfo"/>
         </service>
 
         <service
