@@ -7,6 +7,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
@@ -20,6 +21,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Templating\Helper\Helper;
+use Symfony\Component\Uid\AbstractUid;
 
 class JMSSerializerExtension extends ConfigurableExtension
 {
@@ -48,6 +50,14 @@ class JMSSerializerExtension extends ConfigurableExtension
 
         $container->getDefinition('jms_serializer.array_collection_handler')
             ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);
+
+        if (class_exists(SymfonyUidHandler::class) && class_exists(AbstractUid::class)) {
+            $container->getDefinition('jms_serializer.symfony_uid_handler')
+                ->addArgument($config['handlers']['symfony_uid']['default_format'])
+                ->addArgument($config['handlers']['symfony_uid']['cdata']);
+        } else {
+            $container->removeDefinition('jms_serializer.symfony_uid_handler');
+        }
 
         // Built-in subscribers.
         $container->getDefinition('jms_serializer.doctrine_proxy_subscriber')

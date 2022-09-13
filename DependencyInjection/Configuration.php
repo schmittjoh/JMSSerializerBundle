@@ -68,6 +68,14 @@ class Configuration implements ConfigurationInterface
                             ->booleanNode('initialize_excluded')->defaultFalse()->end()
                         ->end()
                     ->end()
+                    ->arrayNode('symfony_uid')
+                        ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('default_format')->defaultValue('canonical')->end() // Same as JMS\Serializer\Handler\SymfonyUidHandler::FORMAT_CANONICAL
+                                ->scalarNode('cdata')->defaultTrue()->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end();
     }
