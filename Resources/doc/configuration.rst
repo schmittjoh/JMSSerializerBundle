@@ -4,14 +4,27 @@ Configuration
 Handlers
 --------
 You can register any service as a handler by adding either the ``jms_serializer.handler``,
-or the ``jms_serializer.subscribing_handler``.
+or the ``jms_serializer.subscribing_handler`` tag.
 
-.. code-block :: xml
+.. configuration-block ::
 
-    <service id="my_handler" class="MyHandler">
-        <tag name="jms_serializer.handler" type="DateTime" direction="serialization" format="json"
-                    method="serializeDateTimeToJson" />
-    </service>
+    .. code-block :: xml
+
+        <service id="my_handler" class="MyHandler">
+            <tag name="jms_serializer.handler" type="DateTime" direction="serialization" format="json"
+                        method="serializeDateTimeToJson" />
+        </service>
+        
+    .. code-block :: yaml
+        
+        my_handler:
+            class: MyHandler
+            tags:
+                - name: jms_serializer.handler
+                  type: DateTime
+                  direction: serialization
+                  format: json
+                  method: serializeDateTimeToJson
 
 .. tip ::
 
@@ -41,7 +54,7 @@ except that you can specify some additional attributes:
 Expression Language
 -------------------
 
-You can add custom expression functions using the `jms.expression.function_provider` tag.
+You can add custom expression functions using the ``jms.expression.function_provider`` tag.
 
 .. configuration-block ::
 
