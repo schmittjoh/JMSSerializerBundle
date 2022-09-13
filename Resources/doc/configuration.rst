@@ -257,6 +257,7 @@ values:
                     depth: 512
                 json_deserialization:
                     options: 0 # json_decode options bitmask
+                    strict: false # `true` enables strict deserialization
                 xml_serialization:
                     format_output: false
                     version: "1.0"
