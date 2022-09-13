@@ -164,7 +164,7 @@ class JMSSerializerExtension extends ConfigurableExtension
         $directories = $this->detectMetadataDirectories($config['metadata'], $bundles);
 
         $container
-            ->findDefinition('jms_serializer.metadata.file_locator')
+            ->getDefinition('jms_serializer.metadata.file_locator')
             ->replaceArgument(0, $directories);
 
         if ($config['profiler']) {

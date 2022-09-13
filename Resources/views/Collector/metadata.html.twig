@@ -5,12 +5,6 @@
         <p>No metadata have been loaded.</p>
     </div>
 {%- else -%}
-{#    <div>#}
-{#        <div class="sf-toolbar-info-piece">#}
-{#            <b>Runs</b>#}
-{#            <span class="sf-toolbar-status">{{ collector.loadedMetadata|length }}</span>#}
-{#        </div>#}
-{#    </div>#}
 
     <table>
         <thead>
@@ -32,6 +26,7 @@
     </table>
 {%- endif -%}
 
+
 <h3>Attempted files</h3>
 {%- if collector.metadataFiles is empty -%}
     <div class="empty">
@@ -49,8 +44,10 @@
             <tr>
                 <td>{{ class }}</td>
                 <td nowrap="nowrap">
-                    {%- for file in files -%}
-                        {{ file }}<br/>
+                    {%- for file, found in files -%}
+                        <span style="color: {{ found ? 'green': 'red' }}">
+                        {{ file }} ({{ found ? 'found': 'not found' }})<br/>
+                        </span>
                     {% endfor %}
                 </td>
             </tr>

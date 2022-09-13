@@ -3,6 +3,7 @@
 namespace JMS\SerializerBundle\Debug;
 
 use Metadata\Driver\AdvancedFileLocatorInterface;
+use Metadata\Driver\TraceableFileLocatorInterface;
 
 /**
  * @internal
@@ -29,8 +30,10 @@ final class TraceableFileLocator implements AdvancedFileLocatorInterface
     {
         $path = $this->decorated->findFileForClass($class, $extension);
 
-        if ($path !== null) {
-            $this->files[$class->getName()][] = $path;
+        if ($this->decorated instanceof TraceableFileLocatorInterface) {
+            $this->files[$class->getName()] = array_merge($this->files[$class->getName()] ?? [], $this->decorated->getPossibleFilesForClass($class, $extension));
+        } elseif ($path !== null) {
+            $this->files[$class->getName()][$path] = true;
         }
 
         return $path;

@@ -11,7 +11,7 @@
             <argument type="service" id="jms_serializer.event_dispatcher"/>
             <argument type="service" id="jms_serializer.traceable_handler_registry"/>
             <argument type="service" id="jms_serializer.traceable_metadata_factory"/>
-            <argument type="service" id="jms_serializer.metadata.traceable_file_locator"/>
+            <argument type="service" id="jms_serializer.metadata.file_locator"/>
             <argument type="service" id="jms_serializer.traceable_runs_listener"/>
 
             <tag name="data_collector"
