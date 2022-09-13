@@ -115,6 +115,7 @@ class ConfigurationTest extends TestCase
         $this->assertArrayNotHasKey('JMSSerializerBundleNs1', $directories);
         $this->assertEquals($ref->getPath() . '/Resources/config', $directories['JMSSerializerBundleNs2']);
     }
+
     public function testDebugWithoutCache()
     {
         $container = $this->getContainer([

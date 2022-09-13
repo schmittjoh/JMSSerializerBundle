@@ -47,11 +47,13 @@
             <argument type="service" id="jms_serializer.traceable_handler_registry.inner"/>
         </service>
 
-        <service id="jms_serializer.metadata.traceable_file_locator" class="JMS\SerializerBundle\Debug\TraceableFileLocator" public="false">
-            <argument type="collection" /><!-- Namespace Prefixes mapping to Directories -->
-        </service>
-
-        <service id="jms_serializer.metadata.file_locator" alias="jms_serializer.metadata.traceable_file_locator">
+        <service
+                id="jms_serializer.metadata.traceable_file_locator"
+                class="JMS\SerializerBundle\Debug\TraceableFileLocator"
+                decorates="jms_serializer.metadata.file_locator"
+                decoration-priority="-128"
+                public="false">
+            <argument type="service" id="jms_serializer.metadata.traceable_file_locator.inner"/>
         </service>
 
         <service id="jms_serializer.event_dispatcher" alias="jms_serializer.traceable_event_dispatcher">

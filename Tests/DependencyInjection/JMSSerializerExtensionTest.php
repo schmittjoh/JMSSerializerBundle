@@ -300,11 +300,11 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function (ContainerBuilder $container) {
-            $container->getAlias('jms_serializer.metadata.file_locator')->setPublic(true);
+            $container->findDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
         $fileLocatorDef = $container->findDefinition('jms_serializer.metadata.file_locator');
-        $directories = $fileLocatorDef->getArgument(0);
+        $directories = $fileLocatorDef->getArgument(0)->getArgument(0);
         $this->assertEquals(['foo_ns' => __DIR__], $directories);
     }
 
@@ -674,7 +674,7 @@ class JMSSerializerExtensionTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    private function getContainerForConfigLoad(array $configs, ?callable $configurator = null)
+    private function getContainerForConfigLoad(array $configs)
     {
         $bundle = new JMSSerializerBundle();
         $extension = $bundle->getContainerExtension();
@@ -699,7 +699,7 @@ class JMSSerializerExtensionTest extends TestCase
 
     private function getContainerForConfig(array $configs, ?callable $configurator = null)
     {
-        $container = $this->getContainerForConfigLoad($configs, $configurator);
+        $container = $this->getContainerForConfigLoad($configs);
 
         if ($configurator) {
             call_user_func($configurator, $container);
