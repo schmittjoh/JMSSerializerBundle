@@ -1,6 +1,14 @@
 This document details the changes that you need to make to your code
 when upgrading from one version to another.
 
+Upgrading From 4.x to 5.0
+==========================
+
+The 5.0 release allows you to define multiple serializer instances (with different configurations and metadata). 
+There are no expected breaking changes in the 5.0 release, 
+but the dependency injection system has been heavily changed and because of it, 
+the safest option was to release a new major version.
+
 Upgrading From 3.x to 4.0
 ==========================
 
