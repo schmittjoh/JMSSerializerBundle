@@ -20,4 +20,9 @@ class SubscribingHandler implements SubscribingHandlerInterface
             ],
         ];
     }
+
+    public function onDateTime()
+    {
+        return 'foo';
+    }
 }

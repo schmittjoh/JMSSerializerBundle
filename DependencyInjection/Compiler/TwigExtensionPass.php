@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
 /**
  * @internal
  */
-final class TwigExtensionPass implements CompilerPassInterface
+final class TwigExtensionPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
+        if ($container->getParameter('jms_serializer.twig_enabled') !== $container->getInstanceName()) {
+            return;
+        }
+
         // if there is no support for twig runtime extensions, remove the services
         if (!$container->hasDefinition('twig.runtime_loader')) {
             $container->removeDefinition('jms_serializer.twig_extension.runtime_serializer');

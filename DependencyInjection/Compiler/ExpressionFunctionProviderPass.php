@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @internal
  */
-final class ExpressionFunctionProviderPass implements CompilerPassInterface
+final class ExpressionFunctionProviderPass extends PerInstancePass
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         try {
             $registryDefinition = $container->findDefinition('jms_serializer.expression_language');

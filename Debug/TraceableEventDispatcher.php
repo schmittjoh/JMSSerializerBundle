@@ -94,7 +94,6 @@ final class TraceableEventDispatcher extends LazyEventDispatcher
     protected function initializeListeners(string $eventName, string $loweredClass, string $format): array
     {
         $listeners = parent::initializeListeners($eventName, $loweredClass, $format);
-        $this->storage = [];
         foreach ($listeners as &$listener) {
             $listener[0] = $f = function (...$args) use ($listener, &$f) {
                 $t = microtime(true);

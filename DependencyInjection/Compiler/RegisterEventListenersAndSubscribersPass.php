@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @internal
  */
-final class RegisterEventListenersAndSubscribersPass implements CompilerPassInterface
+final class RegisterEventListenersAndSubscribersPass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
         $listeners = $this->findListeners($container);
 
@@ -41,7 +40,7 @@ final class RegisterEventListenersAndSubscribersPass implements CompilerPassInte
             ->setArgument(0, $listenerServices);
     }
 
-    private function findListeners(ContainerBuilder $container): array
+    private function findListeners(ScopedContainer $container): array
     {
         $listeners = [];
 

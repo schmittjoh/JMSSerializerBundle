@@ -4,24 +4,16 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @internal
  */
-final class DoctrinePass implements CompilerPassInterface
+final class DoctrinePass extends PerInstancePass
 {
-    public function process(ContainerBuilder $container)
+    protected function processInstance(ScopedContainer $container): void
     {
-        if (
-            $container->hasParameter('jms_serializer.infer_types_from_doctrine_metadata')
-            && false === $container->getParameter('jms_serializer.infer_types_from_doctrine_metadata')
-        ) {
-            return;
-        }
-
         $registries = [
             'doctrine.orm.entity_manager' => 'doctrine',
             'doctrine_phpcr.odm.document_manager' => 'doctrine_phpcr',
@@ -29,20 +21,23 @@ final class DoctrinePass implements CompilerPassInterface
 
         foreach ($registries as $managerId => $registry) {
             if (!$container->has($managerId)) {
+                $container->removeDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry));
                 unset($registries[$managerId]);
             }
         }
 
         foreach ($registries as $registry) {
-            $container->getDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))
-                ->setDecoratedService('jms_serializer.metadata_driver')
-                ->replaceArgument(0, new Reference(sprintf('jms_serializer.metadata.%s_type_driver.inner', $registry)))
-                ->setPublic(false);
+            if ($container->hasDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))) {
+                $container->getDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))
+                    ->setDecoratedService('jms_serializer.metadata_driver')
+                    ->replaceArgument(0, new Reference(sprintf('jms_serializer.metadata.%s_type_driver.inner', $registry)));
+            }
 
-            $container->getDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))
-                ->setDecoratedService('jms_serializer.object_constructor')
-                ->replaceArgument(1, new Reference(sprintf('jms_serializer.%s_object_constructor.inner', $registry)))
-                ->setPublic(false);
+            if ($container->hasDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))) {
+                $container->getDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))
+                    ->setDecoratedService('jms_serializer.object_constructor')
+                    ->replaceArgument(1, new Reference(sprintf('jms_serializer.%s_object_constructor.inner', $registry)));
+            }
         }
     }
 }

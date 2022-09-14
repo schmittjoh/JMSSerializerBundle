@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 final class DataCollector extends BaseDataCollector implements LateDataCollectorInterface
 {
     private $eventDispatcher;
+    private $instance;
     private $handler;
     private $metadataFactory;
     private $locator;
@@ -22,6 +23,7 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
     private $runsListener;
 
     public function __construct(
+        string $instance,
         array $loadedDirs,
         TraceableEventDispatcher $eventDispatcher,
         TraceableHandlerRegistry $handler,
@@ -29,6 +31,7 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
         TraceableFileLocator $locator,
         RunsListener $runsListener
     ) {
+        $this->instance = $instance;
         $this->eventDispatcher = $eventDispatcher;
         $this->handler = $handler;
         $this->metadataFactory = $metadataFactory;
@@ -51,11 +54,21 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
         $this->data['metadata_files'] = [];
         $this->data['loaded_dirs'] = [];
         $this->data['runs'] = [];
+        $this->data['instance'] = $this->instance;
+    }
+
+    public function getInstance(): string
+    {
+        return $this->data['instance'];
     }
 
     public function getName(): string
     {
-        return 'jms_serializer';
+        if (($this->instance ?? $this->data['instance']) === 'default'){
+            return 'jms_serializer';
+        }
+
+        return 'jms_serializer_'. ($this->instance ?? $this->data['instance']);
     }
 
     public function getNumListeners($type): int

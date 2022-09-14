@@ -311,14 +311,12 @@ class ConfigurationTest extends TestCase
         $container = $this->getContainer([
             [
                 'visitors' => [
-                    'json_deserialization' => [
-                        'strict' => true,
-                    ],
+                    'json_deserialization' => ['strict' => true],
                 ],
             ],
         ]);
 
-        $strict = $container->findDefinition('jms_serializer.json_deserialization_visitor')->getArgument('$strict');
+        $strict = $container->findDefinition('jms_serializer.json_deserialization_visitor')->getArgument(0);
 
         $this->assertTrue($strict);
     }

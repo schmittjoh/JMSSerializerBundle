@@ -32,13 +32,19 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
     private $stopwatch;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var object
      */
     private $rootObject;
 
-    public function __construct($stopwatch)
+    public function __construct($stopwatch, $name = 'jms_serializer')
     {
         $this->stopwatch = $stopwatch;
+        $this->name = $name;
     }
 
     public function onPreSerialize(ObjectEvent $event)
@@ -47,7 +53,7 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->stopwatch->start('jms_serializer');
+        $this->stopwatch->start($this->name);
         $this->rootObject = $event->getObject();
     }
 
@@ -57,7 +63,7 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->stopwatch->stop('jms_serializer');
+        $this->stopwatch->stop($this->name);
         $this->rootObject = null;
     }
 }

@@ -12,17 +12,22 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\AnotherSimpleObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSubscriber;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SubscribingHandler;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\TypedObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\VersionedObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Twig\Loader\ContainerRuntimeLoader;
 
 class JMSSerializerExtensionTest extends TestCase
 {
@@ -286,10 +291,110 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('exception', $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
     }
 
-    public function testLoadExistentMetadataDir()
+    /**
+     * @dataProvider getPossibleProfilerStates
+     */
+    public function testLoadWithOptionsForMultipleInstances(bool $profiler)
     {
         $container = $this->getContainerForConfig([
             [
+                'profiler' => $profiler,
+                'visitors' => [
+                    'json_serialization' => [
+                        'options' => JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES,
+                    ],
+                ],
+                'instances' => [
+                    'inheriting' => [
+                        'inherit' => true,
+                        'visitors' => [
+                            'json_serialization' => [
+                                'options' => \JSON_UNESCAPED_SLASHES,
+                            ],
+                        ],
+                        'property_naming' => [
+                            'separator' => '-',
+                            'lower_case' => false,
+                        ],
+                        'object_constructors' => [
+                            'doctrine' => ['fallback_strategy' => 'exception'],
+                        ],
+                    ],
+                    'not_inheriting' => [
+                        'inherit' => false,
+                        'default_context' => [
+                            'serialization' => ['serialize_null' => true],
+                        ],
+                    ],
+                ],
+            ],
+        ], static function (ContainerBuilder $container) {
+                $def = new Definition(SubscribingHandler::class);
+                $def->addTag('jms_serializer.subscribing_handler', ['instance' => 'not_inheriting']);
+                $container->setDefinition('my_date_handler', $def);
+
+                $def = new Definition(CastDateToIntEventSubscriber::class);
+                $def->addTag('jms_serializer.event_subscriber', ['instance' => 'inheriting']);
+                $container->setDefinition('my_date_subscriber', $def);
+
+            foreach ($container->findTaggedServiceIds('data_collector') as $id => $tagData) {
+                $container->getDefinition($id)->setPublic(true);
+            }
+        });
+
+        $object = new AnotherSimpleObject(1.0, null, 'http://');
+
+        self::assertCount($profiler ? 3 : 0, $container->findTaggedServiceIds('data_collector'));
+
+        $this->assertSame('{"num":1.0,"camel_case":"http://","date":"2020-01-01"}', $container->get('jms_serializer.instances.default')->serialize($object, 'json'));
+        $this->assertSame('{"Num":1,"Camel-Case":"http://","Date":"01-01-2020"}', $container->get('jms_serializer.instances.inheriting')->serialize($object, 'json'));
+        $this->assertSame('{"num":1.0,"str":null,"camel_case":"http:\/\/","date":"foo"}', $container->get('jms_serializer.instances.not_inheriting')->serialize($object, 'json'));
+    }
+
+    public function testTwigIsActiveByDefaultOnTheChosenInstance()
+    {
+        $container = $this->getContainerForConfig([
+            [
+                'twig_enabled' => 'inheriting',
+                'instances' => [
+                    'inheriting' => ['inherit' => true],
+                ],
+            ],
+        ], static function (ContainerBuilder $container) {
+            foreach ($container->findTaggedServiceIds('data_collector') as $id => $tagData) {
+                $container->getDefinition($id)->setPublic(true);
+            }
+        }, static function (ContainerBuilder $container) {
+            $twig = new TwigBundle();
+            $container->setDefinition('twig.runtime_loader', new Definition(ContainerRuntimeLoader::class));
+            $container->setParameter('kernel.bundles', ['TwigBundle' => $twig]);
+
+            $container->registerExtension($twig->getContainerExtension());
+
+            $container->setAlias('test.jms_serializer.instance.inheriting.twig_extension.serializer_runtime_helper', 'jms_serializer.instance.inheriting.twig_extension.serializer_runtime_helper')->setPublic(true);
+            $container->setAlias('test.jms_serializer.instance.inheriting.twig_extension.runtime_serializer', 'jms_serializer.instance.inheriting.twig_extension.runtime_serializer')->setPublic(true);
+        });
+
+        self::assertStringContainsString('inheriting', (string) $container->findDefinition('test.jms_serializer.instance.inheriting.twig_extension.serializer_runtime_helper')->getArgument(0));
+        self::assertNotNull($container->findDefinition('test.jms_serializer.instance.inheriting.twig_extension.runtime_serializer'));
+    }
+
+    public function getPossibleProfilerStates(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
+    /**
+     * @dataProvider getPossibleProfilerStates
+     */
+    public function testLoadExistentMetadataDir(bool $profiler)
+    {
+        $container = $this->getContainerForConfig([
+            [
+                'profiler' => $profiler,
                 'metadata' => [
                     'directories' => [
                         'foo' => [
@@ -300,11 +405,16 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ], static function (ContainerBuilder $container) {
-            $container->findDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
+            $container->getDefinition('jms_serializer.metadata.file_locator')->setPublic(true);
         });
 
-        $fileLocatorDef = $container->findDefinition('jms_serializer.metadata.file_locator');
-        $directories = $fileLocatorDef->getArgument(0)->getArgument(0);
+        $fileLocatorDef = $container->getDefinition('jms_serializer.metadata.file_locator');
+        if ($profiler) {
+            $directories = $fileLocatorDef->getArgument(0)->getArgument(0);
+        } else {
+            $directories = $fileLocatorDef->getArgument(0);
+        }
+
         $this->assertEquals(['foo_ns' => __DIR__], $directories);
     }
 
@@ -674,7 +784,7 @@ class JMSSerializerExtensionTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    private function getContainerForConfigLoad(array $configs)
+    private function getContainerForConfigLoad(array $configs, ?callable $configurator = null)
     {
         $bundle = new JMSSerializerBundle();
         $extension = $bundle->getContainerExtension();
@@ -686,20 +796,28 @@ class JMSSerializerExtensionTest extends TestCase
         $container->setParameter('foo', 'bar');
         $container->set('annotation_reader', new AnnotationReader());
         $container->setDefinition('doctrine', new Definition(Registry::class));
+//        $container->setDefinition('doctrine.orm.entity_manager', new Definition(EntityManager::class));
+
         $container->set('translator', $this->getMockBuilder('Symfony\\Component\\Translation\\TranslatorInterface')->getMock());
         $container->set('debug.stopwatch', $this->getMockBuilder('Symfony\\Component\\Stopwatch\\Stopwatch')->getMock());
 
+        if ($configurator) {
+            call_user_func($configurator, $container);
+        }
+
         $container->registerExtension($extension);
         $extension->load($configs, $container);
+
+        $container->getDefinition('jms_serializer.metadata_driver')->setPublic(true);
 
         $bundle->build($container);
 
         return $container;
     }
 
-    private function getContainerForConfig(array $configs, ?callable $configurator = null)
+    private function getContainerForConfig(array $configs, ?callable $configurator = null, ?callable $preBuildConfigurator = null)
     {
-        $container = $this->getContainerForConfigLoad($configs);
+        $container = $this->getContainerForConfigLoad($configs, $preBuildConfigurator);
 
         if ($configurator) {
             call_user_func($configurator, $container);

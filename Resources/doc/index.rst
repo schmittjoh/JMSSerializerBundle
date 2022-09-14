@@ -35,7 +35,7 @@ For all available configuration options, please see the :doc:`configuration refe
 
 Usage
 -----
-The configured serializer is available as ``jms_serializer`` service::
+The configured serializer is available as ``jms_serializer`` (or ``jms_serializer.instances.default``) service::
 
     $serializer = $container->get('jms_serializer');
     $serializer->serialize($data, $format);

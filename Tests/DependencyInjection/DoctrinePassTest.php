@@ -41,6 +41,7 @@ class DoctrinePassTest extends TestCase
     public function testDoctrineDisabled()
     {
         $container = $this->getContainer([
+            'object_constructors' => ['doctrine' => false],
             'metadata' => ['infer_types_from_doctrine_metadata' => false],
         ]);
         $container->register('doctrine.orm.entity_manager', 'stdClass');

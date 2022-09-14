@@ -14,7 +14,11 @@ final class RunsListener
     public function saveRunInfo(Event $event)
     {
         $context = $event->getContext();
-        $this->runs[$context->getDirection()][spl_object_hash($context)] = true;
+        if (!isset($this->runs[$context->getDirection()][spl_object_hash($context)])) {
+            $this->runs[$context->getDirection()][spl_object_hash($context)] = [
+                'type' => $event->getType()
+            ];
+        }
     }
 
     public function getRuns(): array
