@@ -260,6 +260,7 @@
 
         <service id="jms_serializer.twig_extension.serializer_runtime_helper" class="JMS\Serializer\Twig\SerializerRuntimeHelper" public="false">
             <argument type="service" id="jms_serializer.serializer" />
+            <tag name="twig.runtime" />
         </service>
 
         <!-- PHP templating helper -->
