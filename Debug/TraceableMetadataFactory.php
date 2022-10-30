@@ -34,7 +34,10 @@ final class TraceableMetadataFactory implements AdvancedMetadataFactoryInterface
         return $this->metadataFactory->getAllClassNames();
     }
 
-    public function getMetadataForClass(string $className): ClassHierarchyMetadata|MergeableClassMetadata|null
+    /**
+     * @return ClassHierarchyMetadata|MergeableClassMetadata|null
+     */
+    public function getMetadataForClass(string $className)
     {
         $metadata = $this->metadataFactory->getMetadataForClass($className);
         if ($metadata instanceof ClassMetadata) {
