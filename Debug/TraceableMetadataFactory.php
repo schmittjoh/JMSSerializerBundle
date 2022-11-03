@@ -3,7 +3,9 @@
 namespace JMS\SerializerBundle\Debug;
 
 use Metadata\AdvancedMetadataFactoryInterface;
+use Metadata\ClassHierarchyMetadata;
 use Metadata\ClassMetadata;
+use Metadata\MergeableClassMetadata;
 
 /**
  * @internal
@@ -32,6 +34,9 @@ final class TraceableMetadataFactory implements AdvancedMetadataFactoryInterface
         return $this->metadataFactory->getAllClassNames();
     }
 
+    /**
+     * @return ClassHierarchyMetadata|MergeableClassMetadata|null
+     */
     public function getMetadataForClass(string $className)
     {
         $metadata = $this->metadataFactory->getMetadataForClass($className);
