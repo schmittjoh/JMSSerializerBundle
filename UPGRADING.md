@@ -35,6 +35,20 @@ Upgrading From 2.x to 3.0
   now the options are direction specific as `json_serialization`, `json_deserialization` ,
   `xml_serialization`, `xml_deserialization`. 
    A complete list of options is available in the [configration reference](/Resources/doc/configuration.rst#extension-reference)
+- Defining the naming strategy by parameters does not work any longer.
+
+Before:
+```
+parameters:
+    jms_serializer.serialized_name_annotation_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
+```
+
+After:
+```
+jms_serializer:
+    property_naming:
+        id: 'jms_serializer.identical_property_naming_strategy' # service id of the naming strategy
+```
 
 Upgrading From 1.x to 2.0
 ==========================
