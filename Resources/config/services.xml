@@ -91,16 +91,19 @@
             <argument type="service" id="jms_serializer.metadata.file_locator" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+            <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
         <service id="jms_serializer.metadata.xml_driver" class="JMS\Serializer\Metadata\Driver\XmlDriver" public="false">
             <argument type="service" id="jms_serializer.metadata.file_locator" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+            <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
         <service id="jms_serializer.metadata.annotation_driver" class="JMS\Serializer\Metadata\Driver\AnnotationDriver" public="false">
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+            <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
         <service id="jms_serializer.metadata_driver" class="Metadata\Driver\DriverChain" public="false">
             <argument type="collection">

@@ -6,6 +6,7 @@ namespace JMS\SerializerBundle\DependencyInjection;
 
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\RuntimeException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
@@ -143,6 +144,20 @@ final class JMSSerializerExtension extends Extension
             $container
                 ->getDefinition('jms_serializer.accessor_strategy.default')
                 ->replaceArgument(0, new Reference($config['expression_evaluator']['id']));
+
+            if (is_a($container->findDefinition($config['expression_evaluator']['id'])->getClass(), CompilableExpressionEvaluatorInterface::class, true)) {
+                $container
+                    ->getDefinition('jms_serializer.metadata.yaml_driver')
+                    ->replaceArgument(3, new Reference($config['expression_evaluator']['id']));
+
+                $container
+                    ->getDefinition('jms_serializer.metadata.xml_driver')
+                    ->replaceArgument(3, new Reference($config['expression_evaluator']['id']));
+
+                $container
+                    ->getDefinition('jms_serializer.metadata.annotation_driver')
+                    ->replaceArgument(3, new Reference($config['expression_evaluator']['id']));
+            }
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
         }
