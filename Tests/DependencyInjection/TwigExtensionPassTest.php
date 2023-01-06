@@ -23,6 +23,12 @@ class TwigExtensionPassTest extends TestCase
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', $bundles);
+        $container->setParameter('kernel.bundles_metadata', array_map(static function (string $class): array {
+            return [
+                'path' => (new $class)->getPath(),
+                'namespace' => (new \ReflectionClass($class))->getNamespaceName(),
+            ];
+        }, $bundles));
 
         $loader->load([[]], $container);
 

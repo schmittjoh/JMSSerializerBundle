@@ -234,7 +234,7 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.cache.cache_warmer');
         }
 
-        $directories = $this->detectMetadataDirectories($config['metadata'], $bundles);
+        $directories = $this->detectMetadataDirectories($config['metadata'], $container->getParameter('kernel.bundles_metadata'));
 
         $container
             ->getDefinition('jms_serializer.metadata.file_locator')
@@ -401,16 +401,13 @@ final class JMSSerializerExtension extends Extension
         }
     }
 
-    private function detectMetadataDirectories($metadata, $bundles): array
+    private function detectMetadataDirectories(array $metadata, array $bundlesMetadata): array
     {
         $directories = [];
         if ($metadata['auto_detection']) {
-            foreach ($bundles as $name => $class) {
-                $ref = new \ReflectionClass($class);
-
-                $dir = dirname($ref->getFileName()) . '/Resources/config/serializer';
-                if (file_exists($dir)) {
-                    $directories[$ref->getNamespaceName()] = $dir;
+            foreach ($bundlesMetadata as $bundle) {
+                if (is_dir($dir = $bundle['path'] . '/Resources/config/serializer') || is_dir($dir = $bundle['path'] . '/config/serializer')) {
+                    $directories[$bundle['namespace']] = $dir;
                 }
             }
         }
@@ -419,15 +416,14 @@ final class JMSSerializerExtension extends Extension
             $directory['path'] = rtrim(str_replace('\\', '/', $directory['path']), '/');
 
             if ('@' === $directory['path'][0]) {
-                $pathParts = explode('/', $directory['path']);
+                $pathParts = explode('/', $directory['path'], 2);
                 $bundleName = substr($pathParts[0], 1);
 
-                if (!isset($bundles[$bundleName])) {
-                    throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundles))));
+                if (!isset($bundlesMetadata[$bundleName])) {
+                    throw new RuntimeException(sprintf('The bundle "%s" has not been registered with AppKernel. Available bundles: %s', $bundleName, implode(', ', array_keys($bundlesMetadata))));
                 }
 
-                $ref = new \ReflectionClass($bundles[$bundleName]);
-                $directory['path'] = dirname($ref->getFileName()) . substr($directory['path'], strlen('@' . $bundleName));
+                $directory['path'] = $bundlesMetadata[$bundleName]['path'] . substr($directory['path'], strlen('@' . $bundleName));
             }
 
             $dir = rtrim($directory['path'], '\\/');

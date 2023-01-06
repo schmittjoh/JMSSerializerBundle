@@ -16,12 +16,19 @@ class ConfigurationTest extends TestCase
 {
     private function getContainer(array $configs = [])
     {
+        $bundles = ['JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle'];
         $container = new ContainerBuilder();
 
         $container->set('annotation_reader', new AnnotationReader());
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
-        $container->setParameter('kernel.bundles', ['JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle']);
+        $container->setParameter('kernel.bundles', $bundles);
+        $container->setParameter('kernel.bundles_metadata', array_map(static function (string $class): array {
+            return [
+                'path' => (new $class)->getPath(),
+                'namespace' => (new \ReflectionClass($class))->getNamespaceName(),
+            ];
+        }, $bundles));
 
         $bundle = new JMSSerializerBundle();
 
