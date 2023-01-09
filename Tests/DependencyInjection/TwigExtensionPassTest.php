@@ -25,7 +25,7 @@ class TwigExtensionPassTest extends TestCase
         $container->setParameter('kernel.bundles', $bundles);
         $container->setParameter('kernel.bundles_metadata', array_map(static function (string $class): array {
             return [
-                'path' => (new $class)->getPath(),
+                'path' => (new $class())->getPath(),
                 'namespace' => (new \ReflectionClass($class))->getNamespaceName(),
             ];
         }, $bundles));

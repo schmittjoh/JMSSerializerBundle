@@ -16,6 +16,7 @@ use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\AnotherSimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSubscriber;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnObject;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnum;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
@@ -577,6 +578,34 @@ class JMSSerializerExtensionTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    public function testEnumSupportCanBeEnabled()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Enum is available only on PHP 8.1+');
+        }
+
+        $container = $this->getContainerForConfig([
+            ['enum_support' => true],
+        ]);
+        $serializer = $container->get('jms_serializer');
+
+        $object = new ObjectUsingEnum();
+        $this->assertEquals('{"one":"Black","two":"Red","three":["Red","Black"]}', $serializer->serialize($object, 'json'));
+    }
+
+    public function testEnumSupportIsDisabledByDefault()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Enum is available only on PHP 8.1+');
+        }
+
+        $container = $this->getContainerForConfig([[]]);
+        $serializer = $container->get('jms_serializer');
+
+        $object = new ObjectUsingEnum();
+        $this->assertEquals('{"one":{"name":"Black"},"two":{"name":"Red"},"three":[{"name":"Red"},{"name":"Black"}]}', $serializer->serialize($object, 'json'));
     }
 
     public function testExpressionLanguage()

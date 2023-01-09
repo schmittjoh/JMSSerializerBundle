@@ -8,7 +8,7 @@
          processIsolation="false"
          stopOnFailure="false"
          colors="true"
-         bootstrap="Tests/bootstrap.php"
+         bootstrap="vendor/autoload.php"
 >
 
     <testsuites>

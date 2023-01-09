@@ -35,6 +35,10 @@
             <argument>jms_serializer</argument>
         </service>
 
+        <service id="jms_serializer.enum_subscriber" class="JMS\Serializer\EventDispatcher\Subscriber\EnumSubscriber" public="false">
+            <tag name="jms_serializer.event_subscriber" />
+        </service>
+
         <!-- Handlers -->
         <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
             <argument type="service" id="jms_serializer.handler_registry.service_locator" />
@@ -51,6 +55,10 @@
                 <argument key="jms_serializer.handler_registry.service_locator" id="jms_serializer.handler_registry.service_locator" type="service"/>
             </argument>
             <tag name="container.service_locator" />
+        </service>
+
+        <service id="jms_serializer.enum_handler" class="JMS\Serializer\Handler\EnumHandler" public="false">
+            <tag name="jms_serializer.subscribing_handler" />
         </service>
 
         <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
@@ -128,6 +136,11 @@
             <argument id="jms_serializer.metadata.typed_properties_driver.inner" type="service"/>
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
         </service>
+
+        <service id="jms_serializer.metadata.enum_driver" class="JMS\Serializer\Metadata\Driver\EnumPropertiesDriver" public="false">
+            <argument id="jms_serializer.metadata.enum_driver.inner" type="service"/>
+        </service>
+
         <service id="jms_serializer.metadata.doc_block_driver" class="JMS\Serializer\Metadata\Driver\DocBlockDriver" public="false">
             <argument id="jms_serializer.metadata.doc_block_driver.inner" type="service"/>
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
