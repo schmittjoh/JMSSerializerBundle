@@ -11,7 +11,6 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Handler\SymfonyUidHandler;
 use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
-use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -201,13 +200,23 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.metadata.doc_block_driver');
         }
 
-        // enable the typed props reader on php 7.4
-        if (PHP_VERSION_ID >= 70400 && class_exists(TypedPropertiesDriver::class)) {
+        // enable the typed props reader on php 7.4+
+        if (PHP_VERSION_ID >= 70400) {
             $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false);
         } else {
             $container->removeDefinition('jms_serializer.metadata.typed_properties_driver');
+        }
+
+        if ($config['enum_support']) {
+            $container->getDefinition('jms_serializer.metadata.enum_driver')
+                ->setDecoratedService('jms_serializer.metadata_driver')
+                ->setPublic(false);
+        } else {
+            $container->removeDefinition('jms_serializer.metadata.enum_driver');
+            $container->removeDefinition('jms_serializer.enum_handler');
+            $container->removeDefinition('jms_serializer.enum_subscriber');
         }
 
         // enable the attribute reader on php 8
