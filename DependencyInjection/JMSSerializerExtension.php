@@ -211,7 +211,7 @@ final class JMSSerializerExtension extends Extension
 
         if ($config['enum_support']) {
             $container->getDefinition('jms_serializer.metadata.enum_driver')
-                ->setDecoratedService('jms_serializer.metadata_driver')
+                ->setDecoratedService('jms_serializer.metadata_driver', null, 50)
                 ->setPublic(false);
         } else {
             $container->removeDefinition('jms_serializer.metadata.enum_driver');

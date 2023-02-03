@@ -17,6 +17,7 @@ use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSub
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnum;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserialize;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionLanguage;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingExpressionProperties;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\SimpleObject;
@@ -47,16 +48,17 @@ class JMSSerializerExtensionTest extends TestCase
         // clear temporary directory
         $dir = sys_get_temp_dir() . '/serializer';
         if (is_dir($dir)) {
-            foreach (new \RecursiveDirectoryIterator($dir) as $file) {
-                $filename = $file->getFileName();
-                if ('.' === $filename || '..' === $filename) {
-                    continue;
-                }
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            );
 
-                @unlink($file->getPathName());
+            foreach ($files as $fileinfo) {
+                $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                $todo($fileinfo->getRealPath());
             }
 
-            @rmdir($dir);
+            rmdir($dir);
         }
     }
 
@@ -593,6 +595,9 @@ class JMSSerializerExtensionTest extends TestCase
 
         $object = new ObjectUsingEnum();
         $this->assertEquals('{"one":"Black","two":"Red","three":["Red","Black"]}', $serializer->serialize($object, 'json'));
+
+        $object = new ObjectUsingEnumDeserialize();
+        $this->assertEquals($object, $serializer->deserialize('{"one":"Black","two":"Red","three":["Red","Black"]}', ObjectUsingEnumDeserialize::class, 'json'));
     }
 
     public function testEnumSupportIsDisabledByDefault()
