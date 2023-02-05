@@ -9,17 +9,21 @@ use JMS\Serializer\Annotation\Type;
 class AnotherSimpleObject
 {
     /** @Type("float") */
+    #[Type(name: 'float')]
     private $num;
 
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $str;
 
     /** @Type("string") */
+    #[Type(name: 'string')]
     protected $camelCase;
 
     /** @Type("DateTime<'Y-m-d'>") */
+    #[Type(name: 'DateTime<"Y-m-d">')]
     protected $date;
 
     public function __construct($num, $str, $camelCase)

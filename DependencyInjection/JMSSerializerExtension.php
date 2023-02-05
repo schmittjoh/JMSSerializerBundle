@@ -9,12 +9,14 @@ use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\Handler\SymfonyUidHandler;
+use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Metadata\Driver\AttributeDriver\AttributeReader;
 use JMS\Serializer\Metadata\Driver\DocBlockDriver;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -41,6 +43,41 @@ final class JMSSerializerExtension extends Extension
         if ($configs['profiler']) {
             $loader->load('debug.xml');
         }
+
+        $metadataDrivers = [
+            new Reference('jms_serializer.metadata.yaml_driver'),
+            new Reference('jms_serializer.metadata.xml_driver'),
+            new Reference('jms_serializer.metadata.annotation_driver'),
+        ];
+
+        // enable the attribute driver on php 8
+        if (PHP_VERSION_ID >= 80000) {
+            if (class_exists(AttributeDriver::class)) {
+                // Register the attribute driver before the annotation driver
+                $metadataDrivers = [
+                    new Reference('jms_serializer.metadata.yaml_driver'),
+                    new Reference('jms_serializer.metadata.xml_driver'),
+                    new Reference('jms_serializer.metadata.attribute_driver'),
+                    new Reference('jms_serializer.metadata.annotation_driver'),
+                ];
+            } else {
+                $container->removeDefinition('jms_serializer.metadata.attribute_driver');
+
+                if (class_exists(AttributeReader::class)) {
+                    $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
+                        ->setArgument(0, new Reference('annotation_reader'));
+
+                    $container->findDefinition('jms_serializer.metadata.annotation_driver')
+                        ->replaceArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
+                }
+            }
+        } else {
+            $container->removeDefinition('jms_serializer.metadata.attribute_driver');
+        }
+
+        $container
+            ->getDefinition('jms_serializer.metadata_driver')
+            ->replaceArgument(0, $metadataDrivers);
 
         DIUtils::cloneDefinitions($container, array_keys($configs['instances']));
 
@@ -156,6 +193,14 @@ final class JMSSerializerExtension extends Extension
                 $container
                     ->getDefinition('jms_serializer.metadata.annotation_driver')
                     ->replaceArgument(3, new Reference($config['expression_evaluator']['id']));
+
+                try {
+                    $container
+                        ->getDefinition('jms_serializer.metadata.attribute_driver')
+                        ->replaceArgument(2, new Reference($config['expression_evaluator']['id']));
+                } catch (ServiceNotFoundException $exception) {
+                    // Removed by conditional checks earlier
+                }
             }
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');
@@ -217,15 +262,6 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.metadata.enum_driver');
             $container->removeDefinition('jms_serializer.enum_handler');
             $container->removeDefinition('jms_serializer.enum_subscriber');
-        }
-
-        // enable the attribute reader on php 8
-        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeReader::class)) {
-            $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
-                ->setArgument(0, new Reference('annotation_reader'));
-
-            $container->findDefinition('jms_serializer.metadata.annotation_driver')
-                ->replaceArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
         }
 
         $container

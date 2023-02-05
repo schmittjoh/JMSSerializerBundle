@@ -11,6 +11,7 @@ class AnInterfaceImplementation implements AnInterface
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $bar;
 
     public function __construct(string $bar)

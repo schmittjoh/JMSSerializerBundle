@@ -11,11 +11,13 @@ class AnObject
     /**
      * @Type("string")
      */
+    #[Type(name: 'string')]
     private $foo;
 
     /**
      * @Type("JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterface")
      */
+    #[Type(name: 'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterface')]
     private $bar;
 
     public function __construct(string $foo, AnInterface $bar)
