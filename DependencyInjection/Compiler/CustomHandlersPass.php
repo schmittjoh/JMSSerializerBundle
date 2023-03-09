@@ -6,6 +6,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\Handler\LazyHandlerRegistry;
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Reference;
@@ -20,7 +21,10 @@ final class CustomHandlersPass extends PerInstancePass
         $handlersByDirection = $this->findHandlers($container);
         $handlerRegistryDef = $container->findDefinition('jms_serializer.handler_registry');
 
+        $isLazyHandlerRegistry = is_a($handlerRegistryDef->getClass(), LazyHandlerRegistry::class, true);
+
         $handlerServices = [];
+        $handlers = [];
         foreach ($handlersByDirection as $direction => $handlersByType) {
             foreach ($handlersByType as $type => $handlersByFormat) {
                 foreach ($handlersByFormat as $format => $handlerCallable) {
@@ -29,9 +33,17 @@ final class CustomHandlersPass extends PerInstancePass
                     $handlerServices[$id] = new ServiceClosureArgument($handlerCallable[0]);
                     $handlerCallable[0] = $id;
 
-                    $handlerRegistryDef->addMethodCall('registerHandler', [$direction, $type, $format, $handlerCallable]);
+                    if (!$isLazyHandlerRegistry) {
+                        $handlerRegistryDef->addMethodCall('registerHandler', [$direction, $type, $format, $handlerCallable]);
+                    } else {
+                        $handlers[$direction][$type][$format] = $handlerCallable;
+                    }
                 }
             }
+        }
+
+        if ($isLazyHandlerRegistry) {
+            $handlerRegistryDef->addArgument($handlers);
         }
 
         $container->findDefinition('jms_serializer.handler_registry.service_locator')
