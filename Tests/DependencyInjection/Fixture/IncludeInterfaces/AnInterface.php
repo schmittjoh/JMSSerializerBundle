@@ -14,6 +14,7 @@ use JMS\Serializer\Annotation\Discriminator;
  *     }
  * )
  */
+#[Discriminator(field: 'type', map: ['a' => AnInterfaceImplementation::class])]
 interface AnInterface
 {
     public function execute(): void;
