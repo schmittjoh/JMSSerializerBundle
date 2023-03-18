@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use JMS\Serializer\Handler\LazyHandlerRegistry;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
 use PHPUnit\Framework\TestCase;
@@ -357,6 +358,12 @@ class CustomHandlerPassTest extends TestCase
 
     private function getRegisteredHandlers(ContainerBuilder $containerBuilder): array
     {
+        $def = $containerBuilder->findDefinition('jms_serializer.handler_registry');
+
+        if (is_a($def->getClass(), LazyHandlerRegistry::class, true)) {
+            return $def->getArgument(1);
+        }
+
         $calls = $containerBuilder->findDefinition('jms_serializer.handler_registry')->getMethodCalls();
 
         return $this->buildHandlersFromCalls($calls);
