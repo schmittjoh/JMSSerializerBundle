@@ -100,29 +100,29 @@
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
+            <tag name="jms_serializer.metadata_driver" priority="40"/>
         </service>
         <service id="jms_serializer.metadata.xml_driver" class="JMS\Serializer\Metadata\Driver\XmlDriver" public="false">
             <argument type="service" id="jms_serializer.metadata.file_locator" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
+            <tag name="jms_serializer.metadata_driver" priority="30"/>
         </service>
         <service id="jms_serializer.metadata.annotation_driver" class="JMS\Serializer\Metadata\Driver\AnnotationDriver" public="false">
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
+            <tag name="jms_serializer.metadata_driver" priority="10"/>
         </service>
         <service id="jms_serializer.metadata.attribute_driver" class="JMS\Serializer\Metadata\Driver\AttributeDriver" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
+            <tag name="jms_serializer.metadata_driver" priority="20"/>
         </service>
-        <service id="jms_serializer.metadata_driver" class="Metadata\Driver\DriverChain" public="false">
-            <argument type="collection">
-                <argument type="constant">NULL</argument> <!-- list of metadata drivers -->
-            </argument>
-        </service>
+        <service id="jms_serializer.metadata_driver" class="Metadata\Driver\DriverChain" public="false" />
 
         <!-- extra metadata driver -->
         <service id="jms_serializer.metadata.doctrine_type_driver" class="JMS\Serializer\Metadata\Driver\DoctrineTypeDriver" public="false">

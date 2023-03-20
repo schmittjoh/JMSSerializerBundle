@@ -44,23 +44,9 @@ final class JMSSerializerExtension extends Extension
             $loader->load('debug.xml');
         }
 
-        $metadataDrivers = [
-            new Reference('jms_serializer.metadata.yaml_driver'),
-            new Reference('jms_serializer.metadata.xml_driver'),
-            new Reference('jms_serializer.metadata.annotation_driver'),
-        ];
-
         // enable the attribute driver on php 8
         if (PHP_VERSION_ID >= 80000) {
-            if (class_exists(AttributeDriver::class)) {
-                // Register the attribute driver before the annotation driver
-                $metadataDrivers = [
-                    new Reference('jms_serializer.metadata.yaml_driver'),
-                    new Reference('jms_serializer.metadata.xml_driver'),
-                    new Reference('jms_serializer.metadata.attribute_driver'),
-                    new Reference('jms_serializer.metadata.annotation_driver'),
-                ];
-            } else {
+            if (!class_exists(AttributeDriver::class)) {
                 $container->removeDefinition('jms_serializer.metadata.attribute_driver');
 
                 if (class_exists(AttributeReader::class)) {
@@ -74,10 +60,6 @@ final class JMSSerializerExtension extends Extension
         } else {
             $container->removeDefinition('jms_serializer.metadata.attribute_driver');
         }
-
-        $container
-            ->getDefinition('jms_serializer.metadata_driver')
-            ->replaceArgument(0, $metadataDrivers);
 
         DIUtils::cloneDefinitions($container, array_keys($configs['instances']));
 

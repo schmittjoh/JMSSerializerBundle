@@ -2,6 +2,7 @@
 
 namespace JMS\SerializerBundle;
 
+use JMS\SerializerBundle\DependencyInjection\Compiler\AddMetadataDriversToChainPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\CustomHandlersPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
@@ -26,6 +27,7 @@ class JMSSerializerBundle extends Bundle
         $builder->addCompilerPass(new FormErrorHandlerTranslationDomainPass());
         $builder->addCompilerPass(new ExpressionFunctionProviderPass());
         $builder->addCompilerPass(new DoctrinePass());
+        $builder->addCompilerPass(new AddMetadataDriversToChainPass());
 
         $builder->addCompilerPass(new RegisterEventListenersAndSubscribersPass(), PassConfig::TYPE_OPTIMIZE);
         $builder->addCompilerPass(new CustomHandlersPass(), PassConfig::TYPE_OPTIMIZE);
