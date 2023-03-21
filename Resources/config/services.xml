@@ -135,6 +135,12 @@
             <argument type="service" id="doctrine_phpcr" />
             <argument type="service" id="jms_serializer.type_parser" />
         </service>
+
+        <service id="jms_serializer.metadata.default_value_property_driver" class="JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver" public="false">
+            <argument id="jms_serializer.metadata.default_value_property_driver.inner" type="service"/>
+            <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
+        </service>
+
         <service id="jms_serializer.metadata.typed_properties_driver" class="JMS\Serializer\Metadata\Driver\TypedPropertiesDriver" public="false">
             <argument id="jms_serializer.metadata.typed_properties_driver.inner" type="service"/>
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />

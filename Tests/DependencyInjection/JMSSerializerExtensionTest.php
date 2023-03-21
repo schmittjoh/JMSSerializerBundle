@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
 use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\JMSSerializerBundle;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\DefaultValuePropObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\AnotherSimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSubscriber;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
@@ -788,6 +791,24 @@ class JMSSerializerExtensionTest extends TestCase
             ->loadMetadataForClass(new \ReflectionClass(TypedObject::class));
 
         self::assertSame('int', $metadata->propertyMetadata['foo']->type['name']);
+    }
+
+    public function testDefaultValuePropertyDriverIsEnabled()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        if (!class_exists(DefaultValuePropertyDriver::class)) {
+            $this->markTestSkipped(sprintf('%s requires %s', __METHOD__, DefaultValuePropertyDriver::class));
+        }
+
+        $container = $this->getContainerForConfig([[]]);
+
+        $metadata = $container->get('jms_serializer.metadata_driver')
+            ->loadMetadataForClass(new \ReflectionClass(DefaultValuePropObject::class));
+
+        self::assertSame('some-value', $metadata->propertyMetadata['foo']->defaultValue);
     }
 
     public function testIncludeInterfaces()
