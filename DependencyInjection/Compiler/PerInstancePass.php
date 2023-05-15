@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 abstract class PerInstancePass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         foreach (self::getSerializers($container) as $scopedContainer) {
             $this->processInstance($scopedContainer);

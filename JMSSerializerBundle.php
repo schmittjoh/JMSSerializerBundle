@@ -16,6 +16,9 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSSerializerBundle extends Bundle
 {
+    /**
+     * @return void
+     */
     public function build(ContainerBuilder $builder)
     {
         $builder->addCompilerPass(new AssignVisitorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
