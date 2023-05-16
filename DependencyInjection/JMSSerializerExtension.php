@@ -33,7 +33,7 @@ final class JMSSerializerExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $rawConfigs, ContainerBuilder $container)
+    public function load(array $rawConfigs, ContainerBuilder $container): void
     {
         $configs = $this->processNestedConfigs($rawConfigs, $container);
 
