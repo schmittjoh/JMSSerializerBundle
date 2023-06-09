@@ -148,7 +148,7 @@ To define the metadata using YAML or XML, you need to specify their location and
 
 
 Suppose you want to define the metadata using YAML for the classes in the ``App\\Entity`` namespace prefix
-and the configured path is ``%kernel.project_dir%/serializer/app``, then your metadata file should be named:
+and the configured path is ``%kernel.project_dir%/serializer/app``, then your metadata file **must** be named:
 ``%kernel.project_dir%/serializer/app/Product.yml``.
 
 
