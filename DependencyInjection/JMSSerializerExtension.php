@@ -47,32 +47,17 @@ final class JMSSerializerExtension extends Extension
         $metadataDrivers = [
             new Reference('jms_serializer.metadata.yaml_driver'),
             new Reference('jms_serializer.metadata.xml_driver'),
+            // new Reference('jms_serializer.metadata.attribute_driver'), // TODO - Re-enable this driver at a later time
             new Reference('jms_serializer.metadata.annotation_driver'),
         ];
 
-        // enable the attribute driver on php 8
-        if (PHP_VERSION_ID >= 80000) {
-            if (class_exists(AttributeDriver::class)) {
-                // Register the attribute driver before the annotation driver
-                $metadataDrivers = [
-                    new Reference('jms_serializer.metadata.yaml_driver'),
-                    new Reference('jms_serializer.metadata.xml_driver'),
-                    new Reference('jms_serializer.metadata.attribute_driver'),
-                    new Reference('jms_serializer.metadata.annotation_driver'),
-                ];
-            } else {
-                $container->removeDefinition('jms_serializer.metadata.attribute_driver');
+        // enable attributes support on php 8
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeReader::class)) {
+            $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
+                ->setArgument(0, new Reference('annotation_reader'));
 
-                if (class_exists(AttributeReader::class)) {
-                    $container->register('jms_serializer.metadata.annotation_and_attributes_reader', AttributeReader::class)
-                        ->setArgument(0, new Reference('annotation_reader'));
-
-                    $container->findDefinition('jms_serializer.metadata.annotation_driver')
-                        ->replaceArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
-                }
-            }
-        } else {
-            $container->removeDefinition('jms_serializer.metadata.attribute_driver');
+            $container->findDefinition('jms_serializer.metadata.annotation_driver')
+                ->replaceArgument(0, new Reference('jms_serializer.metadata.annotation_and_attributes_reader'));
         }
 
         $container
@@ -194,6 +179,8 @@ final class JMSSerializerExtension extends Extension
                     ->getDefinition('jms_serializer.metadata.annotation_driver')
                     ->replaceArgument(3, new Reference($config['expression_evaluator']['id']));
 
+                // TODO - Re-enable this driver at a later time
+                /*
                 try {
                     $container
                         ->getDefinition('jms_serializer.metadata.attribute_driver')
@@ -201,6 +188,7 @@ final class JMSSerializerExtension extends Extension
                 } catch (ServiceNotFoundException $exception) {
                     // Removed by conditional checks earlier
                 }
+                */
             }
         } else {
             $container->removeDefinition('jms_serializer.expression_evaluator');

@@ -113,11 +113,12 @@
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
-        <service id="jms_serializer.metadata.attribute_driver" class="JMS\Serializer\Metadata\Driver\AttributeDriver" public="false">
+        <!-- TODO - Re-enable this driver at a later time -->
+        <!-- <service id="jms_serializer.metadata.attribute_driver" class="JMS\Serializer\Metadata\Driver\AttributeDriver" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
-            <argument type="constant">NULL</argument> <!-- expression evaluator -->
-        </service>
+            <argument type="constant">NULL</argument>
+        </service> -->
         <service id="jms_serializer.metadata_driver" class="Metadata\Driver\DriverChain" public="false">
             <argument type="collection">
                 <argument type="constant">NULL</argument> <!-- list of metadata drivers -->
