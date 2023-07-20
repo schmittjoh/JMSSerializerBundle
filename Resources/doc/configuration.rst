@@ -195,7 +195,8 @@ values:
         # config.yml
         jms_serializer:
             profiler: %kernel.debug%
-            enum_support: true # BHP 8.1 Enums support, false by default for backward compatibility
+            enum_support: true # PHP 8.1 Enums support, false by default for backward compatibility
+            default_value_property_reader_support: true # PHP 8.0 Constructor Promotion default value support, false by default for backward compatibility
             twig_enabled: 'default' # on which instance is twig enabled
             handlers:
                 datetime:

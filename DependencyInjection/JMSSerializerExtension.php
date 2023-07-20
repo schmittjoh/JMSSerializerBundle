@@ -265,7 +265,7 @@ final class JMSSerializerExtension extends Extension
         }
 
         // enable the default value property reader on php 8.0+
-        if (PHP_VERSION_ID >= 80000) {
+        if (PHP_VERSION_ID >= 80000 && $config['default_value_property_reader_support']) {
             $container->getDefinition('jms_serializer.metadata.default_value_property_driver')
                 ->setDecoratedService('jms_serializer.metadata_driver')
                 ->setPublic(false);

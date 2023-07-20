@@ -57,6 +57,7 @@ final class Configuration implements ConfigurationInterface
     private function addConfigNodes($root): void
     {
         $root->scalarNode('enum_support')->defaultValue(false)->end();
+        $root->scalarNode('default_value_property_reader_support')->defaultValue(false)->end();
         $this->addHandlersSection($root);
         $this->addSubscribersSection($root);
         $this->addObjectConstructorsSection($root);

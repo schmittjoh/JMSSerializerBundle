@@ -793,7 +793,7 @@ class JMSSerializerExtensionTest extends TestCase
         self::assertSame('int', $metadata->propertyMetadata['foo']->type['name']);
     }
 
-    public function testDefaultValuePropertyDriverIsEnabled()
+    public function testDefaultValuePropertyDriverCanBeEnabled()
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
@@ -803,12 +803,34 @@ class JMSSerializerExtensionTest extends TestCase
             $this->markTestSkipped(sprintf('%s requires %s', __METHOD__, DefaultValuePropertyDriver::class));
         }
 
-        $container = $this->getContainerForConfig([[]]);
+        $container = $this->getContainerForConfig([
+            ['default_value_property_reader_support' => true],
+        ]);
 
         $metadata = $container->get('jms_serializer.metadata_driver')
             ->loadMetadataForClass(new \ReflectionClass(DefaultValuePropObject::class));
 
         self::assertSame('some-value', $metadata->propertyMetadata['foo']->defaultValue);
+        self::assertSame('another-value', $metadata->propertyMetadata['boo']->defaultValue);
+
+        $serializer = $container->get('jms_serializer');
+        $object = new DefaultValuePropObject();
+        $this->assertEquals('{"foo":"some-value","boo":"another-value"}', $serializer->serialize($object, 'json'));
+        $this->assertEquals($object, $serializer->deserialize('{}', DefaultValuePropObject::class, 'json'));
+    }
+
+    public function testDefaultValuePropertyDriverIsDisabledByDefault()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped(sprintf('%s requires PHP 8.0', __METHOD__));
+        }
+
+        $container = $this->getContainerForConfig([[]]);
+
+        $serializer = $container->get('jms_serializer');
+        $object = new DefaultValuePropObject();
+
+        $this->assertNotEquals($object, $serializer->deserialize('{}', DefaultValuePropObject::class, 'json'));
     }
 
     public function testIncludeInterfaces()
