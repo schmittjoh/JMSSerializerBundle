@@ -107,18 +107,22 @@
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
+        <!-- The `JMS\Serializer\Metadata\Driver\AnnotationDriver` class and its corresponding `jms_serializer.metadata.annotation_driver` service are deprecated in favor of the `jms_serializer.metadata.annotation_or_attribute_driver` service -->
         <service id="jms_serializer.metadata.annotation_driver" class="JMS\Serializer\Metadata\Driver\AnnotationDriver" public="false">
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument> <!-- expression evaluator -->
         </service>
-        <!-- TODO - Re-enable this driver at a later time -->
-        <!-- <service id="jms_serializer.metadata.attribute_driver" class="JMS\Serializer\Metadata\Driver\AttributeDriver" public="false">
+        <service id="jms_serializer.metadata.annotation_or_attribute_driver" class="JMS\Serializer\Metadata\Driver\AnnotationOrAttributeDriver" public="false">
             <argument type="service" id="jms_serializer.naming_strategy" />
             <argument type="service" id="jms_serializer.type_parser" on-invalid="null" />
             <argument type="constant">NULL</argument>
-        </service> -->
+            <argument type="service" id="annotation_reader" on-invalid="null" />
+        </service>
+        <service id="jms_serializer.metadata.null_driver" class="JMS\Serializer\Metadata\Driver\NullDriver" public="false">
+            <argument type="service" id="jms_serializer.naming_strategy" />
+        </service>
         <service id="jms_serializer.metadata_driver" class="Metadata\Driver\DriverChain" public="false">
             <argument type="collection">
                 <argument type="constant">NULL</argument> <!-- list of metadata drivers -->
