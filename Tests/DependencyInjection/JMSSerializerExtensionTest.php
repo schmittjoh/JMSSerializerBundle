@@ -32,7 +32,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Twig\Loader\ContainerRuntimeLoader;
+use Twig\RuntimeLoader\ContainerRuntimeLoader;
 
 class JMSSerializerExtensionTest extends TestCase
 {
@@ -777,10 +777,6 @@ class JMSSerializerExtensionTest extends TestCase
 
     public function testTypedDriverIsEnabled()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped(sprintf('%s requires PHP 7.4', __METHOD__));
-        }
-
         if (!class_exists(TypedPropertiesDriver::class)) {
             $this->markTestSkipped(sprintf('%s requires %s', __METHOD__, TypedPropertiesDriver::class));
         }
@@ -872,7 +868,11 @@ class JMSSerializerExtensionTest extends TestCase
         $container->setParameter('kernel.bundles', []);
         $container->setParameter('kernel.bundles_metadata', []);
         $container->setParameter('foo', 'bar');
-        $container->set('annotation_reader', new AnnotationReader());
+
+        if (class_exists(AnnotationReader::class)) {
+            $container->set('annotation_reader', new AnnotationReader());
+        }
+
         $container->setDefinition('doctrine', new Definition(Registry::class));
 //        $container->setDefinition('doctrine.orm.entity_manager', new Definition(EntityManager::class));
 

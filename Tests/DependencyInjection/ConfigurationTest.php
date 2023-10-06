@@ -19,7 +19,10 @@ class ConfigurationTest extends TestCase
         $bundles = ['JMSSerializerBundle' => 'JMS\SerializerBundle\JMSSerializerBundle'];
         $container = new ContainerBuilder();
 
-        $container->set('annotation_reader', new AnnotationReader());
+        if (class_exists(AnnotationReader::class)) {
+            $container->set('annotation_reader', new AnnotationReader());
+        }
+
         $container->setParameter('kernel.debug', true);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir() . '/serializer');
         $container->setParameter('kernel.bundles', $bundles);

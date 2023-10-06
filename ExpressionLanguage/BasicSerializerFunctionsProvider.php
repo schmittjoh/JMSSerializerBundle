@@ -12,7 +12,7 @@ class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInte
     /**
      * @return ExpressionFunction[]
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new ExpressionFunction('service', static function ($arg) {
