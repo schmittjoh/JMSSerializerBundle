@@ -8,9 +8,7 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @internal
- */
+/** @internal */
 final class ExpressionFunctionProviderPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void

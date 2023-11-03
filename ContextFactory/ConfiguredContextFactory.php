@@ -47,17 +47,13 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
      */
     private $groups = [];
 
-    /**
-     * @param string|null $version
-     */
+    /** @param string|null $version */
     public function setVersion($version)
     {
         $this->version = $version;
     }
 
-    /**
-     * @param bool $serializeNulls
-     */
+    /** @param bool $serializeNulls */
     public function setSerializeNulls($serializeNulls)
     {
         $this->serializeNulls = (bool) $serializeNulls;
@@ -68,17 +64,13 @@ class ConfiguredContextFactory implements SerializationContextFactoryInterface, 
         $this->enableMaxDepthChecks = true;
     }
 
-    /**
-     * @param array $attributes
-     */
+    /** @param array $attributes */
     public function setAttributes(array $attributes)
     {
         $this->attributes = $attributes;
     }
 
-    /**
-     * @param string[] $groups
-     */
+    /** @param string[] $groups */
     public function setGroups(array $groups)
     {
         $this->groups = $groups;

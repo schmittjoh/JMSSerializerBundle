@@ -8,15 +8,11 @@ use JMS\Serializer\Annotation\Type;
 
 class AnObject
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     #[Type(name: 'string')]
     private $foo;
 
-    /**
-     * @Type("JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterface")
-     */
+    /** @Type("JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterface") */
     #[Type(name: 'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterface')]
     private $bar;
 

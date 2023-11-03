@@ -6,9 +6,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 
-/**
- * @internal
- */
+/** @internal */
 final class TwigExtensionPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void

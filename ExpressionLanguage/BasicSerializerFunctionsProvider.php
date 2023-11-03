@@ -9,9 +9,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInterface
 {
-    /**
-     * @return ExpressionFunction[]
-     */
+    /** @return ExpressionFunction[] */
     public function getFunctions(): array
     {
         return [
@@ -30,7 +28,7 @@ class BasicSerializerFunctionsProvider implements ExpressionFunctionProviderInte
             }, static function (array $variables, $attribute, $object = null) {
                 return call_user_func_array(
                     [$variables['container']->get('jms_serializer.authorization_checker'), 'isGranted'],
-                    [$attribute, $object]
+                    [$attribute, $object],
                 );
             }),
         ];

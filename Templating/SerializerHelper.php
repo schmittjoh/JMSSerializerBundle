@@ -12,9 +12,9 @@ use Symfony\Component\Templating\Helper\Helper;
  *
  * Basically provides access to JMSSerializer from PHP templates
  *
- * @author Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
- *
  * @deprecated use Twig instead
+ *
+ * @author Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
  */
 class SerializerHelper extends Helper
 {

@@ -108,10 +108,6 @@
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
-    <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
-        <exclude-pattern>tests/*</exclude-pattern>
-    </rule>
-
     <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
         <properties>
             <property name="annotationsGroups" type="array">

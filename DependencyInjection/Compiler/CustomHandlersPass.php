@@ -11,9 +11,7 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @internal
- */
+/** @internal */
 final class CustomHandlersPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void

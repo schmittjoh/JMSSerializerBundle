@@ -9,9 +9,7 @@ use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @internal
- */
+/** @internal */
 final class RegisterEventListenersAndSubscribersPass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void

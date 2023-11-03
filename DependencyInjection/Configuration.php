@@ -10,16 +10,12 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
-/**
- * @internal
- */
+/** @internal */
 final class Configuration implements ConfigurationInterface
 {
     private $debug;
 
-    /**
-     * @param bool $debug
-     */
+    /** @param bool $debug */
     public function __construct($debug = false)
     {
         $this->debug = $debug;

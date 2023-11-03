@@ -15,7 +15,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -25,13 +24,11 @@ use Symfony\Component\Templating\Helper\Helper;
 use Symfony\Component\Uid\AbstractUid;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @internal
- */
+/** @internal */
 final class JMSSerializerExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function load(array $rawConfigs, ContainerBuilder $container): void
     {
@@ -321,9 +318,7 @@ final class JMSSerializerExtension extends Extension
         $this->setContextFactories($container, $config);
     }
 
-    /**
-     * @return ConfigurationInterface
-     */
+    /** @return ConfigurationInterface */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($container->getParameterBag()->resolveValue('%kernel.debug%'));

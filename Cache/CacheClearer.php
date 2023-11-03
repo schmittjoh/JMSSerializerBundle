@@ -8,19 +8,13 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Cache\ClearableCacheInterface;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 
-/**
- * @author Alexander Strizhak <gam6itko@gmail.com>
- */
+/** @author Alexander Strizhak <gam6itko@gmail.com> */
 class CacheClearer implements CacheClearerInterface
 {
-    /**
-     * @var CacheInterface|ClearableCacheInterface
-     */
+    /** @var CacheInterface|ClearableCacheInterface */
     private $cache;
 
-    /**
-     * @param CacheInterface|ClearableCacheInterface $cache
-     */
+    /** @param CacheInterface|ClearableCacheInterface $cache */
     public function __construct(CacheInterface $cache)
     {
         $this->cache = $cache;

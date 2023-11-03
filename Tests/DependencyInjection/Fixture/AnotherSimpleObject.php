@@ -12,9 +12,7 @@ class AnotherSimpleObject
     #[Type(name: 'float')]
     private $num;
 
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     #[Type(name: 'string')]
     private $str;
 

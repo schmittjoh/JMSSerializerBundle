@@ -8,13 +8,11 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
+/** @author Adrien Brault <adrien.brault@gmail.com> */
 class StopwatchEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public static function getSubscribedEvents()
     {
@@ -31,14 +29,10 @@ class StopwatchEventSubscriber implements EventSubscriberInterface
      */
     private $stopwatch;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var object
-     */
+    /** @var object */
     private $rootObject;
 
     public function __construct($stopwatch, $name = 'jms_serializer')
