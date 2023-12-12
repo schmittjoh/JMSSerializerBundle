@@ -21,29 +21,30 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "jms/serializer": "^3.28",
         "jms/metadata": "^2.6",
-        "symfony/dependency-injection": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0 || ^6.0"
+        "symfony/config": "^5.4 || ^6.0 || ^7.0",
+        "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+        "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^8.1",
-        "doctrine/orm": "^2.4",
+        "doctrine/orm": "^2.14",
         "phpunit/phpunit": "^8.0 || ^9.0",
-        "symfony/expression-language": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/finder": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/form": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/stopwatch": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/templating": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/twig-bundle": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/uid": "^5.1 || ^6.0",
-        "symfony/validator": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0"
+        "symfony/expression-language": "^5.4 || ^6.0 || ^7.0",
+        "symfony/finder": "^5.4 || ^6.0 || ^7.0",
+        "symfony/form": "^5.4 || ^6.0 || ^7.0",
+        "symfony/stopwatch": "^5.4 || ^6.0 || ^7.0",
+        "symfony/templating": "^5.4 || ^6.0",
+        "symfony/twig-bundle": "^5.4 || ^6.0 || ^7.0",
+        "symfony/uid": "^5.4 || ^6.0 || ^7.0",
+        "symfony/validator": "^5.4 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
     },
     "suggest": {
-        "symfony/expression-language": "Required for opcache preloading ^3.4 || ^4.0 || ^5.0 || ^6.0",
-        "symfony/finder": "Required for cache warmup, supported versions ^3.4 || ^4.0 || ^5.0 || ^6.0"
+        "symfony/expression-language": "Required for opcache preloading ^5.4 || ^6.0 || ^7.0",
+        "symfony/finder": "Required for cache warmup, supported versions ^5.4 || ^6.0 || ^7.0"
     },
     "config": {
         "allow-plugins": {

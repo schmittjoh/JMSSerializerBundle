@@ -253,14 +253,10 @@ final class JMSSerializerExtension extends Extension
             $container->removeDefinition('jms_serializer.metadata.doc_block_driver');
         }
 
-        // enable the typed props reader on php 7.4+
-        if (PHP_VERSION_ID >= 70400) {
-            $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
-                ->setDecoratedService('jms_serializer.metadata_driver')
-                ->setPublic(false);
-        } else {
-            $container->removeDefinition('jms_serializer.metadata.typed_properties_driver');
-        }
+        // enable the typed props reader
+        $container->getDefinition('jms_serializer.metadata.typed_properties_driver')
+            ->setDecoratedService('jms_serializer.metadata_driver')
+            ->setPublic(false);
 
         if ($config['enum_support']) {
             $container->getDefinition('jms_serializer.metadata.enum_driver')
