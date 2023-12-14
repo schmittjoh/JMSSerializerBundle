@@ -59,6 +59,30 @@ class DoctrinePassTest extends TestCase
         $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
     }
 
+    public function testDoctrineDisabledOnlyForInstance()
+    {
+        $container = $this->getContainer([
+            'instances' => [
+                'my_instance' => [
+                    'inherit' => true,
+                    'metadata' => ['infer_types_from_doctrine_metadata' => false],
+                ],
+            ],
+        ]);
+        $container->register('doctrine.orm.entity_manager', 'stdClass');
+        $container->register('doctrine', 'stdClass');
+        $container->register('doctrine_phpcr.odm.document_manager', 'stdClass');
+        $container->register('doctrine_phpcr', 'stdClass');
+
+        $container->compile();
+
+        $driver = $container->findDefinition('jms_serializer.instance.my_instance.metadata_driver');
+
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
+
+        $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
+    }
+
     public function testOrm()
     {
         $container = $this->getContainer();
