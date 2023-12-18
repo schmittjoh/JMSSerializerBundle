@@ -72,6 +72,11 @@ final class ScopedContainer
         return $this->container->getDefinition($this->getDefinitionRealId($id));
     }
 
+    public function hasDefinition($id): bool
+    {
+        return $this->container->hasDefinition($this->getDefinitionRealId($id));
+    }
+
     public function removeAlias(string $alias)
     {
         $this->container->removeAlias($this->getDefinitionRealId($alias));
