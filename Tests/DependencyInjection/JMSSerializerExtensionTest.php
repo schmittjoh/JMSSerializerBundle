@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\Exception\ExpressionLanguageRequiredException;
@@ -14,9 +13,9 @@ use JMS\Serializer\Metadata\Driver\DefaultValuePropertyDriver;
 use JMS\Serializer\Metadata\Driver\TypedPropertiesDriver;
 use JMS\Serializer\SerializationContext;
 use JMS\SerializerBundle\JMSSerializerBundle;
-use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\DefaultValuePropObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\AnotherSimpleObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\CastDateToIntEventSubscriber;
+use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\DefaultValuePropObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnInterfaceImplementation;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\IncludeInterfaces\AnObject;
 use JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnum;
@@ -53,7 +52,7 @@ class JMSSerializerExtensionTest extends TestCase
         if (is_dir($dir)) {
             $files = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
+                \RecursiveIteratorIterator::CHILD_FIRST,
             );
 
             foreach ($files as $fileinfo) {
@@ -297,9 +296,7 @@ class JMSSerializerExtensionTest extends TestCase
         $this->assertEquals('exception', $container->getDefinition('jms_serializer.doctrine_object_constructor')->getArgument(2));
     }
 
-    /**
-     * @dataProvider getPossibleProfilerStates
-     */
+    /** @dataProvider getPossibleProfilerStates */
     public function testLoadWithOptionsForMultipleInstances(bool $profiler)
     {
         $container = $this->getContainerForConfig([
@@ -393,9 +390,7 @@ class JMSSerializerExtensionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getPossibleProfilerStates
-     */
+    /** @dataProvider getPossibleProfilerStates */
     public function testLoadExistentMetadataDir(bool $profiler)
     {
         $container = $this->getContainerForConfig([
@@ -475,9 +470,7 @@ class JMSSerializerExtensionTest extends TestCase
         ]);
     }
 
-    /**
-     * @dataProvider getJsonVisitorConfigs
-     */
+    /** @dataProvider getJsonVisitorConfigs */
     public function testJsonVisitorOptions($expectedOptions, $config)
     {
         $container = $this->getContainerForConfigLoad([$config]);
@@ -545,9 +538,7 @@ class JMSSerializerExtensionTest extends TestCase
         return $configs;
     }
 
-    /**
-     * @dataProvider getJsonVisitorOptions
-     */
+    /** @dataProvider getJsonVisitorOptions */
     public function testPassJsonVisitorOptions(string $expected, $data, $options)
     {
         $container = $this->getContainerForConfig([
@@ -683,9 +674,7 @@ class JMSSerializerExtensionTest extends TestCase
         $this->getContainerForConfig([['expression_evaluator' => ['id' => 'foo']]]);
     }
 
-    /**
-     * @dataProvider getXmlVisitorWhitelists
-     */
+    /** @dataProvider getXmlVisitorWhitelists */
     public function testXmlVisitorDoctypeWhitelist($expectedOptions, $config)
     {
         $container = $this->getContainerForConfigLoad([$config]);
@@ -756,7 +745,7 @@ class JMSSerializerExtensionTest extends TestCase
 
         if (!method_exists($container, 'registerForAutoconfiguration')) {
             $this->markTestSkipped(
-                'registerForAutoconfiguration method is not available in the container'
+                'registerForAutoconfiguration method is not available in the container',
             );
         }
 
@@ -842,9 +831,9 @@ class JMSSerializerExtensionTest extends TestCase
             new AnObject(
                 'foo',
                 new AnInterfaceImplementation(
-                    'bar'
-                )
-            )
+                    'bar',
+                ),
+            ),
         );
         $expected = [
             'foo' => 'foo',

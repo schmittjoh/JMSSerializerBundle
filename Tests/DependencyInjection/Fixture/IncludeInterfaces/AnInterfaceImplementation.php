@@ -8,9 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 class AnInterfaceImplementation implements AnInterface
 {
-    /**
-     * @Type("string")
-     */
+    /** @Type("string") */
     #[Type(name: 'string')]
     private $bar;
 

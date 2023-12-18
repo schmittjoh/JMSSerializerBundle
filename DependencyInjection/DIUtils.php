@@ -9,14 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @internal
- */
+/** @internal */
 final class DIUtils
 {
-    /**
-     * @see \JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass
-     */
+    /** @see \JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass */
     public static function adjustDecorators(ContainerBuilder $container): void
     {
         foreach ($container->getDefinitions() as $definition) {

@@ -12,9 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TwigExtensionPassTest extends TestCase
 {
-    /**
-     * @return ContainerBuilder
-     */
+    /** @return ContainerBuilder */
     private function getContainer(array $bundles = ['TwigBundle' => TwigBundle::class])
     {
         $loader = new JMSSerializerExtension();

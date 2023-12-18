@@ -8,22 +8,14 @@ use Metadata\MetadataFactoryInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-/**
- * @author Asmir Mustafic <goetas@gmail.com>
- */
+/** @author Asmir Mustafic <goetas@gmail.com> */
 class CacheWarmer implements CacheWarmerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
+    /** @var MetadataFactoryInterface */
     private $metadataFactory;
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $includePaths = [];
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $excludePaths = [];
 
     public function __construct(array $includePaths, MetadataFactoryInterface $metadataFactory, array $excludePaths = [])

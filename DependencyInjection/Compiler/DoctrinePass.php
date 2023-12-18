@@ -7,9 +7,7 @@ namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @internal
- */
+/** @internal */
 final class DoctrinePass extends PerInstancePass
 {
     protected function processInstance(ScopedContainer $container): void
