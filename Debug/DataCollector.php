@@ -42,7 +42,7 @@ final class DataCollector extends BaseDataCollector implements LateDataCollector
         $this->reset();
     }
 
-    public function collect(Request $request, Response $response, \Throwable $exception = null): void
+    public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
     {
     }
 
