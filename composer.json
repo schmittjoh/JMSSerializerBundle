@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "jms/serializer": "^3.28",
+        "jms/serializer": "^3.31",
         "jms/metadata": "^2.6",
         "symfony/config": "^5.4 || ^6.0 || ^7.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",

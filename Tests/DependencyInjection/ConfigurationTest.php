@@ -286,6 +286,14 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(\DateTime::ATOM, $config['handlers']['datetime']['default_format']);
     }
 
+    public function testDefaultDateDeserializationFormats()
+    {
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(true), []);
+
+        $this->assertEquals([\DateTime::ATOM], $config['handlers']['datetime']['default_deserialization_formats']);
+    }
+
     public function testDefaultUidFormat()
     {
         $processor = new Processor();
