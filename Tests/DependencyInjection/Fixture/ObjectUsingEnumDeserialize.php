@@ -10,11 +10,11 @@ class ObjectUsingEnumDeserialize
 {
     private ObjectUsingEnumDeserializeCard $one;
 
-    /** @Type("enum<'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard'>") */
-    #[Type(name: 'enum<"JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard">')]
+    /** @Type("enum<JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard>") */
+    #[Type(name: 'enum<JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard>')]
     private $two;
-    /** @Type("array<enum<'JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard'>>") */
-    #[Type(name: 'array<enum<"JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard">>')]
+    /** @Type("array<enum<JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard>>") */
+    #[Type(name: 'array<enum<JMS\SerializerBundle\Tests\DependencyInjection\Fixture\ObjectUsingEnumDeserializeCard>>')]
     private array $three;
 
     public function __construct()
