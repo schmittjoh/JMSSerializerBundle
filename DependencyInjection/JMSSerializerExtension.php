@@ -127,7 +127,7 @@ final class JMSSerializerExtension extends Extension
             ->replaceArgument(0, $config['handlers']['datetime']['default_format'])
             ->replaceArgument(1, $config['handlers']['datetime']['default_timezone'])
             ->replaceArgument(2, $config['handlers']['datetime']['cdata'])
-            ->replaceArgument(3, $config['handlers']['datetime']['default_deserialization_formats']);
+            ->replaceArgument(3, [] === $config['handlers']['datetime']['default_deserialization_formats'] ? [$config['handlers']['datetime']['default_format']] : $config['handlers']['datetime']['default_deserialization_formats']);
 
         $container->getDefinition('jms_serializer.array_collection_handler')
             ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);

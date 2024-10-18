@@ -291,7 +291,7 @@ class ConfigurationTest extends TestCase
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(true), []);
 
-        $this->assertEquals([\DateTime::ATOM], $config['handlers']['datetime']['default_deserialization_formats']);
+        $this->assertEquals([], $config['handlers']['datetime']['default_deserialization_formats']);
     }
 
     public function testDefaultUidFormat()

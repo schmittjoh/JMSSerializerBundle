@@ -88,7 +88,7 @@ final class Configuration implements ConfigurationInterface
                             ->scalarNode('default_format')->defaultValue(\DateTime::RFC3339)->end()
                             ->arrayNode('default_deserialization_formats')
                                 ->scalarPrototype()->end()
-                                ->defaultValue([\DateTime::RFC3339])
+                                ->defaultValue([])
                             ->end()
                             ->scalarNode('default_timezone')->defaultValue(date_default_timezone_get())->end()
                             ->scalarNode('cdata')->defaultTrue()->end()
