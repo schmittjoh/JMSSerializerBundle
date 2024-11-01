@@ -73,6 +73,7 @@
             <argument/> <!-- default_format -->
             <argument/> <!-- default_timezone -->
             <argument/> <!-- cdata -->
+            <argument/> <!-- default_deserialization_formats -->
         </service>
         <service id="jms_serializer.form_error_handler" class="JMS\Serializer\Handler\FormErrorHandler" public="false">
             <argument type="service" id="translator" on-invalid="null" />

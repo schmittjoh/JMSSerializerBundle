@@ -16,6 +16,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
@@ -126,7 +127,8 @@ final class JMSSerializerExtension extends Extension
         $container->getDefinition('jms_serializer.datetime_handler')
             ->replaceArgument(0, $config['handlers']['datetime']['default_format'])
             ->replaceArgument(1, $config['handlers']['datetime']['default_timezone'])
-            ->replaceArgument(2, $config['handlers']['datetime']['cdata']);
+            ->replaceArgument(2, $config['handlers']['datetime']['cdata'])
+            ->replaceArgument(3, [] === $config['handlers']['datetime']['default_deserialization_formats'] ? [$config['handlers']['datetime']['default_format']] : $config['handlers']['datetime']['default_deserialization_formats']);
 
         $container->getDefinition('jms_serializer.array_collection_handler')
             ->replaceArgument(0, $config['handlers']['array_collection']['initialize_excluded']);

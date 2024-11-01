@@ -22,13 +22,14 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "jms/serializer": "^3.28",
+        "jms/serializer": "^3.31",
         "jms/metadata": "^2.6",
         "symfony/config": "^5.4 || ^6.0 || ^7.0",
         "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
         "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
+        "doctrine/annotations": "^1.14 || ^2.0",
         "doctrine/coding-standard": "^12.0",
         "doctrine/orm": "^2.14",
         "phpunit/phpunit": "^8.0 || ^9.0",
