@@ -61,6 +61,10 @@
             <tag name="jms_serializer.subscribing_handler" />
         </service>
 
+        <service id="jms_serializer.union_handler" class="JMS\Serializer\Handler\UnionHandler" public="false">
+            <tag name="jms_serializer.subscribing_handler" />
+        </service>
+
         <service id="jms_serializer.array_collection_handler" class="JMS\Serializer\Handler\ArrayCollectionHandler" public="false">
             <argument type="constant">false</argument>
             <tag name="jms_serializer.subscribing_handler" />
