@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
@@ -35,11 +36,11 @@ final class JMSSerializerExtension extends Extension
     {
         $configs = $this->processNestedConfigs($rawConfigs, $container);
 
-        $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
-        $loader->load('services.xml');
+        $loader = new PhpFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));
+        $loader->load('services.php');
 
         if ($configs['profiler']) {
-            $loader->load('debug.xml');
+            $loader->load('debug.php');
         }
 
         $this->configureMetadataDrivers($container);
