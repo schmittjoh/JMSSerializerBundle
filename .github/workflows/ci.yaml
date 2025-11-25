@@ -43,6 +43,11 @@ jobs:
           coverage: "pcov"
           ini-values: "zend.assertions=1"
 
+      # until Symfony 8 is released
+      - name: Configure Composer minimum stability
+        if: matrix.php-version == '8.5'
+        run: composer config minimum-stability dev
+
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"
         with:
