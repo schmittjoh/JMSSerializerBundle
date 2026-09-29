@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\Tests\DependencyInjection;
 
+use JMS\SerializerBundle\DependencyInjection\Compiler\AdjustDecorationPass;
 use JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass;
 use JMS\SerializerBundle\DependencyInjection\JMSSerializerExtension;
+use Metadata\Driver\DriverChain;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class DoctrinePassTest extends TestCase
 {
@@ -81,6 +85,36 @@ class DoctrinePassTest extends TestCase
         $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrineTypeDriver'));
 
         $this->assertFalse(self::assertDefinitionIsOfType($container, $driver, 'JMS\Serializer\Metadata\Driver\DoctrinePHPCRTypeDriver'));
+    }
+
+    public function testDecoratorsOfAnInstanceWrapItsOwnServices()
+    {
+        $container = $this->getContainer([
+            'instances' => [
+                'my_instance' => [],
+            ],
+        ]);
+        $container->register('doctrine.orm.entity_manager', 'stdClass');
+        $container->register('doctrine', 'stdClass');
+        // as in the bundle, so that the decorators target the services of their instance
+        $container->addCompilerPass(new AdjustDecorationPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -100);
+        // keep the references, the removing passes would inline them
+        $container->getCompilerPassConfig()->setRemovingPasses([]);
+
+        $container->compile();
+
+        $driverId = 'jms_serializer.instance.my_instance.metadata.doctrine_type_driver';
+        $this->assertEquals(
+            new Reference($driverId . '.inner'),
+            $container->getDefinition($driverId)->getArgument(0),
+        );
+        $this->assertSame(DriverChain::class, $container->getDefinition($driverId . '.inner')->getClass());
+
+        $constructorId = 'jms_serializer.instance.my_instance.doctrine_object_constructor';
+        $this->assertEquals(
+            new Reference($constructorId . '.inner'),
+            $container->getDefinition($constructorId)->getArgument(1),
+        );
     }
 
     public function testOrm()
