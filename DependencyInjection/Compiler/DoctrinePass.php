@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JMS\SerializerBundle\DependencyInjection\Compiler;
 
+use JMS\SerializerBundle\DependencyInjection\DIUtils;
 use JMS\SerializerBundle\DependencyInjection\ScopedContainer;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -28,14 +29,22 @@ final class DoctrinePass extends PerInstancePass
             if ($container->hasDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))) {
                 $container->getDefinition(sprintf('jms_serializer.metadata.%s_type_driver', $registry))
                     ->setDecoratedService('jms_serializer.metadata_driver')
-                    ->replaceArgument(0, new Reference(sprintf('jms_serializer.metadata.%s_type_driver.inner', $registry)));
+                    ->replaceArgument(0, new Reference($this->getInnerId($container, sprintf('jms_serializer.metadata.%s_type_driver', $registry))));
             }
 
             if ($container->hasDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))) {
                 $container->getDefinition(sprintf('jms_serializer.%s_object_constructor', $registry))
                     ->setDecoratedService('jms_serializer.object_constructor')
-                    ->replaceArgument(1, new Reference(sprintf('jms_serializer.%s_object_constructor.inner', $registry)));
+                    ->replaceArgument(1, new Reference($this->getInnerId($container, sprintf('jms_serializer.%s_object_constructor', $registry))));
             }
         }
+    }
+
+    /**
+     * The scoped container translates the ids it is given, but not the ids held by a Reference.
+     */
+    private function getInnerId(ScopedContainer $container, string $decoratorId): string
+    {
+        return DIUtils::getRealId($container->getInstanceName(), $decoratorId) . '.inner';
     }
 }
